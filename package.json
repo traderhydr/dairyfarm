@@ -1,0 +1,20 @@
+{
+  "name": "dairy-farm-manager-mobile",
+  "version": "2.3.0",
+  "description": "Dairy Farm Manager Mobile App (Android APK & iOS IPA via Capacitor)",
+  "scripts": {
+    "init:android": "npx cap add android",
+    "init:ios": "npx cap add ios",
+    "sync": "npx cap sync",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}
