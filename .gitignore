@@ -4,3 +4,4 @@ ios/
 dist/
 test-results/
 playwright-report/
+dist-cloud/

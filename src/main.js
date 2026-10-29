@@ -71,6 +71,10 @@ function boot() {
   initDoodhi();
   initDataManagement();
   initModal();
+  // Accounts + cloud sync are only bundled when the build has a Supabase project configured.
+  if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
+    import('./ui/account.js').then((m) => m.initAccount());
+  }
 }
 
 window.addEventListener('DOMContentLoaded', boot);
