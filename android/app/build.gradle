@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 // Version name comes from package.json; CI passes an increasing VERSION_CODE for each upload.
 def appPackage = new groovy.json.JsonSlurper().parse(file('../../package.json'))
 def releaseKeystore = System.getenv('KEYSTORE_PATH')
+def appVersionCode = Integer.parseInt(System.getenv('VERSION_CODE') ?: '1')
 
 android {
     namespace = "com.sadeeq.dairyfarm"
@@ -11,7 +12,7 @@ android {
         applicationId "com.sadeeq.dairyfarm"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode (System.getenv('VERSION_CODE') ?: '1').toInteger()
+        versionCode appVersionCode
         versionName appPackage.version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
