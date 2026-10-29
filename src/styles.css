@@ -162,3 +162,52 @@ body.dark-mode nav.bottom-glass-dock {
     margin-top: 1.5rem;
   }
 }
+
+/* Edge-to-edge on Android: keep the header clear of the status bar / camera cut-out */
+header.glass-header {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Web-only controls that make no sense inside the installed app */
+.is-native #openInstallGuideBtn,
+.is-native #printReportBtn {
+  display: none;
+}
+
+/* Drawer must be opaque: page content showed through the glass effect */
+aside#sideMenuDrawer {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+body.dark-mode aside#sideMenuDrawer {
+  background: #0f172a !important;
+}
+
+/* Buttons in the Home Menu drawer (solid colours so the glass theme can't wash them out) */
+.drawer-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.drawer-action:hover { background: #e2e8f0; }
+.drawer-action.hidden { display: none; }
+.drawer-action.is-primary { background: #d1fae5; border-color: #6ee7b7; color: #064e3b; }
+.drawer-action.is-primary:hover { background: #a7f3d0; }
+.drawer-action.is-danger { background: #ffe4e6; border-color: #fda4af; color: #9f1239; }
+.drawer-action.is-danger:hover { background: #fecdd3; }
+body.dark-mode .drawer-action { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+body.dark-mode .drawer-action:hover { background: #334155; }
+body.dark-mode .drawer-action.is-primary { background: #064e3b; border-color: #047857; color: #d1fae5; }
+body.dark-mode .drawer-action.is-danger { background: #4c0519; border-color: #881337; color: #fda4af; }

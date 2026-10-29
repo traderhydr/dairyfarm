@@ -10,6 +10,8 @@ import './styles.css';
 import { initDataManagement } from './data-management.js';
 import { initExport } from './export.js';
 import { todayStr } from './lib/dates.js';
+import { isNative } from './lib/platform.js';
+import { initNative } from './native/init.js';
 import { loadState, onChange } from './state.js';
 import { initMenu } from './ui/menu.js';
 import { initModal } from './ui/modal.js';
@@ -22,6 +24,7 @@ import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
 import { initSales, renderSales } from './views/sales.js';
 import { renderSummary } from './views/summary.js';
+import { renderTrends } from './views/trends.js';
 import { initWachi, renderWachi } from './views/wachi.js';
 import { initWanda, renderWanda, updateWandaFormPreview } from './views/wanda.js';
 
@@ -30,6 +33,7 @@ function renderAll() {
   renderAlerts();
   renderTransactions();
   renderExpenseBreakdown();
+  renderTrends();
   renderBreeding();
   renderWanda();
   renderMilkers();
@@ -50,6 +54,8 @@ function setDateDefaults() {
 }
 
 function boot() {
+  document.getElementById('appVersionBadge').textContent = `v${__APP_VERSION__}`;
+  document.getElementById('drawerVersion').textContent = `Dairy Farm Manager v${__APP_VERSION__}`;
   setDateDefaults();
   loadState();
   updateBreedingPreview();
@@ -77,4 +83,9 @@ function boot() {
   }
 }
 
-window.addEventListener('DOMContentLoaded', boot);
+window.addEventListener('DOMContentLoaded', () => {
+  boot();
+  initNative();
+  // The offline service worker is for browsers/PWA only: the native app already ships its files.
+  if (!isNative) import('virtual:pwa-register').then((m) => m.registerSW({ immediate: true }));
+});

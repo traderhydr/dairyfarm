@@ -95,3 +95,13 @@ test('works fully offline after the first visit', async ({ page, context }) => {
   const fonts = await page.evaluate(async () => { await document.fonts.ready; return document.fonts.check('600 16px Inter'); });
   expect(fonts).toBe(true);
 });
+
+test('shows the version and a monthly income/expense chart', async ({ page }) => {
+  await expect(page.locator('#appVersionBadge')).toHaveText(/^v\d+\.\d+\.\d+$/);
+  await expect(page.locator('#monthlyTrendContainer')).toContainText('No income or expenses');
+  await fill(page, 'txType', 'income');
+  await fill(page, 'txAmount', '2500');
+  await submit(page, 'financeForm');
+  await expect(page.locator('#monthlyTrendContainer svg')).toBeVisible();
+  await expect(page.locator('#monthlyTrendContainer table')).toContainText('Rs. 2,500');
+});

@@ -27,6 +27,10 @@ const CLASSES = {
 
 const $ = (id) => document.getElementById(id);
 
+let activeTab = 'finance';
+
+export const getActiveTab = () => activeTab;
+
 function openSideMenu() {
   $('sideMenuBackdrop').classList.remove('hidden');
   $('sideMenuDrawer').classList.remove('-translate-x-full');
@@ -40,6 +44,7 @@ function closeSideMenu() {
 export function switchTab(target) {
   const active = SECTIONS[target];
   if (!active) return;
+  activeTab = target;
 
   for (const entry of Object.values(SECTIONS)) {
     const section = $(entry.section);

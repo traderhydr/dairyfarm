@@ -42,41 +42,16 @@
         <div>
           <div class="flex flex-wrap items-center gap-2">
             <h1 class="text-lg sm:text-2xl font-extrabold tracking-tight">Dairy Farm Manager</h1>
-            <span class="text-[11px] font-semibold bg-white/15 text-emerald-100 border border-white/30 px-2.5 py-0.5 rounded-full backdrop-blur-md">v2.3 Step 11</span>
+            <span id="appVersionBadge" class="text-[11px] font-semibold bg-white/15 text-emerald-100 border border-white/30 px-2.5 py-0.5 rounded-full backdrop-blur-md"></span>
           </div>
-          <p class="text-xs text-emerald-200/90 mt-0.5">5-Tab Center Cashflow Dock &amp; Side Home Menu Drawer</p>
+          <p class="text-xs text-emerald-200/90 mt-0.5">Cashbook, herd, feed &amp; milk records</p>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
-        <button id="openInstallGuideBtn" type="button" class="text-xs bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold px-3 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
-          <span>Install App (Android / iPhone)</span>
-        </button>
+      <div class="flex items-center gap-2">
         <button id="accountBtn" type="button" class="hidden text-xs bg-white/10 hover:bg-white/20 text-white font-semibold px-3 py-2 rounded-xl border border-white/10 transition items-center gap-1.5">
           <span id="accountDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
           <span id="accountBtnLabel">Sign in to back up</span>
-        </button>
-        <button id="themeToggleBtn" type="button" class="text-xs bg-white/10 hover:bg-white/20 text-emerald-100 font-semibold px-3 py-2 rounded-xl border border-white/10 transition flex items-center gap-1.5">
-          <span id="themeToggleLabel">Dark Mode</span>
-        </button>
-        <button id="backupJsonBtn" type="button" class="text-xs bg-sky-400 hover:bg-sky-300 text-slate-950 font-semibold px-3 py-2 rounded-xl shadow-xs transition">
-          Save Backup (.json)
-        </button>
-        <label for="restoreJsonInput" class="cursor-pointer text-xs bg-white/10 hover:bg-white/20 text-white font-semibold px-3 py-2 rounded-xl border border-white/10 transition">
-          Restore Backup
-        </label>
-        <input id="restoreJsonInput" type="file" accept=".json,application/json" class="hidden" />
-        <button id="printReportBtn" type="button" class="text-xs bg-white/10 hover:bg-white/20 text-white font-semibold px-3 py-2 rounded-xl border border-white/10 transition">
-          Print Report
-        </button>
-        <button id="exportCsvBtn" type="button" class="text-xs bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold px-3 py-2 rounded-xl shadow-xs transition">
-          Export CSV Backup
-        </button>
-        <button id="resetDemoBtn" type="button" class="text-xs bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 font-medium px-3 py-2 rounded-xl border border-emerald-700 transition">
-          Load Sample Data
-        </button>
-        <button id="clearAllBtn" type="button" class="text-xs bg-rose-950/60 hover:bg-rose-600 text-rose-200 hover:text-white font-medium px-3 py-2 rounded-xl border border-rose-800/50 transition">
-          Clear All
         </button>
       </div>
     </div>
@@ -348,8 +323,8 @@
               DF
             </div>
             <div>
-              <h2 class="text-sm font-extrabold text-slate-900">Home Menu Bar</h2>
-              <p class="text-[11px] text-slate-500">Extra Farm Logs &amp; Quick Switcher</p>
+              <h2 class="text-sm font-extrabold text-slate-900">Menu</h2>
+              <p class="text-[11px] text-slate-500">More farm logs, settings &amp; your data</p>
             </div>
           </div>
           <button id="closeSideMenuBtn" type="button" class="text-xs font-semibold text-slate-500 hover:text-slate-900 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition">
@@ -385,34 +360,32 @@
           </button>
         </div>
 
-        <!-- Quick Jump to Main 5 Tabs -->
-        <div class="space-y-1.5 pt-2 border-t border-slate-200/70">
-          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Main 5 Tabs Shortcut</p>
-          <button type="button" data-drawer-jump="finance" class="w-full px-3 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center justify-between transition text-left">
-            <span>&starf; Cashflow (Center Tab)</span>
-            <span class="text-[10px] text-emerald-700 font-bold">Main</span>
-          </button>
-          <button type="button" data-drawer-jump="breeding" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
-            <span>Cow AI &amp; Pregnancy Log</span>
-            <span class="text-[10px] text-slate-400">Left 1</span>
-          </button>
-          <button type="button" data-drawer-jump="milkers" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
-            <span>Milkers (Milking Cows)</span>
-            <span class="text-[10px] text-slate-400">Left 2</span>
-          </button>
-          <button type="button" data-drawer-jump="wanda" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
-            <span>Monthly Wanda &amp; Installments</span>
-            <span class="text-[10px] text-slate-400">Right 1</span>
-          </button>
-          <button type="button" data-drawer-jump="wachi" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
-            <span>Wachi (Heifers)</span>
-            <span class="text-[10px] text-slate-400">Right 2</span>
-          </button>
+        <!-- App settings & data tools (moved out of the header to keep it compact) -->
+        <div class="space-y-2 pt-2 border-t border-slate-200/70">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">App</p>
+          <button id="openInstallGuideBtn" type="button" class="drawer-action is-primary">Install App (Android / iPhone)</button>
+          <button id="remindersBtn" type="button" class="drawer-action hidden"><span id="remindersBtnLabel">Reminders: Off</span></button>
+          <button id="themeToggleBtn" type="button" class="drawer-action"><span id="themeToggleLabel">Dark Mode</span></button>
+        </div>
+
+        <div class="space-y-2 pt-2 border-t border-slate-200/70">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Your data</p>
+          <button id="backupJsonBtn" type="button" class="drawer-action">Save Backup (.json)</button>
+          <label for="restoreJsonInput" class="cursor-pointer drawer-action">Restore Backup</label>
+          <input id="restoreJsonInput" type="file" accept=".json,application/json" class="hidden" />
+          <button id="exportCsvBtn" type="button" class="drawer-action">Export CSV Backup</button>
+          <button id="printReportBtn" type="button" class="drawer-action">Print Report</button>
+        </div>
+
+        <div class="space-y-2 pt-2 border-t border-slate-200/70">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Start fresh</p>
+          <button id="resetDemoBtn" type="button" class="drawer-action">Load Sample Data</button>
+          <button id="clearAllBtn" type="button" class="drawer-action is-danger">Clear All Records</button>
         </div>
       </div>
 
       <div class="pt-3 border-t border-slate-200/70 text-[11px] text-slate-500 flex items-center justify-between">
-        <span>Dairy Farm Manager v2.2</span>
+        <span id="drawerVersion">Dairy Farm Manager</span>
         <span class="font-semibold text-emerald-700">Auto-Saved</span>
       </div>
     </aside>
@@ -535,6 +508,18 @@
             <span id="profitMarginBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">0% Margin</span>
           </div>
           <div id="expenseBreakdownContainer" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Monthly income vs expenses -->
+        <div class="mt-6 pt-5 border-t border-slate-200/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Last 6 Months</h3>
+            <span class="flex items-center gap-3 text-[11px] text-slate-500">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>Income</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span>Expenses</span>
+            </span>
+          </div>
+          <div id="monthlyTrendContainer"></div>
         </div>
       </div>
 

@@ -1,12 +1,17 @@
 import { defineConfig } from 'vite';
+import { readFileSync } from 'node:fs';
 import { VitePWA } from 'vite-plugin-pwa';
+
+const { version } = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 export default defineConfig({
   base: './',
+  define: { __APP_VERSION__: JSON.stringify(version) },
   build: { outDir: 'dist', emptyOutDir: true },
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false,
       includeAssets: ['icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'Dairy Farm Manager',

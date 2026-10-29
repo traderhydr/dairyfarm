@@ -1,4 +1,5 @@
 import { sumAmounts } from './lib/calc.js';
+import { saveTextFile } from './lib/files.js';
 import { addDays } from './lib/format.js';
 import { importData, snapshot, state } from './state.js';
 import { showToast } from './ui/toast.js';
@@ -47,16 +48,9 @@ export function exportFarmCsv() {
   });
 
   const csvContent = rows.map(r => r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'dairy_farm_records_backup.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('Farm CSV backup downloaded!');
+  return saveTextFile('dairy_farm_records_backup.csv', csvContent, 'text/csv;charset=utf-8;')
+    .then((how) => showToast(how === 'shared' ? 'Choose where to save your CSV' : 'Farm CSV backup downloaded!'))
+    .catch(() => showToast('Could not save the CSV file.'));
 }
 
 export function exportFarmJsonBackup() {
@@ -66,16 +60,9 @@ export function exportFarmJsonBackup() {
     exportedAt: new Date().toISOString(),
     ...snapshot()
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'dairy_farm_full_backup.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('Full JSON backup saved!');
+  return saveTextFile('dairy_farm_full_backup.json', JSON.stringify(payload, null, 2), 'application/json')
+    .then((how) => showToast(how === 'shared' ? 'Choose where to save your backup' : 'Full JSON backup saved!'))
+    .catch(() => showToast('Could not save the backup file.'));
 }
 
 export function initExport() {
