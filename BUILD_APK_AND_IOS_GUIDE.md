@@ -33,7 +33,8 @@ This folder includes an automated GitHub Actions cloud compiler (`.github/workfl
 
 If you have Node.js installed on your computer:
 ```bash
-npm install
+npm ci
+npm run build:css   # re-run whenever you change Tailwind classes in www/index.html
 npx cap add android
 npx cap sync
 cd android && ./gradlew assembleDebug
