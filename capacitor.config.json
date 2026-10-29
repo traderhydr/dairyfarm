@@ -1,7 +1,7 @@
 {
   "appId": "com.sadeeq.dairyfarm",
   "appName": "Dairy Farm Manager",
-  "webDir": "www",
+  "webDir": "dist",
   "server": {
     "androidScheme": "https"
   }

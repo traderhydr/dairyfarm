@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#064e3b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Dairy Farm" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,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" />
+  <link rel="apple-touch-icon" href="data:image/png;base64,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" />
+  <title>Dairy Farm Manager — Mobile &amp; Desktop App</title>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col relative overflow-x-hidden">
+
+  <!-- Ambient Floating Orbs for Glassmorphism Refraction -->
+  <div aria-hidden="true" class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+    <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-400/35 blur-3xl"></div>
+    <div class="absolute top-1/4 -right-24 w-96 h-96 rounded-full bg-sky-400/30 blur-3xl"></div>
+    <div class="absolute -bottom-28 left-1/3 w-96 h-96 rounded-full bg-amber-300/30 blur-3xl"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="glass-header sticky top-0 z-30 text-white">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <!-- Side Home Menu Toggle Button -->
+        <button id="openSideMenuBtn" type="button" aria-label="Open Side Home Menu" class="px-3 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 shadow-sm flex items-center gap-2 text-xs sm:text-sm font-bold text-white transition cursor-pointer">
+          <svg class="w-5 h-5 text-emerald-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <span>Home Menu</span>
+          <span id="sideMenuActiveDot" class="hidden w-2 h-2 rounded-full bg-amber-400"></span>
+        </button>
+
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 hidden sm:flex items-center justify-center shadow-lg shadow-emerald-950/50 ring-2 ring-white/15">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-lg sm:text-2xl font-extrabold tracking-tight">Dairy Farm Manager</h1>
+            <span class="text-[11px] font-semibold bg-white/15 text-emerald-100 border border-white/30 px-2.5 py-0.5 rounded-full backdrop-blur-md">v2.3 Step 11</span>
+          </div>
+          <p class="text-xs text-emerald-200/90 mt-0.5">5-Tab Center Cashflow Dock &amp; Side Home Menu Drawer</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="openInstallGuideBtn" type="button" class="text-xs bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold px-3 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+          <span>Install App (Android / iPhone)</span>
+        </button>
+        <button id="themeToggleBtn" type="button" class="text-xs bg-white/10 hover:bg-white/20 text-emerald-100 font-semibold px-3 py-2 rounded-xl border border-white/10 transition flex items-center gap-1.5">
+          <span id="themeToggleLabel">Dark Mode</span>
+        </button>
+        <button id="backupJsonBtn" type="button" class="text-xs bg-sky-400 hover:bg-sky-300 text-slate-950 font-semibold px-3 py-2 rounded-xl shadow-xs transition">
+          Save Backup (.json)
+        </button>
+        <label for="restoreJsonInput" class="cursor-pointer text-xs bg-white/10 hover:bg-white/20 text-white font-semibold px-3 py-2 rounded-xl border border-white/10 transition">
+          Restore Backup
+        </label>
+        <input id="restoreJsonInput" type="file" accept=".json,application/json" class="hidden" />
+        <button id="printReportBtn" type="button" class="text-xs bg-white/10 hover:bg-white/20 text-white font-semibold px-3 py-2 rounded-xl border border-white/10 transition">
+          Print Report
+        </button>
+        <button id="exportCsvBtn" type="button" class="text-xs bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold px-3 py-2 rounded-xl shadow-xs transition">
+          Export CSV Backup
+        </button>
+        <button id="resetDemoBtn" type="button" class="text-xs bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 font-medium px-3 py-2 rounded-xl border border-emerald-700 transition">
+          Load Sample Data
+        </button>
+        <button id="clearAllBtn" type="button" class="text-xs bg-rose-950/60 hover:bg-rose-600 text-rose-200 hover:text-white font-medium px-3 py-2 rounded-xl border border-rose-800/50 transition">
+          Clear All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Banner -->
+  <div id="toastBanner" class="hidden fixed bottom-24 right-4 z-50 bg-slate-900 text-white text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toastMessage">Saved!</span>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl border border-slate-100">
+      <h3 id="modalTitle" class="text-base font-bold text-slate-900">Confirm Action</h3>
+      <p id="modalDesc" class="text-sm text-slate-600 mt-1">Are you sure you want to proceed?</p>
+      <div class="flex justify-end gap-2 mt-5">
+        <button id="modalCancelBtn" type="button" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+          Cancel
+        </button>
+        <button id="modalConfirmBtn" type="button" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white transition">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1-Click Calving & Newborn Calf Registration Modal -->
+  <div id="calvingModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-xl border border-slate-100 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">1-Click Calving Workflow</span>
+          <h3 class="text-base font-bold text-slate-900 mt-1.5">Register Newborn Calf &amp; Fresh Milker</h3>
+          <p id="calvingMotherSubtitle" class="text-xs text-slate-500 mt-0.5">Mother: —</p>
+        </div>
+        <button id="calvingCloseBtn" type="button" class="text-xs text-slate-400 hover:text-slate-700 px-2 py-1 rounded-lg">
+          Close
+        </button>
+      </div>
+
+      <form id="calvingModalForm" class="mt-4 space-y-3.5">
+        <input id="calvingRecordId" type="hidden" />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="calvingDateInput" class="block text-xs font-semibold text-slate-700 mb-1">Actual Calving Date</label>
+            <input id="calvingDateInput" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label for="calfActionSelect" class="block text-xs font-semibold text-slate-700 mb-1">Newborn Calf Destination</label>
+            <select id="calfActionSelect" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="wachi">Female Calf (Wachi) &rarr; Add to Wachi Tab</option>
+              <option value="male_sale">Male Calf (Wacha) &rarr; Pre-fill in Sold Cows Tab</option>
+              <option value="none">Only Mark Cow as Calved</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="calfDetailsFields" class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+          <div>
+            <label for="calfTagInput" class="block text-xs font-semibold text-slate-700 mb-1">Newborn Calf Tag / Name</label>
+            <input id="calfTagInput" type="text" placeholder="e.g. Wachi #03 (Moti)" required class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label for="calfBirthWeightInput" class="block text-xs font-semibold text-slate-700 mb-1">Birth Weight (kg)</label>
+            <input id="calfBirthWeightInput" type="number" min="10" step="1" value="32" required class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+        </div>
+
+        <div class="bg-sky-50/70 p-3 rounded-xl border border-sky-200 space-y-2.5">
+          <label class="flex items-center gap-2 text-xs font-semibold text-sky-950 cursor-pointer select-none">
+            <input id="calvingUpdateMilkerCheck" type="checkbox" checked class="rounded border-sky-300 text-emerald-600 focus:ring-emerald-500" />
+            <span>Add / Update Mother in Tab 4: Milkers (Fresh Lactation)</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label for="freshMorningInput" class="block text-[11px] font-semibold text-sky-800 mb-0.5">Fresh Morning Milk (L)</label>
+              <input id="freshMorningInput" type="number" min="0" step="0.5" value="10" class="w-full rounded-lg border border-sky-300 bg-white px-2.5 py-1.5 text-xs font-semibold" />
+            </div>
+            <div>
+              <label for="freshEveningInput" class="block text-[11px] font-semibold text-sky-800 mb-0.5">Fresh Evening Milk (L)</label>
+              <input id="freshEveningInput" type="number" min="0" step="0.5" value="9.5" class="w-full rounded-lg border border-sky-300 bg-white px-2.5 py-1.5 text-xs font-semibold" />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button id="calvingCancelBtn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition">
+            Complete Calving &amp; Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Android APK & iPhone (iOS) Install Guide Modal -->
+  <div id="installGuideModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-white/80 max-h-[90vh] overflow-y-auto space-y-4">
+      <div class="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-3">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Mobile App Setup</span>
+          <h3 class="text-base font-extrabold text-slate-900 mt-1">Install on Android &amp; iPhone (iOS)</h3>
+          <p class="text-xs text-slate-500">This app is pre-configured with full-screen mobile icons and offline browser storage.</p>
+        </div>
+        <button id="closeInstallGuideBtn" type="button" class="text-xs font-semibold text-slate-500 hover:text-slate-900 px-2.5 py-1 rounded-lg hover:bg-slate-100">
+          Close &times;
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-700">
+        <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 space-y-1.5">
+          <h4 class="font-bold text-emerald-950 text-sm">1. Instant Install on iPhone (iOS — No App Store Needed)</h4>
+          <p class="text-emerald-900">iPhones do not use <code>.apk</code> files. Instead, open this HTML file in <strong>Safari</strong> on your iPhone, tap the <strong>Share</strong> icon (square with arrow pointing up), and tap <strong>"Add to Home Screen"</strong>. It installs with the custom Dairy Farm icon and opens full-screen like a native iOS app.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-sky-50/80 border border-sky-200 space-y-1.5">
+          <h4 class="font-bold text-sky-950 text-sm">2. Instant Install on Android (Chrome Home Screen App)</h4>
+          <p class="text-sky-900">Open this app in <strong>Google Chrome</strong> on your Android phone, tap the <strong>3-dot menu (&vellip;)</strong> in the top-right corner, and tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 space-y-1.5">
+          <h4 class="font-bold text-amber-950 text-sm">3. Generate a Native Android <code>.apk</code> File</h4>
+          <p class="text-amber-900">Use the downloadable <strong><code>dairy_farm_mobile_app_package.zip</code></strong> bundle: upload it to GitHub (where the included GitHub Actions workflow automatically compiles a downloadable <code>.apk</code> file for free) or run <code>npx cap add android</code> in Android Studio.</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button id="doneInstallGuideBtn" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition">
+          Got It
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl w-full mx-auto px-4 pt-5 pb-32 flex-1 space-y-5">
+
+    <!-- Top Summary Cards -->
+    <section aria-label="Farm Overview Metrics" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-emerald-500 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Income</p>
+          <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">+</span>
+        </div>
+        <p id="totalIncomeDisplay" class="text-lg sm:text-xl font-extrabold text-emerald-600 mt-1.5">Rs. 0</p>
+        <p id="incomeCountDisplay" class="text-xs text-slate-400 mt-0.5">0 entries</p>
+      </div>
+
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-rose-500 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Expenses</p>
+          <span class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs font-bold">&minus;</span>
+        </div>
+        <p id="totalExpenseDisplay" class="text-lg sm:text-xl font-extrabold text-rose-600 mt-1.5">Rs. 0</p>
+        <p id="expenseCountDisplay" class="text-xs text-slate-400 mt-0.5">0 entries</p>
+      </div>
+
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-teal-600 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Net Balance</p>
+          <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs font-bold">=</span>
+        </div>
+        <p id="netBalanceDisplay" class="text-lg sm:text-xl font-extrabold text-slate-800 mt-1.5">Rs. 0</p>
+        <p class="text-xs text-slate-400 mt-0.5">Income minus expenses</p>
+      </div>
+
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-indigo-500 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Wanda Due</p>
+          <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">W</span>
+        </div>
+        <p id="wandaDueDisplay" class="text-lg sm:text-xl font-extrabold text-indigo-600 mt-1.5">Rs. 0</p>
+        <p id="wandaPaidSubDisplay" class="text-xs text-slate-400 mt-0.5">Rs. 0 paid</p>
+      </div>
+
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-amber-500 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">AI &amp; Pregnancy</p>
+          <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">AI</span>
+        </div>
+        <p id="pregnantCountDisplay" class="text-lg sm:text-xl font-extrabold text-amber-600 mt-1.5">0 Pregnant</p>
+        <p id="totalCowsCountDisplay" class="text-xs text-slate-400 mt-0.5">0 total AI records</p>
+      </div>
+
+      <div class="kpi-card bg-white p-4 rounded-2xl border border-slate-200/90 border-t-4 border-t-sky-500 shadow-xs">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Milkers &amp; Wachi</p>
+          <span class="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold">M</span>
+        </div>
+        <p id="herdMilkersDisplay" class="text-lg sm:text-xl font-extrabold text-sky-600 mt-1.5">0 L/day</p>
+        <p id="herdWachiSubDisplay" class="text-xs text-slate-400 mt-0.5">0 Milkers &bull; 0 Wachi</p>
+      </div>
+    </section>
+
+    <!-- Smart Farm Action Alerts Banner -->
+    <section id="farmAlertsSection" aria-label="Upcoming Farm Reminders" class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 shadow-xs">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <h2 class="text-xs sm:text-sm font-bold text-amber-950 uppercase tracking-wide">Upcoming Farm Reminders &amp; Action Alerts</h2>
+          <span id="alertsCountBadge" class="text-xs font-bold bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full">0</span>
+        </div>
+        <button id="toggleAlertsBtn" type="button" class="text-xs font-semibold text-amber-800 hover:text-amber-950 px-2.5 py-1 rounded-lg hover:bg-amber-100 transition">
+          Hide Alerts
+        </button>
+      </div>
+      <div id="alertsListContainer" class="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+    </section>
+
+    <!-- Side Home Menu Bar (Glassmorphic Slide-Over Drawer for Extra Modules) -->
+    <div id="sideMenuBackdrop" class="hidden fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-xs transition-opacity"></div>
+    <aside id="sideMenuDrawer" aria-label="Side Home Menu Bar" class="fixed top-0 left-0 bottom-0 z-50 w-80 max-w-[85vw] bg-white border-r border-white/60 shadow-2xl p-5 flex flex-col justify-between -translate-x-full transition-transform duration-200 ease-out">
+      <div class="space-y-5 overflow-y-auto pr-1">
+        <div class="flex items-center justify-between border-b border-slate-200/80 pb-3.5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+              DF
+            </div>
+            <div>
+              <h2 class="text-sm font-extrabold text-slate-900">Home Menu Bar</h2>
+              <p class="text-[11px] text-slate-500">Extra Farm Logs &amp; Quick Switcher</p>
+            </div>
+          </div>
+          <button id="closeSideMenuBtn" type="button" class="text-xs font-semibold text-slate-500 hover:text-slate-900 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition">
+            Close &times;
+          </button>
+        </div>
+
+        <!-- Extra Farm Modules (Moved from Main Bar) -->
+        <div class="space-y-2">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 px-1">More Farm Modules</p>
+          <button id="tabHealthBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+              <span>6. Vaccination &amp; Deworming</span>
+            </span>
+            <span id="healthTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button id="tabSalesBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span>7. Sold Cows Log</span>
+            </span>
+            <span id="salesTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button id="tabDoodhiBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+              <span>8. Doodhi Milk Khata</span>
+            </span>
+            <span id="doodhiTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+        </div>
+
+        <!-- Quick Jump to Main 5 Tabs -->
+        <div class="space-y-1.5 pt-2 border-t border-slate-200/70">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Main 5 Tabs Shortcut</p>
+          <button type="button" data-drawer-jump="finance" class="w-full px-3 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center justify-between transition text-left">
+            <span>&starf; Cashflow (Center Tab)</span>
+            <span class="text-[10px] text-emerald-700 font-bold">Main</span>
+          </button>
+          <button type="button" data-drawer-jump="breeding" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
+            <span>Cow AI &amp; Pregnancy Log</span>
+            <span class="text-[10px] text-slate-400">Left 1</span>
+          </button>
+          <button type="button" data-drawer-jump="milkers" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
+            <span>Milkers (Milking Cows)</span>
+            <span class="text-[10px] text-slate-400">Left 2</span>
+          </button>
+          <button type="button" data-drawer-jump="wanda" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
+            <span>Monthly Wanda &amp; Installments</span>
+            <span class="text-[10px] text-slate-400">Right 1</span>
+          </button>
+          <button type="button" data-drawer-jump="wachi" class="w-full px-3 py-2 text-xs font-medium rounded-xl text-slate-600 hover:bg-slate-100 flex items-center justify-between transition text-left">
+            <span>Wachi (Heifers)</span>
+            <span class="text-[10px] text-slate-400">Right 2</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-200/70 text-[11px] text-slate-500 flex items-center justify-between">
+        <span>Dairy Farm Manager v2.2</span>
+        <span class="font-semibold text-emerald-700">Auto-Saved</span>
+      </div>
+    </aside>
+
+    <!-- Active Side-Menu Module Indicator Bar (Shown when viewing Vaccination or Sold Cows from Side Menu) -->
+    <div id="sideModuleBanner" class="hidden bg-white px-4 py-2.5 rounded-xl border border-emerald-300/80 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-semibold text-slate-700">Viewing Side Menu Module: <strong id="sideModuleBannerName" class="text-emerald-800">—</strong></span>
+      </div>
+      <button id="backToCenterCashflowBtn" type="button" class="font-bold text-emerald-700 hover:text-emerald-900 underline cursor-pointer">
+        Return to Center Cashflow
+      </button>
+    </div>
+
+    <!-- Fixed Bottom 5-Tab Mobile Dock (Positioned Just Above Mobile System Navigation Bar) -->
+    <nav aria-label="Farm Modules" class="bottom-glass-dock fixed bottom-2 left-2 right-2 z-40 max-w-3xl mx-auto px-1.5 pt-1.5 rounded-2xl grid grid-cols-5 items-end gap-1 sm:gap-2">
+      <!-- LEFT 1: Cow AI & Pregnancy -->
+      <button id="tabBreedingBtn" type="button" class="relative px-1.5 py-2 text-[10px] sm:text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 flex flex-col items-center justify-center gap-0.5 transition">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="truncate max-w-full leading-tight">2. Cow AI &amp; Pregnancy Log</span>
+        <span id="breedingTabBadge" class="absolute top-1 right-1.5 text-[9px] font-bold bg-slate-200/90 text-slate-700 px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <!-- LEFT 2: Milkers -->
+      <button id="tabMilkersBtn" type="button" class="relative px-1.5 py-2 text-[10px] sm:text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 flex flex-col items-center justify-center gap-0.5 transition">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+        <span class="truncate max-w-full leading-tight">4. Milkers (Milking Cows)</span>
+        <span id="milkersTabBadge" class="absolute top-1 right-1.5 text-[9px] font-bold bg-slate-200/90 text-slate-700 px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <!-- CENTER (MIDDLE TAB 3 of 5 — Raised Above Mobile Bar): Cashflow / Daily Income & Expenses -->
+      <button id="tabFinanceBtn" type="button" class="relative -mt-5 px-2 py-2.5 text-[10px] sm:text-xs font-extrabold rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-900/30 ring-2 ring-white/80 flex flex-col items-center justify-center gap-0.5 transition transform scale-[1.04]">
+        <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="truncate max-w-full leading-tight">1. Daily Income &amp; Expenses</span>
+        <span id="financeTabBadge" class="absolute top-1 right-1.5 text-[9px] font-bold bg-white/25 text-white px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <!-- RIGHT 1: Monthly Wanda -->
+      <button id="tabWandaBtn" type="button" class="relative px-1.5 py-2 text-[10px] sm:text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 flex flex-col items-center justify-center gap-0.5 transition">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <span class="truncate max-w-full leading-tight">3. Monthly Wanda &amp; Installments</span>
+        <span id="wandaTabBadge" class="absolute top-1 right-1.5 text-[9px] font-bold bg-slate-200/90 text-slate-700 px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+
+      <!-- RIGHT 2: Wachi (Heifers) -->
+      <button id="tabWachiBtn" type="button" class="relative px-1.5 py-2 text-[10px] sm:text-xs font-semibold rounded-xl text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 flex flex-col items-center justify-center gap-0.5 transition">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <span class="truncate max-w-full leading-tight">5. Wachi (Heifers)</span>
+        <span id="wachiTabBadge" class="absolute top-1 right-1.5 text-[9px] font-bold bg-slate-200/90 text-slate-700 px-1.5 py-0.2 rounded-full">0</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: DAILY INCOME & EXPENSES -->
+    <section id="financeSection" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Add Income or Expense</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Record daily milk sales, feed purchases, medicine, or labor costs.</p>
+
+        <form id="financeForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="txType" class="block text-xs font-semibold text-slate-700 mb-1">Entry Type</label>
+              <select id="txType" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="income">Income (+)</option>
+                <option value="expense">Expense (-)</option>
+              </select>
+            </div>
+            <div>
+              <label for="txDate" class="block text-xs font-semibold text-slate-700 mb-1">Date</label>
+              <input id="txDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="txCategory" class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+              <select id="txCategory" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="Milk Sale">Milk Sale</option>
+                <option value="Calf / Cattle Sale">Calf / Cattle Sale</option>
+                <option value="Green Fodder & Silage">Green Fodder &amp; Silage</option>
+                <option value="Concentrate / Wanda">Concentrate / Wanda</option>
+                <option value="Vet & Medicine">Vet &amp; Medicine</option>
+                <option value="AI & Breeding Fee">AI &amp; Breeding Fee</option>
+                <option value="Farm Labor & Bills">Farm Labor &amp; Bills</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="txAmount" class="block text-xs font-semibold text-slate-700 mb-1">Amount (Rs.)</label>
+              <input id="txAmount" type="number" min="1" step="any" placeholder="e.g. 8500" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div>
+            <label for="txNote" class="block text-xs font-semibold text-slate-700 mb-1">Details / Notes</label>
+            <input id="txNote" type="text" placeholder="e.g. Morning + evening milk (85 Liters)" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Cashbook Entry
+          </button>
+        </form>
+
+        <!-- Visual Expense & Profit Breakdown -->
+        <div class="mt-6 pt-5 border-t border-slate-200/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Visual Expense Breakdown</h3>
+            <span id="profitMarginBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">0% Margin</span>
+          </div>
+          <div id="expenseBreakdownContainer" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- List Card -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Recent Cashbook Entries</h2>
+            <p class="text-xs text-slate-500">Saved automatically in your browser</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="txSearch" type="text" placeholder="Search category or note..." aria-label="Search cashbook entries" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <select id="txMonthFilter" aria-label="Filter transactions by month" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
+              <option value="all">All Months</option>
+            </select>
+            <select id="txFilter" aria-label="Filter transactions by type" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
+              <option value="all">Show All</option>
+              <option value="income">Income Only</option>
+              <option value="expense">Expenses Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="txEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No entries found. Use the form to record your first farm transaction!
+        </div>
+
+        <div class="overflow-x-auto">
+          <table id="txTable" class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                <th class="py-2.5 pr-3">Date</th>
+                <th class="py-2.5 px-2">Category &amp; Note</th>
+                <th class="py-2.5 px-2 text-right">Amount</th>
+                <th class="py-2.5 pl-2 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="txListBody" class="divide-y divide-slate-100 text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: COW AI & PREGNANCY LOG -->
+    <section id="breedingSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Record Cow AI &amp; Pregnancy</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Enter the AI date and we'll automatically calculate the 21-day heat check and 283-day expected calving date.</p>
+
+        <form id="breedingForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cowTag" class="block text-xs font-semibold text-slate-700 mb-1">Cow Tag / Name</label>
+              <input id="cowTag" type="text" placeholder="e.g. Cow #14 (Rani)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="aiDate" class="block text-xs font-semibold text-slate-700 mb-1">AI Date</label>
+              <input id="aiDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="semenBull" class="block text-xs font-semibold text-slate-700 mb-1">Semen / Bull Details</label>
+              <input id="semenBull" type="text" placeholder="e.g. Sahiwal / HF Sexed" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="pregStatus" class="block text-xs font-semibold text-slate-700 mb-1">Pregnancy Status</label>
+              <select id="pregStatus" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="Awaiting PD Check">Awaiting PD Check</option>
+                <option value="Confirmed Pregnant">Confirmed Pregnant</option>
+                <option value="Repeat / Not Pregnant">Repeat / Not Pregnant</option>
+                <option value="Calved">Calved</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live Preview Box -->
+          <div class="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-xs space-y-1">
+            <div class="font-semibold text-amber-900">Auto-Calculated Dates (283-Day Gestation):</div>
+            <div class="flex justify-between text-amber-800">
+              <span>21-Day Heat Recheck:</span>
+              <span id="previewHeatDate" class="font-medium">—</span>
+            </div>
+            <div class="flex justify-between text-amber-800">
+              <span>60-Day PD Check Due:</span>
+              <span id="previewPdDate" class="font-medium">—</span>
+            </div>
+            <div class="flex justify-between text-amber-900 font-semibold">
+              <span>Expected Calving Date:</span>
+              <span id="previewCalvingDate">—</span>
+            </div>
+          </div>
+
+          <div>
+            <label for="cowNotes" class="block text-xs font-semibold text-slate-700 mb-1">Pregnancy / Vet Notes</label>
+            <input id="cowNotes" type="text" placeholder="e.g. First lactation, checked by Dr. Tariq" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Cow AI Record
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Cow AI &amp; Pregnancy Records</h2>
+            <p class="text-xs text-slate-500">Update pregnancy status anytime using the dropdown on each card</p>
+          </div>
+        </div>
+
+        <div id="breedingEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No cow AI records yet. Add a cow on the left to calculate expected calving dates!
+        </div>
+
+        <div id="breedingListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: MONTHLY WANDA & INSTALLMENTS -->
+    <section id="wandaSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Add Monthly Wanda Stock -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Purchase Monthly Wanda Stock</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Log a 1-month Wanda stock purchase and repay it in installments over the month.</p>
+
+        <form id="wandaForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="wandaMonth" class="block text-xs font-semibold text-slate-700 mb-1">Stock Month / Label</label>
+              <input id="wandaMonth" type="text" placeholder="e.g. October 2026 Stock" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="wandaPurchaseDate" class="block text-xs font-semibold text-slate-700 mb-1">Arrival Date</label>
+              <input id="wandaPurchaseDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div>
+            <label for="wandaSupplier" class="block text-xs font-semibold text-slate-700 mb-1">Dealer / Brand Name</label>
+            <input id="wandaSupplier" type="text" placeholder="e.g. Al-flah Feed Dealer (High-Milk Wanda)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="wandaBags" class="block text-xs font-semibold text-slate-700 mb-1">Total Bags (1 Month)</label>
+              <input id="wandaBags" type="number" min="1" step="1" placeholder="e.g. 30" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="wandaRatePerBag" class="block text-xs font-semibold text-slate-700 mb-1">Rate per Bag (Rs.)</label>
+              <input id="wandaRatePerBag" type="number" min="1" step="any" placeholder="e.g. 4100" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Auto Bill Preview -->
+          <div class="bg-indigo-50/80 border border-indigo-200/80 rounded-xl p-3 text-xs space-y-1">
+            <div class="flex justify-between text-indigo-900 font-semibold">
+              <span>Total Monthly Stock Bill:</span>
+              <span id="wandaTotalBillPreview">Rs. 0</span>
+            </div>
+            <div class="flex justify-between text-indigo-700">
+              <span>Remaining Balance After Advance:</span>
+              <span id="wandaRemainingPreview" class="font-semibold">Rs. 0</span>
+            </div>
+          </div>
+
+          <div>
+            <label for="wandaInitialPaid" class="block text-xs font-semibold text-slate-700 mb-1">Advance Paid on Delivery (Rs. — Optional)</label>
+            <input id="wandaInitialPaid" type="number" min="0" step="any" value="0" placeholder="e.g. 25000 (or 0 if full credit)" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+            <input id="wandaSyncAdvance" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+            <span>Automatically log advance payment in Daily Cashbook Expenses</span>
+          </label>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Monthly Wanda Stock
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Active & Past Monthly Wanda Batches + Installment Recorder -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Monthly Wanda Stock &amp; Installment Ledger</h2>
+            <p class="text-xs text-slate-500">Add installment payments anytime during the month to reduce your balance due</p>
+          </div>
+        </div>
+
+        <div id="wandaEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No monthly Wanda stock records yet. Add your monthly bags on the left to track installments!
+        </div>
+
+        <div id="wandaListContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: MILKERS (MILKING COWS) -->
+    <section id="milkersSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Add Milking Cow -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Add Milker (Milking Cow)</h2>
+        <p class="text-xs text-slate-500 mt-0.5">List cows currently giving milk and track their morning and evening milk yield.</p>
+
+        <form id="milkerForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="milkerTag" class="block text-xs font-semibold text-slate-700 mb-1">Cow Tag / Name</label>
+              <input id="milkerTag" type="text" placeholder="e.g. Cow #07 (Chandi)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="milkerBreed" class="block text-xs font-semibold text-slate-700 mb-1">Breed &amp; Lactation</label>
+              <input id="milkerBreed" type="text" placeholder="e.g. HF Cross (2nd Lact)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="milkerMorning" class="block text-xs font-semibold text-slate-700 mb-1">Morning Milk (Liters)</label>
+              <input id="milkerMorning" type="number" min="0" step="0.5" placeholder="e.g. 11" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="milkerEvening" class="block text-xs font-semibold text-slate-700 mb-1">Evening Milk (Liters)</label>
+              <input id="milkerEvening" type="number" min="0" step="0.5" placeholder="e.g. 10.5" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Live Daily Milk Preview -->
+          <div class="bg-sky-50/80 border border-sky-200/80 rounded-xl p-3 text-xs flex items-center justify-between">
+            <span class="font-semibold text-sky-900">Cow Total Daily Milk Yield:</span>
+            <span id="milkerTotalPreview" class="text-sm font-bold text-sky-700">0 Liters / day</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="milkerStatus" class="block text-xs font-semibold text-slate-700 mb-1">Milking Stage</label>
+              <select id="milkerStatus" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="Peak / High Yield">Peak / High Yield</option>
+                <option value="Steady Milking">Steady Milking</option>
+                <option value="Late Lactation (Near Dry)">Late Lactation (Near Dry)</option>
+              </select>
+            </div>
+            <div>
+              <label for="milkerNotes" class="block text-xs font-semibold text-slate-700 mb-1">Feed / Ration Note</label>
+              <input id="milkerNotes" type="text" placeholder="e.g. 6 kg Wanda + silage" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Milking Cow
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Milking Herd -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Active Milkers Herd</h2>
+            <p class="text-xs text-slate-500">Adjust morning or evening milk anytime as daily yield changes</p>
+          </div>
+          <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-sky-600">Total Farm Daily Milk</span>
+            <span id="farmTotalMilkBanner" class="text-sm font-bold text-sky-900">0 L / day</span>
+          </div>
+        </div>
+
+        <!-- 1-Click Daily Milk Sale Calculator & Cashbook Logger -->
+        <form id="quickMilkSaleForm" class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-xs font-bold text-emerald-950 uppercase tracking-wide">1-Click Daily Milk Sale Logger</h3>
+              <p class="text-[11px] text-emerald-800">Multiplies your herd's daily milk by your rate and saves directly to the Daily Cashbook</p>
+            </div>
+            <span id="quickMilkRevenuePreview" class="text-sm font-bold text-emerald-900 bg-white px-2.5 py-1 rounded-lg border border-emerald-200">Rs. 0</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div>
+              <label for="milkSaleDate" class="block text-[10px] font-semibold uppercase text-emerald-900 mb-0.5">Sale Date</label>
+              <input id="milkSaleDate" type="date" required class="w-full rounded-lg border border-emerald-300 bg-white px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="milkSaleLiters" class="block text-[10px] font-semibold uppercase text-emerald-900 mb-0.5">Herd Milk (L)</label>
+              <input id="milkSaleLiters" type="number" min="0.5" step="0.5" value="39.5" required class="w-full rounded-lg border border-emerald-300 bg-white px-2 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="milkHomeUse" class="block text-[10px] font-semibold uppercase text-emerald-900 mb-0.5">Home/Calf Use (L)</label>
+              <input id="milkHomeUse" type="number" min="0" step="0.5" value="2" required class="w-full rounded-lg border border-emerald-300 bg-white px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="milkRatePerLiter" class="block text-[10px] font-semibold uppercase text-emerald-900 mb-0.5">Rate (Rs./L)</label>
+              <input id="milkRatePerLiter" type="number" min="1" step="any" value="200" required class="w-full rounded-lg border border-emerald-300 bg-white px-2 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+            <span id="quickMilkFormulaText" class="text-[11px] font-medium text-emerald-800">Net Sold: 37.5 L &times; Rs. 200/L</span>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-2xs transition">
+              + Log Milk Income to Cashbook
+            </button>
+          </div>
+        </form>
+
+        <div id="milkersEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No milking cows listed yet. Add your first milker on the left!
+        </div>
+
+        <div id="milkersListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: WACHI (HEIFERS) -->
+    <section id="wachiSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Add Wachi (Heifer) -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Add Wachi (Heifer)</h2>
+        <p class="text-xs text-slate-500 mt-0.5">List your young female calves and heifers (Wachi) to track their age, weight, and readiness for 1st AI.</p>
+
+        <form id="wachiForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="wachiTag" class="block text-xs font-semibold text-slate-700 mb-1">Wachi Tag / Name</label>
+              <input id="wachiTag" type="text" placeholder="e.g. Wachi #03 (Noori)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="wachiBreed" class="block text-xs font-semibold text-slate-700 mb-1">Breed / Mother (Dam)</label>
+              <input id="wachiBreed" type="text" placeholder="e.g. Sahiwal (Dam: #14)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="wachiAge" class="block text-xs font-semibold text-slate-700 mb-1">Age (Months)</label>
+              <input id="wachiAge" type="number" min="1" step="1" placeholder="e.g. 14" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="wachiWeight" class="block text-xs font-semibold text-slate-700 mb-1">Approx. Weight (kg)</label>
+              <input id="wachiWeight" type="number" min="10" step="1" placeholder="e.g. 250" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div>
+            <label for="wachiStage" class="block text-xs font-semibold text-slate-700 mb-1">Growth / Breeding Stage</label>
+            <select id="wachiStage" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="Young Calf (< 6 Months)">Young Calf (&lt; 6 Months)</option>
+              <option value="Growing Wachi (6–15 Months)" selected>Growing Wachi (6–15 Months)</option>
+              <option value="Ready for 1st AI">Ready for 1st AI</option>
+              <option value="Inseminated (1st AI Done)">Inseminated (1st AI Done)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="wachiNotes" class="block text-xs font-semibold text-slate-700 mb-1">Health / Deworming / Feed Notes</label>
+            <input id="wachiNotes" type="text" placeholder="e.g. Dewormed Oct 2026; 2 kg heifer wanda daily" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Wachi Record
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Wachi Herd -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Wachi (Heifer) List</h2>
+            <p class="text-xs text-slate-500">Track young heifers growing into future milkers</p>
+          </div>
+          <select id="wachiFilter" aria-label="Filter Wachi by stage" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
+            <option value="all">All Stages</option>
+            <option value="Ready for 1st AI">Ready for 1st AI</option>
+            <option value="Growing Wachi (6–15 Months)">Growing Wachi</option>
+            <option value="Young Calf (< 6 Months)">Young Calves</option>
+            <option value="Inseminated (1st AI Done)">Inseminated (1st AI Done)</option>
+          </select>
+        </div>
+
+        <div id="wachiEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No Wachi records found. Add your heifers on the left!
+        </div>
+
+        <div id="wachiListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 6: VACCINATION & DEWORMING HEALTH LOG -->
+    <section id="healthSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Add Vaccination / Deworming -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Log Vaccination or Deworming</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Record FMD (Munh Khur), HS (Gal Ghotu), BQ, or deworming for your herd and calculate the next booster date automatically.</p>
+
+        <form id="healthForm" class="mt-4 space-y-3.5">
+          <div>
+            <label for="healthTarget" class="block text-xs font-semibold text-slate-700 mb-1">Animal / Herd Group</label>
+            <input id="healthTarget" type="text" placeholder="e.g. Whole Herd (All Milkers & Wachi) or Cow #07" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="healthType" class="block text-xs font-semibold text-slate-700 mb-1">Vaccine / Treatment</label>
+              <select id="healthType" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="FMD Vaccine (Munh Khur)" data-days="180">FMD Vaccine (Munh Khur — 6 Mo)</option>
+                <option value="Deworming (Drench / Bolus)" data-days="90">Deworming (Every 3 Mo)</option>
+                <option value="HS Vaccine (Gal Ghotu)" data-days="365">HS Vaccine (Gal Ghotu — Yearly)</option>
+                <option value="BQ Vaccine (Phar Sujan)" data-days="365">BQ Vaccine (Phar Sujan — Yearly)</option>
+                <option value="Tick & Mange Control" data-days="60">Tick &amp; Mange Control (2 Mo)</option>
+                <option value="Mastitis / Vet Treatment" data-days="30">Mastitis / Vet Check (1 Mo)</option>
+              </select>
+            </div>
+            <div>
+              <label for="healthDateGiven" class="block text-xs font-semibold text-slate-700 mb-1">Date Given</label>
+              <input id="healthDateGiven" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Next Booster Preview -->
+          <div class="bg-teal-50/80 border border-teal-200/80 rounded-xl p-3 text-xs flex items-center justify-between">
+            <span class="font-semibold text-teal-900">Next Repeat / Booster Due:</span>
+            <span id="healthNextDuePreview" class="text-sm font-bold text-teal-800">—</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="healthMedicine" class="block text-xs font-semibold text-slate-700 mb-1">Medicine / Brand</label>
+              <input id="healthMedicine" type="text" placeholder="e.g. Aftovaxpur / Nilzan Plus" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="healthCost" class="block text-xs font-semibold text-slate-700 mb-1">Cost (Rs. — Optional)</label>
+              <input id="healthCost" type="number" min="0" step="any" value="0" placeholder="e.g. 3500" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+            <input id="healthSyncExpense" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+            <span>Automatically log cost in Daily Cashbook (Vet &amp; Medicine)</span>
+          </label>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Health Record
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Vaccination & Deworming Schedule -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Herd Vaccination &amp; Deworming Schedule</h2>
+            <p class="text-xs text-slate-500">Keep your Milkers and Wachi protected on time</p>
+          </div>
+        </div>
+
+        <div id="healthEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No vaccination or deworming records yet. Add a treatment on the left!
+        </div>
+
+        <div id="healthListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 7: SOLD COWS LOG (COST, SALE PRICE & BUYER) -->
+    <section id="salesSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Record Sold Cow -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Record Sold Cow / Wachi</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Save which cow was sold, to whom (buyer), total cost spent on her, and final sale price to see your exact profit.</p>
+
+        <form id="salesForm" class="mt-4 space-y-3.5">
+          <div>
+            <label for="saleQuickPick" class="block text-xs font-semibold text-slate-700 mb-1">Pick from Herd (Optional Shortcut)</label>
+            <select id="saleQuickPick" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="">-- Type manually below or select from herd --</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="saleCowTag" class="block text-xs font-semibold text-slate-700 mb-1">Cow / Wachi Sold</label>
+              <input id="saleCowTag" type="text" placeholder="e.g. Cow #09 (Boori)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="saleDate" class="block text-xs font-semibold text-slate-700 mb-1">Sale Date</label>
+              <input id="saleDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div>
+            <label for="saleBuyer" class="block text-xs font-semibold text-slate-700 mb-1">Sold To Whom (Buyer Name &amp; Contact)</label>
+            <input id="saleBuyer" type="text" placeholder="e.g. Haji Akram (Kasur Mandi) - 0300-4567890" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="saleTotalCost" class="block text-xs font-semibold text-slate-700 mb-1">Total Cost (Rs.)</label>
+              <input id="saleTotalCost" type="number" min="0" step="any" placeholder="e.g. 240000" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="salePrice" class="block text-xs font-semibold text-slate-700 mb-1">Sale Price (Rs.)</label>
+              <input id="salePrice" type="number" min="1" step="any" placeholder="e.g. 310000" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Live Profit / Loss Preview Box -->
+          <div class="bg-emerald-50/80 border border-emerald-200/80 rounded-xl p-3 text-xs flex items-center justify-between">
+            <span class="font-semibold text-emerald-950">Net Profit / Loss on Cow:</span>
+            <span id="saleProfitPreview" class="text-sm font-bold text-emerald-700">Rs. 0</span>
+          </div>
+
+          <div>
+            <label for="saleNotes" class="block text-xs font-semibold text-slate-700 mb-1">Payment Details / Notes</label>
+            <input id="saleNotes" type="text" placeholder="e.g. Full cash received on spot; 2nd lactation cow" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <div class="space-y-2 pt-0.5">
+            <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+              <input id="saleSyncCashbook" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+              <span>Automatically add Sale Price to Daily Cashbook Income (Calf / Cattle Sale)</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+              <input id="saleRemoveFromHerd" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+              <span>If selected from Milkers or Wachi, remove from active herd list</span>
+            </label>
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Sold Cow Record
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Sold Cows Ledger & Totals -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Sold Cows &amp; Profit Ledger</h2>
+            <p class="text-xs text-slate-500">Complete history of cattle sold, buyer details, total cost, and net profit</p>
+          </div>
+        </div>
+
+        <!-- Sales Summary Banner -->
+        <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200/90">
+          <div>
+            <span class="block text-[10px] uppercase font-semibold text-slate-400">Total Cost Spent</span>
+            <span id="salesTotalCostBanner" class="text-xs sm:text-sm font-bold text-slate-700">Rs. 0</span>
+          </div>
+          <div>
+            <span class="block text-[10px] uppercase font-semibold text-slate-400">Total Sale Revenue</span>
+            <span id="salesTotalRevBanner" class="text-xs sm:text-sm font-bold text-emerald-700">Rs. 0</span>
+          </div>
+          <div>
+            <span class="block text-[10px] uppercase font-semibold text-slate-400">Net Cattle Profit</span>
+            <span id="salesNetProfitBanner" class="text-xs sm:text-sm font-bold text-emerald-800">Rs. 0</span>
+          </div>
+        </div>
+
+        <div id="salesEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No sold cow records yet. Use the form on the left to record a cattle sale!
+        </div>
+
+        <div id="salesListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-- TAB 8 (SIDE MENU MODULE): MILK BUYER (DOODHI) MONTHLY KHATA -->
+    <section id="doodhiSection" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Form Card: Add Doodhi Monthly Khata -->
+      <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs self-start">
+        <h2 class="text-base font-bold text-slate-900">Add Milk Buyer (Doodhi) Khata</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Track monthly milk delivered to your Doodhi/collector, advances (Peshgi) received, and remaining balance due.</p>
+
+        <form id="doodhiForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="doodhiName" class="block text-xs font-semibold text-slate-700 mb-1">Doodhi / Buyer Name</label>
+              <input id="doodhiName" type="text" placeholder="e.g. Malik Riaz Doodhi (0300-8899112)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="doodhiMonth" class="block text-xs font-semibold text-slate-700 mb-1">Billing Month / Period</label>
+              <input id="doodhiMonth" type="text" placeholder="e.g. October 2026 Milk Bill" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="doodhiLiters" class="block text-xs font-semibold text-slate-700 mb-1">Total Milk Supplied (L)</label>
+              <input id="doodhiLiters" type="number" min="1" step="0.5" placeholder="e.g. 1150" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="doodhiRate" class="block text-xs font-semibold text-slate-700 mb-1">Agreed Rate (Rs./L)</label>
+              <input id="doodhiRate" type="number" min="1" step="any" value="200" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- Live Bill & Receivable Preview -->
+          <div class="bg-sky-50/80 border border-sky-200/80 rounded-xl p-3 text-xs space-y-1">
+            <div class="flex justify-between text-sky-950 font-semibold">
+              <span>Total Monthly Milk Bill:</span>
+              <span id="doodhiTotalBillPreview">Rs. 0</span>
+            </div>
+            <div class="flex justify-between text-sky-800">
+              <span>Remaining Receivable After Peshgi:</span>
+              <span id="doodhiRemainingPreview" class="font-bold">Rs. 0</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="doodhiStartDate" class="block text-xs font-semibold text-slate-700 mb-1">Start / Entry Date</label>
+              <input id="doodhiStartDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="doodhiInitialReceived" class="block text-xs font-semibold text-slate-700 mb-1">Advance / Peshgi (Rs.)</label>
+              <input id="doodhiInitialReceived" type="number" min="0" step="any" value="0" placeholder="e.g. 80000" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+            <input id="doodhiSyncAdvance" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+            <span>Automatically log Peshgi received in Daily Cashbook Income (Milk Sale)</span>
+          </label>
+
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+            Save Doodhi Khata Record
+          </button>
+        </form>
+      </div>
+
+      <!-- List Card: Doodhi Khata Ledger & Installment Receipts -->
+      <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Doodhi Monthly Settlement Ledger</h2>
+            <p class="text-xs text-slate-500">Record weekly or end-of-month payments received from your milk buyer</p>
+          </div>
+          <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-sky-700">Total Doodhi Receivable</span>
+            <span id="doodhiTotalReceivableBanner" class="text-sm font-bold text-sky-950">Rs. 0</span>
+          </div>
+        </div>
+
+        <div id="doodhiEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No Doodhi Khata records yet. Add your milk buyer on the left to track monthly milk settlements!
+        </div>
+
+        <div id="doodhiListContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
