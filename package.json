@@ -7,7 +7,8 @@
     "init:ios": "npx cap add ios",
     "sync": "npx cap sync",
     "open:android": "npx cap open android",
-    "open:ios": "npx cap open ios"
+    "open:ios": "npx cap open ios",
+    "build:css": "tailwindcss -i src/tailwind.css -o www/tailwind.css --minify"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
@@ -15,6 +16,7 @@
     "@capacitor/ios": "^6.0.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.0.0"
+    "@capacitor/cli": "^6.0.0",
+    "tailwindcss": "3.4.17"
   }
 }
