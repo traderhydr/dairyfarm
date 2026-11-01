@@ -14,6 +14,7 @@ import { isNative } from './lib/platform.js';
 import { initNative } from './native/init.js';
 import { loadState, onChange } from './state.js';
 import { initMenu } from './ui/menu.js';
+import { initSheets } from './ui/sheets.js';
 import { initModal } from './ui/modal.js';
 import { initTabs } from './ui/tabs.js';
 import { initAlerts, renderAlerts } from './views/alerts.js';
@@ -54,7 +55,6 @@ function setDateDefaults() {
 }
 
 function boot() {
-  document.getElementById('appVersionBadge').textContent = `v${__APP_VERSION__}`;
   document.getElementById('drawerVersion').textContent = `Dairy Farm Manager v${__APP_VERSION__}`;
   setDateDefaults();
   loadState();
@@ -64,6 +64,7 @@ function boot() {
   onChange(renderAll);
 
   initTabs();
+  initSheets();
   initFinance();
   initAlerts();
   initBreeding();

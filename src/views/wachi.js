@@ -1,5 +1,6 @@
 import { escapeHtml } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
 
@@ -38,7 +39,7 @@ export function renderWachi() {
           </div>
           <p class="text-xs text-slate-500 mt-0.5">Breed / Mother: <span class="font-medium text-slate-700">${escapeHtml(wachi.breed)}</span></p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="card-actions">
           <select data-stage-wachi="${wachi.id}" aria-label="Update Wachi stage" class="text-xs rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-medium text-slate-700">
             <option value="Young Calf (< 6 Months)" ${wachi.stage === 'Young Calf (< 6 Months)' ? 'selected' : ''}>Young Calf (&lt; 6 Months)</option>
             <option value="Growing Wachi (6–15 Months)" ${wachi.stage === 'Growing Wachi (6–15 Months)' ? 'selected' : ''}>Growing Wachi (6–15 Months)</option>
@@ -133,6 +134,7 @@ export function initWachi() {
         wachi.stage = 'Inseminated (1st AI Done)';
         commit();
         switchTab('breeding');
+        openSheet('breedingSheet');
         const cowTagInput = document.getElementById('cowTag');
         const cowNotesInput = document.getElementById('cowNotes');
         if (cowTagInput) {

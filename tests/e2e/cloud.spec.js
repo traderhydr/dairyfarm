@@ -58,6 +58,7 @@ test('sign in uploads local records, and they come back after sign out + sign in
   await page.goto('/');
 
   // A record created before signing in must not be lost.
+  await page.locator('[data-open-sheet="financeSheet"]').click();
   await page.locator('#txAmount').fill('5000');
   await page.locator('#txNote').fill('Milk before login');
   await page.locator('#financeForm').evaluate((f) => f.requestSubmit());
@@ -83,6 +84,7 @@ test('sign in uploads local records, and they come back after sign out + sign in
   await page.locator('#accountCloseBtn').click();
 
   // A later edit is pushed with the next version.
+  await page.locator('[data-open-sheet="financeSheet"]').click();
   await page.locator('#txAmount').fill('700');
   await page.locator('#txType').selectOption('expense');
   await page.locator('#financeForm').evaluate((f) => f.requestSubmit());

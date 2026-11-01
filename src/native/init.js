@@ -1,6 +1,7 @@
 // Native-app-only behaviour: Android back button, notification reminders, web-only UI hidden.
 import { isNative } from '../lib/platform.js';
 import { onChange, snapshot } from '../state.js';
+import { closeSheets, hasOpenSheet } from '../ui/sheets.js';
 import { getActiveTab, switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
 import { createReminderScheduler, remindersPref } from './reminders.js';
@@ -23,6 +24,10 @@ export function handleBack() {
       $(closeId).click();
       return true;
     }
+  }
+  if (hasOpenSheet()) {
+    closeSheets();
+    return true;
   }
   const drawer = $('sideMenuDrawer');
   if (drawer && !drawer.classList.contains('-translate-x-full')) {

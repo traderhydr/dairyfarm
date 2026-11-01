@@ -43,7 +43,7 @@ export function renderHealth() {
           </div>
           <p class="text-xs text-slate-600 mt-0.5">Group / Animal: <span class="font-semibold text-slate-800">${escapeHtml(rec.target)}</span></p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="card-actions">
           <select data-status-health="${rec.id}" aria-label="Update health booster status" class="text-xs rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-medium text-slate-700">
             <option value="Scheduled Booster" ${!isDone ? 'selected' : ''}>Scheduled Booster</option>
             <option value="Booster Completed" ${isDone ? 'selected' : ''}>Booster Completed</option>

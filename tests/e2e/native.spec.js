@@ -36,7 +36,8 @@ test.beforeEach(async ({ page }) => {
     };
   });
   await page.goto('/');
-  await page.locator('#remindersBtn').waitFor({ state: 'visible' });
+  // the button is revealed by native init; it lives in the (closed) menu, so wait for it to exist, not to be visible
+  await page.waitForFunction(() => !document.getElementById('remindersBtn')?.classList.contains('hidden'));
 });
 
 const click = (page, id) => page.locator(`#${id}`).evaluate((el) => el.click());
@@ -52,8 +53,10 @@ test('hides browser-only buttons and skips the service worker', async ({ page })
 test('turning reminders on asks permission and schedules upcoming events', async ({ page }) => {
   await click(page, 'resetDemoBtn');
   await click(page, 'modalConfirmBtn');
+  await page.locator('#openMoreBtn').click();
+  await expect(page.locator('#remindersBtn')).toBeVisible();
   await expect(page.locator('#remindersBtnLabel')).toHaveText('Reminders: Off');
-  await click(page, 'remindersBtn');
+  await page.locator('#remindersBtn').click();
   await expect(page.locator('#remindersBtnLabel')).toHaveText('Reminders: On');
   expect(await calls(page, 'LocalNotifications', 'requestPermissions')).toHaveLength(1);
   const [schedule] = await calls(page, 'LocalNotifications', 'schedule');
@@ -61,7 +64,7 @@ test('turning reminders on asks permission and schedules upcoming events', async
   expect(schedule.options.notifications[0]).toMatchObject({ smallIcon: 'ic_stat_cow' });
 
   // turning it off cancels
-  await click(page, 'remindersBtn');
+  await page.locator('#remindersBtn').click();
   await expect(page.locator('#remindersBtnLabel')).toHaveText('Reminders: Off');
 });
 

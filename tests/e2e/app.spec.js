@@ -97,11 +97,87 @@ test('works fully offline after the first visit', async ({ page, context }) => {
 });
 
 test('shows the version and a monthly income/expense chart', async ({ page }) => {
-  await expect(page.locator('#appVersionBadge')).toHaveText(/^v\d+\.\d+\.\d+$/);
+  await expect(page.locator('#drawerVersion')).toHaveText(/v\d+\.\d+\.\d+$/);
+  await page.locator('details.insights > summary').click();
   await expect(page.locator('#monthlyTrendContainer')).toContainText('No income or expenses');
   await fill(page, 'txType', 'income');
   await fill(page, 'txAmount', '2500');
   await submit(page, 'financeForm');
   await expect(page.locator('#monthlyTrendContainer svg')).toBeVisible();
   await expect(page.locator('#monthlyTrendContainer table')).toContainText('Rs. 2,500');
+});
+
+test.describe('layout', () => {
+  test('forms live in a sheet opened by the + button and close after saving', async ({ page }) => {
+    const sheet = page.locator('#financeSheet');
+    await expect(sheet).toBeHidden();
+    await page.locator('[data-open-sheet="financeSheet"]').click();
+    await expect(sheet).toBeVisible();
+
+    // an invalid save must not close it
+    await page.locator('#financeForm').evaluate((f) => f.requestSubmit());
+    await expect(sheet).toBeVisible();
+
+    await page.locator('#txAmount').fill('1200');
+    await page.locator('#financeForm button[type="submit"]').click();
+    await expect(sheet).toBeHidden();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 1,200');
+  });
+
+  test('sheet closes with the close button, the backdrop and Escape', async ({ page }) => {
+    const sheet = page.locator('#financeSheet');
+    const open = () => page.locator('[data-open-sheet="financeSheet"]').click();
+    await open();
+    await sheet.locator('.sheet-close').click();
+    await expect(sheet).toBeHidden();
+    await open();
+    await sheet.locator('.sheet-backdrop').click({ position: { x: 5, y: 5 } });
+    await expect(sheet).toBeHidden();
+    await open();
+    await page.keyboard.press('Escape');
+    await expect(sheet).toBeHidden();
+  });
+
+  test('bottom navigation has short labels and More opens the menu', async ({ page }) => {
+    const labels = await page.locator('nav[aria-label="Farm Modules"] .nav-item span:not(.nav-badge)').allTextContents();
+    expect(labels).toEqual(['Cashbook', 'Milkers', 'Cow AI', 'Wanda', 'More']);
+    await page.locator('#openMoreBtn').click();
+    await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
+    await page.locator('#tabWachiBtn').click();
+    await expect(page.locator('#wachiSection')).toBeVisible();
+    await expect(page.locator('#sideMenuDrawer')).toHaveClass(/-translate-x-full/);
+  });
+
+  test('overview cards and reminders only show on the Cashbook tab', async ({ page }) => {
+    await expect(page.locator('#overviewSection')).toBeVisible();
+    await tab(page, 'tabMilkersBtn');
+    await expect(page.locator('#overviewSection')).toBeHidden();
+    await tab(page, 'tabFinanceBtn');
+    await expect(page.locator('#overviewSection')).toBeVisible();
+  });
+
+  test('switching tabs closes an open form', async ({ page }) => {
+    await page.locator('[data-open-sheet="financeSheet"]').click();
+    await expect(page.locator('#financeSheet')).toBeVisible();
+    await tab(page, 'tabMilkersBtn');
+    await expect(page.locator('#financeSheet')).toBeHidden();
+  });
+
+  test('promoting a Wachi opens the breeding form pre-filled', async ({ page }) => {
+    await loadSample(page);
+    await page.locator('#openMoreBtn').click();
+    await page.locator('#tabWachiBtn').click();
+    await page.locator('[data-promote-wachi]').first().click();
+    await expect(page.locator('#breedingSheet')).toBeVisible();
+    await expect(page.locator('#cowTag')).not.toHaveValue('');
+  });
+
+  test('no horizontal scrolling on a phone', async ({ page }) => {
+    await loadSample(page);
+    for (const id of ['tabFinanceBtn', 'tabMilkersBtn', 'tabBreedingBtn', 'tabWandaBtn']) {
+      await tab(page, id);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, id).toBeLessThanOrEqual(0);
+    }
+  });
 });
