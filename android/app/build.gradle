@@ -6,10 +6,10 @@ def releaseKeystore = System.getenv('KEYSTORE_PATH')
 def appVersionCode = Integer.parseInt(System.getenv('VERSION_CODE') ?: '1')
 
 android {
-    namespace = "com.sadeeq.dairyfarm"
+    namespace = "com.hydr.dairyfarm"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.sadeeq.dairyfarm"
+        applicationId "com.hydr.dairyfarm"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode

@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Dairy Farm Manager</string>
     <string name="title_activity_main">Dairy Farm Manager</string>
-    <string name="package_name">com.sadeeq.dairyfarm</string>
-    <string name="custom_url_scheme">com.sadeeq.dairyfarm</string>
+    <string name="package_name">com.hydr.dairyfarm</string>
+    <string name="custom_url_scheme">com.hydr.dairyfarm</string>
 </resources>

@@ -19,7 +19,7 @@ many separate farms, each with private data.
 - GitHub *repository variables* (Settings, Secrets and variables, Actions, **Variables** tab): `SUPABASE_URL`,
   `SUPABASE_ANON_KEY`, `AUTH_REDIRECT_URL` (= the website address). The anon key is public by design; never use the
   `service_role` key in the app.
-- Android app id: `com.sadeeq.dairyfarm` (permanent once published to Play).
+- Android app id: `com.hydr.dairyfarm` (chosen by the owner 2026-11-04; was `com.sadeeq.dairyfarm`; permanent once published to Play).
 
 ## Stack
 Vite 5 + vanilla JS modules, Tailwind 3 (compiled, no CDN), vite-plugin-pwa, `@fontsource` fonts (bundled),
@@ -122,7 +122,6 @@ web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations,
 Open items / owner actions:
 - [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).
 - [ ] Create the signing key (`scripts/make-keystore.sh`) and add the 4 `ANDROID_*` secrets; back the key up safely.
-- [ ] Decide the final Android package name before the first Play upload (permanent afterwards).
 - [ ] Play Console: listing, screenshots, Data safety form, closed-test requirement for new accounts (see `docs/RELEASE.md`).
 - [ ] Landing page: add real store links once the Android app is on Google Play (currently says "Coming soon"); add a contact email once chosen.
 - [ ] Verify the redesign on a real phone (APK) and iPhone (Add to Home Screen); collect UI feedback.

@@ -1,4 +1,4 @@
-package com.sadeeq.dairyfarm;
+package com.hydr.dairyfarm;
 
 import com.getcapacitor.BridgeActivity;
 

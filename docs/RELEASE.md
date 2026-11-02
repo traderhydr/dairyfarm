@@ -50,11 +50,13 @@ The visible version is `version` in `package.json`; bump it for each release.
 New personal developer accounts must run a closed test with testers for a period before they can
 publish to production; check the current Play Console requirements.
 
-## Changing the app id
+## The app id
 
-The package name `com.sadeeq.dairyfarm` is permanent once published. Change it **before** the first
-upload in `capacitor.config.json` and `android/app/build.gradle` (and move
-`android/app/src/main/java/com/sadeeq/dairyfarm` accordingly) if you want a different one.
+The Android package name is `com.hydr.dairyfarm`. It is permanent once the app has been uploaded to Google Play, so it
+cannot be changed after the first upload. (To change it before then: edit `appId` in `capacitor.config.json`,
+`namespace` and `applicationId` in `android/app/build.gradle`, the two values in
+`android/app/src/main/res/values/strings.xml`, and move `android/app/src/main/java/com/hydr/dairyfarm` plus the `package`
+line in `MainActivity.java` to match.)
 
 ## Updating icons
 
