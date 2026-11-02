@@ -5,3 +5,9 @@ test-results/
 playwright-report/
 dist-cloud/
 dist-site/
+
+# signing keys and passwords must never be committed
+*.jks
+*.keystore
+*.p12
+*.pfx
