@@ -3,26 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#064e3b" />
+  <meta name="theme-color" content="#ffffff" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Dairy Farm" />
-  <link rel="icon" type="image/png" href="data:image/png;base64,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" />
-  <link rel="apple-touch-icon" href="data:image/png;base64,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" />
-  <title>Dairy Farm Manager — Mobile &amp; Desktop App</title>
+  <link rel="icon" type="image/png" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <title>Dairy Farm Manager</title>
+  <meta name="description" content="Farm records for dairy farmers: cashbook, cow breeding and pregnancy, feed, milk, vaccinations, milk-buyer accounts and savings goals. Works offline." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dairy Farm Manager" />
+  <meta property="og:description" content="Farm records for dairy farmers. Works offline, syncs when you sign in." />
+  <meta property="og:image" content="/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
 </head>
 <body data-tab="finance" class="text-slate-800 min-h-screen flex flex-col relative overflow-x-hidden">
 
   <!-- Header -->
-  <header class="app-header sticky top-0 z-30 text-white">
+  <header class="app-header sticky top-0 z-30">
     <div class="max-w-3xl mx-auto px-3 h-14 flex items-center justify-between gap-2">
       <div class="flex items-center gap-1 min-w-0">
         <button id="openSideMenuBtn" type="button" aria-label="Open menu" class="icon-btn relative">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
           <span id="sideMenuActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400"></span>
         </button>
-        <h1 class="text-base font-bold tracking-tight truncate">Dairy Farm Manager</h1>
+        <img class="brand-mark" src="/icon-192.png" alt="" width="28" height="28" />
+        <h1 class="ml-1.5 truncate">Dairy Farm Manager</h1>
       </div>
       <button id="accountBtn" type="button" class="hidden header-pill items-center gap-1.5">
           <span id="accountDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
@@ -293,9 +300,7 @@
       <div class="space-y-5 overflow-y-auto pr-1">
         <div class="flex items-center justify-between border-b border-slate-200/80 pb-3.5">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-              DF
-            </div>
+            <img class="brand-mark" src="/icon-192.png" alt="" width="36" height="36" style="width:2.25rem;height:2.25rem" />
             <div>
               <h2 class="text-sm font-extrabold text-slate-900">Menu</h2>
               <p class="text-[11px] text-slate-500">More farm logs, settings &amp; your data</p>
@@ -540,8 +545,11 @@
           </div>
         </div>
 
-        <div id="txEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No entries found. Use the form to record your first farm transaction!
+        <div id="txEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No entries to show</p>
+          <p class="empty-text">Try a different filter, or record your first income or expense.</p>
+          <button type="button" class="btn-primary" data-open-sheet="financeSheet">+ Add entry</button>
         </div>
 
         <div class="overflow-x-auto">
@@ -640,8 +648,11 @@
           </div>
         </div>
 
-        <div id="breedingEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No cow AI records yet. Tap <strong>+ Add AI record</strong> to calculate expected calving dates.
+        <div id="breedingEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No AI records yet</p>
+          <p class="empty-text">Track heat checks, pregnancy checks and the expected calving date for each cow.</p>
+          <button type="button" class="btn-primary" data-open-sheet="breedingSheet">+ Add AI record</button>
         </div>
 
         <div id="breedingListContainer" class="space-y-3"></div>
@@ -728,8 +739,11 @@
           </div>
         </div>
 
-        <div id="wandaEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No monthly Wanda stock records yet. Tap <strong>+ Add stock</strong> to track monthly feed and installments.
+        <div id="wandaEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No feed stock yet</p>
+          <p class="empty-text">Record each month's Wanda purchase and track installment payments.</p>
+          <button type="button" class="btn-primary" data-open-sheet="wandaSheet">+ Add stock</button>
         </div>
 
         <div id="wandaListContainer" class="space-y-4"></div>
@@ -851,8 +865,11 @@
           </div>
         </form>
 
-        <div id="milkersEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No milking cows listed yet. Tap <strong>+ Add cow</strong> to list your first milking cow.
+        <div id="milkersEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No milking cows yet</p>
+          <p class="empty-text">Add your cows to track daily milk and log milk sales to the Cashbook.</p>
+          <button type="button" class="btn-primary" data-open-sheet="milkersSheet">+ Add cow</button>
         </div>
 
         <div id="milkersListContainer" class="space-y-3"></div>
@@ -934,8 +951,11 @@
           </select>
         </div>
 
-        <div id="wachiEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No Wachi records found. Tap <strong>+ Add heifer</strong> to add your first one.
+        <div id="wachiEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No heifers yet</p>
+          <p class="empty-text">Add calves and heifers to follow their growth and breeding readiness.</p>
+          <button type="button" class="btn-primary" data-open-sheet="wachiSheet">+ Add heifer</button>
         </div>
 
         <div id="wachiListContainer" class="space-y-3"></div>
@@ -1018,8 +1038,11 @@
           </div>
         </div>
 
-        <div id="healthEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No vaccination or deworming records yet. Tap <strong>+ Add record</strong> to log a vaccination or treatment.
+        <div id="healthEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No health records yet</p>
+          <p class="empty-text">Log vaccinations and deworming to see when the next dose is due.</p>
+          <button type="button" class="btn-primary" data-open-sheet="healthSheet">+ Add record</button>
         </div>
 
         <div id="healthListContainer" class="space-y-3"></div>
@@ -1129,8 +1152,11 @@
           </div>
         </div>
 
-        <div id="salesEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No sold cow records yet. Tap <strong>+ Add sale</strong> to record a cattle sale.
+        <div id="salesEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No sales yet</p>
+          <p class="empty-text">Record cattle you sell to see the profit or loss on each animal.</p>
+          <button type="button" class="btn-primary" data-open-sheet="salesSheet">+ Add sale</button>
         </div>
 
         <div id="salesListContainer" class="space-y-3"></div>
@@ -1222,8 +1248,11 @@
           </div>
         </div>
 
-        <div id="doodhiEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No Doodhi Khata records yet. Tap <strong>+ Add khata</strong> to track a milk buyer's monthly account.
+        <div id="doodhiEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No milk buyers yet</p>
+          <p class="empty-text">Add a buyer to keep a running monthly account of milk and payments.</p>
+          <button type="button" class="btn-primary" data-open-sheet="doodhiSheet">+ Add khata</button>
         </div>
 
         <div id="doodhiListContainer" class="space-y-4"></div>
@@ -1293,8 +1322,11 @@
           </div>
         </div>
 
-        <div id="savingsEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
-          No savings goals yet. Tap <strong>+ Add goal</strong> to set your first target.
+        <div id="savingsEmptyState" class="empty-state hidden">
+          <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
+          <p class="empty-title">No savings goals yet</p>
+          <p class="empty-text">Set a target for something you're saving toward, like a new cow or feed stock.</p>
+          <button type="button" class="btn-primary" data-open-sheet="savingsSheet">+ Add goal</button>
         </div>
 
         <div id="savingsListContainer" class="space-y-4"></div>

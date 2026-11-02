@@ -112,7 +112,7 @@ test.describe('layout', () => {
   test('forms live in a sheet opened by the + button and close after saving', async ({ page }) => {
     const sheet = page.locator('#financeSheet');
     await expect(sheet).toBeHidden();
-    await page.locator('[data-open-sheet="financeSheet"]').click();
+    await page.locator('.fab[data-open-sheet=\"financeSheet\"]').click();
     await expect(sheet).toBeVisible();
 
     // an invalid save must not close it
@@ -125,9 +125,29 @@ test.describe('layout', () => {
     await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 1,200');
   });
 
+  test('an empty list explains itself and its button opens the add form', async ({ page }) => {
+    await tab(page, 'tabMilkersBtn');
+    const empty = page.locator('#milkersEmptyState');
+    await expect(empty).toBeVisible();
+    await expect(empty.locator('.empty-title')).toHaveText('No milking cows yet');
+    await empty.locator('button').click();
+    await expect(page.locator('#milkersSheet')).toBeVisible();
+  });
+
+  test('the theme is remembered between visits', async ({ page }) => {
+    await expect(page.locator('body')).not.toHaveClass(/dark-mode/);
+    await page.locator('#themeToggleBtn').evaluate((el) => el.click());
+    await expect(page.locator('body')).toHaveClass(/dark-mode/);
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/dark-mode/);
+    await page.locator('#themeToggleBtn').evaluate((el) => el.click());
+    await page.reload();
+    await expect(page.locator('body')).not.toHaveClass(/dark-mode/);
+  });
+
   test('sheet closes with the close button, the backdrop and Escape', async ({ page }) => {
     const sheet = page.locator('#financeSheet');
-    const open = () => page.locator('[data-open-sheet="financeSheet"]').click();
+    const open = () => page.locator('.fab[data-open-sheet=\"financeSheet\"]').click();
     await open();
     await sheet.locator('.sheet-close').click();
     await expect(sheet).toBeHidden();
@@ -158,7 +178,7 @@ test.describe('layout', () => {
   });
 
   test('switching tabs closes an open form', async ({ page }) => {
-    await page.locator('[data-open-sheet="financeSheet"]').click();
+    await page.locator('.fab[data-open-sheet=\"financeSheet\"]').click();
     await expect(page.locator('#financeSheet')).toBeVisible();
     await tab(page, 'tabMilkersBtn');
     await expect(page.locator('#financeSheet')).toBeHidden();
@@ -190,7 +210,7 @@ const openSavings = async (page) => {
 };
 
 const addGoal = async (page, { name, target, date = '', start = '0' }) => {
-  await page.locator('[data-open-sheet="savingsSheet"]').click();
+  await page.locator('.fab[data-open-sheet=\"savingsSheet\"]').click();
   await page.locator('#savingsName').fill(name);
   await page.locator('#savingsTarget').fill(String(target));
   if (date) await page.locator('#savingsDate').fill(date);
@@ -269,7 +289,7 @@ test.describe('savings goals', () => {
 
   test('suggests a monthly amount in the form and on the card', async ({ page }) => {
     await openSavings(page);
-    await page.locator('[data-open-sheet="savingsSheet"]').click();
+    await page.locator('.fab[data-open-sheet=\"savingsSheet\"]').click();
     await page.locator('#savingsTarget').fill('90000');
     await page.locator('#savingsDate').fill(inDays(95));
     await expect(page.locator('#savingsPlanPreview')).toContainText('a month');

@@ -1,7 +1,7 @@
 # Dairy Farm Manager: project memory
 
 Living notes so anyone (or any future session) can pick the project up quickly.
-Last updated: 2026-11-02. Keep secrets out of this file.
+Last updated: 2026-11-03. Keep secrets out of this file.
 
 ## What this is
 Offline-first farm record keeping for dairy farmers: cashbook, cow AI and pregnancy tracking, monthly
@@ -23,12 +23,12 @@ many separate farms, each with private data.
 
 ## Stack
 Vite 5 + vanilla JS modules, Tailwind 3 (compiled, no CDN), vite-plugin-pwa, `@fontsource` fonts (bundled),
-Capacitor 8 (Android target API 36, Node 22+, JDK 21), Supabase (auth + Postgres + realtime), vitest, Playwright.
+Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only variable files, referenced from `styles.css`), Supabase (auth + Postgres + realtime), vitest, Playwright.
 
 ## Code map
 | Path | Purpose |
 | --- | --- |
-| `index.html`, `src/styles.css` | Markup and the flat theme (CSS variables; dark mode = `body.dark-mode`) |
+| `index.html`, `src/styles.css` | Markup and the design layer (CSS tokens; dark mode = `body.dark-mode`; `ui/theme.js` remembers the choice and follows the phone's setting) |
 | `src/state.js` | Single store: `state`, `commit()`, `onChange(fn)`, `snapshot()`, `importData()`, `replaceAll()` |
 | `src/views/*.js` | One module per tab: render functions + event wiring (state arrays are `state.<name>`) |
 | `src/ui/` | `tabs.js` (nav), `sheets.js` (slide-up add forms), `motion.js` (enter animations, count-up, bar growth, confetti), `modal.js`, `toast.js`, `menu.js`, `account.js` |
@@ -51,6 +51,14 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Supabase (auth + Postgres
 - **Cloud code is bundled only when `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set**; otherwise the app is
   local-only. The `account` chunk loads dynamically.
 - **No service worker inside the native app** (the APK ships its files); the PWA registers one for browsers only.
+- **Design language (professional pass, 2026-11-03):** neutral surfaces with hairline borders, Geist type with mono eyebrow labels,
+  two font weights (500/600), 8px controls and 12px cards, ink (`--primary`) primary buttons and + button, and **one** accent
+  (emerald, `--accent`) for progress bars, success and the logo. Colour only ever means success (green), danger (red) or caution
+  (amber); indigo/sky/teal/violet from the old markup are mapped to neutral. The semantic colour rules in `styles.css` are
+  generated from the classes in use (exact `[class~="..."]` matches), and a "neutral panels" block after them keeps
+  calculation previews, the milk logger, reminders and the menu quiet. Reference used: the public Vercel DESIGN.md in
+  VoltAgent/awesome-design-md (principles only; no Vercel branding). Re-skinning = change the tokens at the top of `styles.css`
+  (e.g. make `--primary` green).
 - **UI:** add-forms live in `.sheet` containers opened by `[data-open-sheet]` buttons and closed on save
   (any `commit('local')`), Escape, backdrop or switching tab. Overview cards and reminders show only on the Cashbook tab.
   Bottom nav = Cashbook, Milkers, Cow AI, Wanda, More (More opens the drawer with Wachi, Health, Sold Cows, Doodhi,
@@ -98,15 +106,16 @@ Playwright tips: in this sandbox set `PW_CHROMIUM_PATH` to the preinstalled Chro
 - The sandbox cannot reach `dl.google.com`, so Android builds can only be verified in CI.
 
 ## Status (2026-11-01)
-Done: modular rewrite, tests (60 unit, 34 e2e), accounts + cloud sync (tested against a mocked API and a real
+Done: modular rewrite, tests (60 unit, 36 e2e), accounts + cloud sync (tested against a mocked API and a real
 account), Android project with icons/splash/reminders/back button/share-sheet backups, release signing wiring,
-web deploy, clean-and-simple UI redesign (on `main`), savings goals and animations (on the working branch; `main` not yet updated).
+web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations and the professional design pass (on the working branch; `main` not yet updated).
 
 Open items / owner actions:
 - [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).
 - [ ] Create the signing key (`scripts/make-keystore.sh`) and add the 4 `ANDROID_*` secrets; back the key up safely.
 - [ ] Decide the final Android package name before the first Play upload (permanent afterwards).
 - [ ] Play Console: listing, screenshots, Data safety form, closed-test requirement for new accounts (see `docs/RELEASE.md`).
+- [ ] Decide whether to add a public landing/marketing page (the website root is currently the app itself).
 - [ ] Verify the redesign on a real phone (APK) and iPhone (Add to Home Screen); collect UI feedback.
 - [ ] Optional: Urdu translation (about 600 strings; needs a native reviewer; consider RTL), per-farm sharing between staff.
 - [ ] Optional: move off the debug signing key for testers (Play internal testing track).

@@ -1,10 +1,3 @@
-import '@fontsource/inter/latin-400.css';
-import '@fontsource/inter/latin-500.css';
-import '@fontsource/inter/latin-600.css';
-import '@fontsource/inter/latin-700.css';
-import '@fontsource/plus-jakarta-sans/latin-600.css';
-import '@fontsource/plus-jakarta-sans/latin-700.css';
-import '@fontsource/plus-jakarta-sans/latin-800.css';
 import './styles.css';
 
 import { initDataManagement } from './data-management.js';
@@ -16,6 +9,7 @@ import { loadState, onChange } from './state.js';
 import { initMenu } from './ui/menu.js';
 import { playEnter } from './ui/motion.js';
 import { initSheets } from './ui/sheets.js';
+import { initTheme } from './ui/theme.js';
 import { initModal } from './ui/modal.js';
 import { initTabs } from './ui/tabs.js';
 import { initAlerts, renderAlerts } from './views/alerts.js';
@@ -58,6 +52,7 @@ function setDateDefaults() {
 }
 
 function boot() {
+  initTheme();
   document.getElementById('drawerVersion').textContent = `Dairy Farm Manager v${__APP_VERSION__}`;
   setDateDefaults();
   loadState();

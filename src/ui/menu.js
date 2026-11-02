@@ -1,3 +1,5 @@
+import { toggleTheme } from './theme.js';
+
 export function initMenu() {
   // Install Guide Modal Listeners
   const installGuideModal = document.getElementById('installGuideModal');
@@ -11,10 +13,5 @@ export function initMenu() {
     installGuideModal.classList.add('hidden');
   });
 
-  // Dark / Light Theme Toggle
-  document.getElementById('themeToggleBtn').addEventListener('click', () => {
-    const isDark = document.body.classList.toggle('dark-mode');
-    document.getElementById('themeToggleLabel').textContent = isDark ? 'Light Mode' : 'Dark Mode';
-  });
-
+  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 }

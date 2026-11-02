@@ -14,7 +14,7 @@
     },
     "SystemBars": {
       "insetsHandling": "native",
-      "style": "DARK",
+      "style": "LIGHT",
       "initialViewportFitValueHint": "cover"
     },
     "LocalNotifications": {

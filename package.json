@@ -25,8 +25,8 @@
     "@capacitor/local-notifications": "^8.3.1",
     "@capacitor/share": "^8.0.3",
     "@capacitor/splash-screen": "^8.0.2",
-    "@fontsource/inter": "^5.3.0",
-    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
     "@supabase/supabase-js": "^2.118.0"
   },
   "devDependencies": {
