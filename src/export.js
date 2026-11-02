@@ -1,6 +1,7 @@
 import { sumAmounts } from './lib/calc.js';
 import { saveTextFile } from './lib/files.js';
 import { addDays } from './lib/format.js';
+import { goalProgress } from './lib/savings.js';
 import { importData, snapshot, state } from './state.js';
 import { showToast } from './ui/toast.js';
 
@@ -45,6 +46,11 @@ export function exportFarmCsv() {
     const recd = sumAmounts(d.payments);
     const rem = Math.max(0, (Number(d.totalBill) || 0) - recd);
     rows.push(['Doodhi Milk Khata', d.startDate, d.buyerName, 'Receivable: Rs. ' + rem, 'Total Bill: Rs. ' + d.totalBill + ' (' + d.liters + ' L @ Rs. ' + d.ratePerLiter + ')', d.monthLabel]);
+  });
+
+  state.savingsGoals.forEach(g => {
+    const { saved, target, reached } = goalProgress(g);
+    rows.push(['Savings Goals', g.targetDate || '', g.name, reached ? 'Reached' : 'In progress', 'Saved: Rs. ' + saved + ' of Rs. ' + target, g.notes || '']);
   });
 
   const csvContent = rows.map(r => r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');

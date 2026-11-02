@@ -1,5 +1,6 @@
 import { sumAmounts } from '../lib/calc.js';
 import { addDays, escapeHtml, formatCurrency } from '../lib/format.js';
+import { daysLeft, goalProgress } from '../lib/savings.js';
 import { state } from '../state.js';
 
 export function renderAlerts() {
@@ -76,6 +77,21 @@ export function renderAlerts() {
         detail: `${formatCurrency(rem)} milk balance receivable (${d.monthLabel})`
       });
     }
+  });
+
+  // 6. Savings goals with a deadline coming up
+  state.savingsGoals.forEach(g => {
+    const { remaining, reached } = goalProgress(g);
+    const days = daysLeft(g);
+    if (reached || days === null || days > 45) return;
+    alerts.push({
+      tag: 'Savings Goal',
+      color: 'bg-violet-100 text-violet-900 border-violet-300',
+      title: g.name,
+      detail: (days < 0
+        ? `Target date passed ${-days} day${days === -1 ? '' : 's'} ago`
+        : days === 0 ? 'Due today' : `${days} day${days === 1 ? '' : 's'} left`) + ` • ${formatCurrency(remaining)} still to save`
+    });
   });
 
   badge.textContent = String(alerts.length);

@@ -10,7 +10,8 @@ const STORAGE_KEYS = {
   wachiList: 'dairy_farm_v1_wachi',
   healthRecords: 'dairy_farm_v1_health',
   cattleSales: 'dairy_farm_v1_sales',
-  doodhiAccounts: 'dairy_farm_v1_doodhi'
+  doodhiAccounts: 'dairy_farm_v1_doodhi',
+  savingsGoals: 'dairy_farm_v1_savings'
 };
 
 export const COLLECTIONS = Object.keys(STORAGE_KEYS);

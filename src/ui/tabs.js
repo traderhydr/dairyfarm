@@ -1,3 +1,4 @@
+import { playEnter } from './motion.js';
 import { closeSheets } from './sheets.js';
 
 // Bottom navigation (4 main modules + More) and the side menu (everything else).
@@ -9,7 +10,8 @@ const SECTIONS = {
   wachi: { section: 'wachiSection', button: 'tabWachiBtn', style: 'drawer', title: 'Wachi (Heifers)' },
   health: { section: 'healthSection', button: 'tabHealthBtn', style: 'drawer', title: 'Vaccination & Deworming' },
   sales: { section: 'salesSection', button: 'tabSalesBtn', style: 'drawer', title: 'Sold Cows' },
-  doodhi: { section: 'doodhiSection', button: 'tabDoodhiBtn', style: 'drawer', title: 'Milk Buyers (Doodhi)' }
+  doodhi: { section: 'doodhiSection', button: 'tabDoodhiBtn', style: 'drawer', title: 'Milk Buyers (Doodhi)' },
+  savings: { section: 'savingsSection', button: 'tabSavingsBtn', style: 'drawer', title: 'Savings Goals' }
 };
 
 const DRAWER_CLASSES = {
@@ -55,6 +57,7 @@ export function switchTab(target) {
   section.classList.remove('hidden');
   section.classList.add('grid');
   setActive(active, true);
+  playEnter(section, ...(target === 'finance' ? [$('overviewSection'), $('farmAlertsSection')] : []));
   document.body.dataset.tab = target;
   closeSheets();
 

@@ -155,6 +155,32 @@ const DOODHI = [
   }
 ];
 
+const SAVINGS = [
+  {
+    id: 'goal-1',
+    name: 'New milking cow (Sahiwal)',
+    target: 400000,
+    targetDate: '2027-03-31',
+    createdDate: '2026-08-01',
+    notes: 'Buy one high-yield cow before summer',
+    contributions: [
+      { id: 'gc-1', date: '2026-08-15', amount: 100000, note: 'From cattle sale' },
+      { id: 'gc-2', date: '2026-10-05', amount: 60000, note: 'Monthly saving' }
+    ]
+  },
+  {
+    id: 'goal-2',
+    name: 'Shed roof repair',
+    target: 80000,
+    targetDate: '2026-12-15',
+    createdDate: '2026-09-10',
+    notes: '',
+    contributions: [
+      { id: 'gc-3', date: '2026-09-20', amount: 30000, note: 'Starting balance' }
+    ]
+  }
+];
+
 export const SAMPLE_DATA = {
   transactions: TRANSACTIONS,
   breedingRecords: BREEDING,
@@ -163,5 +189,6 @@ export const SAMPLE_DATA = {
   wachiList: WACHI,
   healthRecords: HEALTH,
   cattleSales: SALES,
-  doodhiAccounts: DOODHI
+  doodhiAccounts: DOODHI,
+  savingsGoals: SAVINGS
 };

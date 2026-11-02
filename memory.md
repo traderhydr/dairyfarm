@@ -1,12 +1,12 @@
 # Dairy Farm Manager: project memory
 
 Living notes so anyone (or any future session) can pick the project up quickly.
-Last updated: 2026-11-01. Keep secrets out of this file.
+Last updated: 2026-11-02. Keep secrets out of this file.
 
 ## What this is
 Offline-first farm record keeping for dairy farmers: cashbook, cow AI and pregnancy tracking, monthly
 Wanda (feed) stock and installments, milkers, Wachi (heifers), vaccination/deworming, sold-cow log and
-Doodhi (milk buyer) khata. Ships as a web app (PWA) and an Android app (Capacitor). Target users:
+Doodhi (milk buyer) khata, plus savings goals. Ships as a web app (PWA) and an Android app (Capacitor). Target users:
 many separate farms, each with private data.
 
 ## Where things live
@@ -31,8 +31,8 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Supabase (auth + Postgres
 | `index.html`, `src/styles.css` | Markup and the flat theme (CSS variables; dark mode = `body.dark-mode`) |
 | `src/state.js` | Single store: `state`, `commit()`, `onChange(fn)`, `snapshot()`, `importData()`, `replaceAll()` |
 | `src/views/*.js` | One module per tab: render functions + event wiring (state arrays are `state.<name>`) |
-| `src/ui/` | `tabs.js` (nav), `sheets.js` (slide-up add forms), `modal.js`, `toast.js`, `menu.js`, `account.js` |
-| `src/lib/` | Pure helpers: `format`, `dates`, `calc` (totals, monthly chart data), `reminders`, `platform`, `files` |
+| `src/ui/` | `tabs.js` (nav), `sheets.js` (slide-up add forms), `motion.js` (enter animations, count-up, bar growth, confetti), `modal.js`, `toast.js`, `menu.js`, `account.js` |
+| `src/lib/` | Pure helpers: `format`, `dates`, `calc` (totals, monthly chart data), `savings` (goal progress, days left, monthly plan), `reminders`, `platform`, `files` |
 | `src/cloud/` | `merge.js` (3-way merge by record id), `sync-engine.js`, `supabase-remote.js`, `auth.js`, `config.js` |
 | `src/native/` | Android-only: back button, reminder notifications (`init.js`, `reminders.js`) |
 | `android/` | Committed Capacitor project (icons, splash, manifest, `build.gradle` with signing + version) |
@@ -55,6 +55,17 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Supabase (auth + Postgres
   (any `commit('local')`), Escape, backdrop or switching tab. Overview cards and reminders show only on the Cashbook tab.
   Bottom nav = Cashbook, Milkers, Cow AI, Wanda, More (More opens the drawer with Wachi, Health, Sold Cows, Doodhi,
   settings and backups). Native back button closes sheet, then modal/drawer, then returns to Cashbook, then exits.
+- **Savings goals** (`savingsGoals` collection, key `dairy_farm_v1_savings`, drawer tab "Savings Goals"): each goal has a
+  target, optional date, and a list of contributions. Shows progress, days left and a suggested monthly amount; a goal due
+  within 45 days appears in the Cashbook reminders; reaching the target fires confetti once (`justReached`). A contribution can
+  optionally also be booked in the Cashbook as a "Savings" expense. Included in sync, backups, restore and CSV automatically
+  (everything iterates `COLLECTIONS`).
+- **Motion:** CSS keyframes + `ui/motion.js`. A tab opening adds `.tab-enter` for about 1s (so ordinary re-renders never replay
+  it); money cards count up (`animateNumber`, final text is always exact); progress bars grow; sheets, dialogs and toasts
+  animate. Everything respects `prefers-reduced-motion`. Beware: never animate a transform on an ancestor of a
+  `position: fixed` element (the + button, sheets), it re-anchors them; that is why the enter animation skips `.fab` and `.sheet`.
+- Dark-mode colour rules for tinted status colours are **generated** from the classes actually used and match exact class names
+  (`[class~="..."]`); a substring match once turned every `hover:bg-rose-50` into a permanent red background.
 - Backups on Android go through Filesystem + Share (WebViews cannot download blob links).
 - Reminders (Android only) are local notifications at 08:00 for heat/PD checks, dry-off, calving and vaccine due dates.
 
@@ -87,9 +98,9 @@ Playwright tips: in this sandbox set `PW_CHROMIUM_PATH` to the preinstalled Chro
 - The sandbox cannot reach `dl.google.com`, so Android builds can only be verified in CI.
 
 ## Status (2026-11-01)
-Done: modular rewrite, tests (51 unit, 22 e2e), accounts + cloud sync (tested against a mocked API and a real
+Done: modular rewrite, tests (60 unit, 34 e2e), accounts + cloud sync (tested against a mocked API and a real
 account), Android project with icons/splash/reminders/back button/share-sheet backups, release signing wiring,
-web deploy, clean-and-simple UI redesign (on `main`, deploying).
+web deploy, clean-and-simple UI redesign (on `main`), savings goals and animations (on the working branch; `main` not yet updated).
 
 Open items / owner actions:
 - [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).

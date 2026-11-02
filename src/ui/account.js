@@ -96,7 +96,8 @@ function renderButton() {
   }
   const label = SYNC_LABELS[lastStatus.state] || SYNC_LABELS.synced;
   $('accountBtnLabel').textContent = label.text;
-  $('accountDot').className = `w-2 h-2 rounded-full ${label.dot}`;
+  const busy = lastStatus.state === 'syncing' || lastStatus.state === 'pending';
+  $('accountDot').className = `w-2 h-2 rounded-full ${label.dot}${busy ? ' animate-pulse' : ''}`;
   btn.title = user.email || '';
 }
 

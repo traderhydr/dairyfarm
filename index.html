@@ -340,6 +340,14 @@
             </span>
             <span id="doodhiTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
           </button>
+
+          <button id="tabSavingsBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-violet-500"></span>
+              <span>Savings Goals</span>
+            </span>
+            <span id="savingsTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
         </div>
 
         <!-- App settings & data tools (moved out of the header to keep it compact) -->
@@ -458,6 +466,7 @@
                 <option value="Vet & Medicine">Vet &amp; Medicine</option>
                 <option value="AI & Breeding Fee">AI &amp; Breeding Fee</option>
                 <option value="Farm Labor & Bills">Farm Labor &amp; Bills</option>
+                <option value="Savings">Savings</option>
                 <option value="Other">Other</option>
               </select>
             </div>
@@ -1221,6 +1230,77 @@
       </div>
 
       <button type="button" class="fab" data-open-sheet="doodhiSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add khata</span></button>
+    </section>
+
+
+    <!-- SAVINGS GOALS -->
+    <section id="savingsSection" class="hidden grid-cols-1 gap-4">
+      <!-- Add form (slide-up sheet) -->
+      <div id="savingsSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="savingsSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="savingsSheetTitle" class="text-base font-bold text-slate-900 pr-16">New Savings Goal</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Set a target, then add money whenever you save. Good for a new cow, feed stock or a shed repair.</p>
+
+          <form id="savingsForm" class="mt-4 space-y-3.5">
+            <div>
+              <label for="savingsName" class="block text-xs font-semibold text-slate-700 mb-1">What are you saving for?</label>
+              <input id="savingsName" type="text" maxlength="60" placeholder="e.g. New milking cow" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="savingsTarget" class="block text-xs font-semibold text-slate-700 mb-1">Target (Rs.)</label>
+                <input id="savingsTarget" type="number" min="1" step="any" inputmode="decimal" placeholder="e.g. 400000" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+              <div>
+                <label for="savingsDate" class="block text-xs font-semibold text-slate-700 mb-1">Target date (optional)</label>
+                <input id="savingsDate" type="date" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+            </div>
+
+            <div>
+              <label for="savingsStart" class="block text-xs font-semibold text-slate-700 mb-1">Already saved (Rs.)</label>
+              <input id="savingsStart" type="number" min="0" step="any" inputmode="decimal" value="0" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <div>
+              <label for="savingsNotes" class="block text-xs font-semibold text-slate-700 mb-1">Notes (optional)</label>
+              <input id="savingsNotes" type="text" placeholder="e.g. Buy before summer" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <p id="savingsPlanPreview" class="text-xs bg-emerald-50/70 border border-emerald-200 text-emerald-900 rounded-xl px-3 py-2">
+              Add a target date to see how much to save each month.
+            </p>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
+              Save Goal
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="list-card space-y-4">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Savings Goals</h2>
+            <p class="text-xs text-slate-500">Money set aside for what matters, and how close you are</p>
+          </div>
+          <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-sky-700">Total saved</span>
+            <span id="savingsTotalBanner" class="text-sm font-bold text-sky-950">Rs. 0</span>
+          </div>
+        </div>
+
+        <div id="savingsEmptyState" class="hidden py-10 text-center text-slate-400 text-sm">
+          No savings goals yet. Tap <strong>+ Add goal</strong> to set your first target.
+        </div>
+
+        <div id="savingsListContainer" class="space-y-4"></div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="savingsSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add goal</span></button>
     </section>
 
   </main>

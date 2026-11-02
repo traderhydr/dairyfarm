@@ -1,5 +1,6 @@
 import { formatLiters } from '../lib/calc.js';
 import { formatCurrency } from '../lib/format.js';
+import { animateNumber } from '../ui/motion.js';
 import { state } from '../state.js';
 
 export function renderSummary() {
@@ -20,13 +21,13 @@ export function renderSummary() {
   });
 
   const net = totalIncome - totalExpense;
-  document.getElementById('totalIncomeDisplay').textContent = formatCurrency(totalIncome);
+  animateNumber(document.getElementById('totalIncomeDisplay'), totalIncome, formatCurrency);
   document.getElementById('incomeCountDisplay').textContent = incomeCount + (incomeCount === 1 ? ' entry' : ' entries');
-  document.getElementById('totalExpenseDisplay').textContent = formatCurrency(totalExpense);
+  animateNumber(document.getElementById('totalExpenseDisplay'), totalExpense, formatCurrency);
   document.getElementById('expenseCountDisplay').textContent = expenseCount + (expenseCount === 1 ? ' entry' : ' entries');
 
   const netEl = document.getElementById('netBalanceDisplay');
-  netEl.textContent = (net < 0 ? '- ' : '') + formatCurrency(Math.abs(net));
+  animateNumber(netEl, net, (v) => (v < 0 ? '- ' : '') + formatCurrency(Math.abs(v)));
   netEl.className = 'text-lg sm:text-xl font-extrabold mt-1.5 ' + (net >= 0 ? 'text-emerald-700' : 'text-rose-600');
 
   let totalWandaBill = 0;
@@ -38,7 +39,7 @@ export function renderSummary() {
     });
   });
   const wandaRemaining = Math.max(0, totalWandaBill - totalWandaPaid);
-  document.getElementById('wandaDueDisplay').textContent = formatCurrency(wandaRemaining);
+  animateNumber(document.getElementById('wandaDueDisplay'), wandaRemaining, formatCurrency);
   document.getElementById('wandaPaidSubDisplay').textContent = formatCurrency(totalWandaPaid) + ' paid so far';
 
   const pregnantCount = state.breedingRecords.filter(r => r.pregStatus === 'Confirmed Pregnant').length;
@@ -57,4 +58,5 @@ export function renderSummary() {
   document.getElementById('healthTabBadge').textContent = String(state.healthRecords.length);
   document.getElementById('salesTabBadge').textContent = String(state.cattleSales.length);
   document.getElementById('doodhiTabBadge').textContent = String(state.doodhiAccounts.length);
+  document.getElementById('savingsTabBadge').textContent = String(state.savingsGoals.length);
 }

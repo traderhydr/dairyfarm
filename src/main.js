@@ -14,6 +14,7 @@ import { isNative } from './lib/platform.js';
 import { initNative } from './native/init.js';
 import { loadState, onChange } from './state.js';
 import { initMenu } from './ui/menu.js';
+import { playEnter } from './ui/motion.js';
 import { initSheets } from './ui/sheets.js';
 import { initModal } from './ui/modal.js';
 import { initTabs } from './ui/tabs.js';
@@ -24,6 +25,7 @@ import { initFinance, renderExpenseBreakdown, renderTransactions } from './views
 import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
 import { initSales, renderSales } from './views/sales.js';
+import { initSavings, renderSavings } from './views/savings.js';
 import { renderSummary } from './views/summary.js';
 import { renderTrends } from './views/trends.js';
 import { initWachi, renderWachi } from './views/wachi.js';
@@ -42,6 +44,7 @@ function renderAll() {
   renderHealth();
   renderSales();
   renderDoodhi();
+  renderSavings();
 }
 
 /** Default every date input to today (the markup ships without stale hardcoded dates). */
@@ -61,6 +64,7 @@ function boot() {
   updateBreedingPreview();
   updateWandaFormPreview();
   renderAll();
+  playEnter(document.getElementById('financeSection'), document.getElementById('overviewSection'), document.getElementById('farmAlertsSection'));
   onChange(renderAll);
 
   initTabs();
@@ -76,6 +80,7 @@ function boot() {
   initExport();
   initSales();
   initDoodhi();
+  initSavings();
   initDataManagement();
   initModal();
   // Accounts + cloud sync are only bundled when the build has a Supabase project configured.
