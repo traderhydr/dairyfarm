@@ -121,7 +121,7 @@ web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations,
 
 Open items / owner actions:
 - [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).
-- [ ] Create the signing key (`scripts/make-keystore.sh`) and add the 4 `ANDROID_*` secrets; back the key up safely.
+- [ ] Create the signing key on the owner's own computer (`scripts/make-keystore.sh`, steps in `docs/RELEASE.md`) and add the 4 `ANDROID_*` GitHub secrets; back the key up. (2026-11-04: a key generated in the AI session was deliberately discarded; the owner chose to make their own so no one else sees it.)
 - [ ] Play Console: listing, screenshots, Data safety form, closed-test requirement for new accounts (see `docs/RELEASE.md`).
 - [ ] Landing page: add real store links once the Android app is on Google Play (currently says "Coming soon"); add a contact email once chosen.
 - [ ] Verify the redesign on a real phone (APK) and iPhone (Add to Home Screen); collect UI feedback.

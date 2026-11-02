@@ -12,25 +12,45 @@ Download results from *Actions -> the run -> Artifacts*.
 
 ## One-time: create the signing key
 
-The Play Store requires every release to be signed with the same key forever.
+Every release must be signed with a key. Create it **on your own computer** so nobody else ever sees it.
 
-```bash
-./scripts/make-keystore.sh dairyfarm-release.jks dairyfarm
-```
+1. Install Java if you don't have it: a **JDK 17 or newer** from <https://adoptium.net> (it includes `keytool`).
+2. Get the project on your computer (download the repository as a zip, or `git clone`).
+3. Open a terminal in the project folder (Mac/Linux: Terminal; Windows: **Git Bash**, installed with Git for Windows) and run:
 
-(Needs Java's `keytool`.) **Back up the `.jks` file and its password somewhere safe and private.**
-Never commit it. Then add four GitHub **secrets** (*Settings -> Secrets and variables -> Actions -> Secrets*):
+   ```bash
+   ./scripts/make-keystore.sh
+   ```
 
-| Secret | Value |
-| --- | --- |
-| `ANDROID_KEYSTORE_BASE64` | output of `base64 -w0 dairyfarm-release.jks` |
-| `ANDROID_KEYSTORE_PASSWORD` | the keystore password |
-| `ANDROID_KEY_ALIAS` | `dairyfarm` (or what you chose) |
-| `ANDROID_KEY_PASSWORD` | the key password (same as above with the script) |
+   Choose a password (at least 8 characters) and type it twice. It creates two files:
+   `dairyfarm-release.p12` (the key) and `dairyfarm-release.base64.txt` (the same key as text).
 
-The next run produces `Dairy-Farm-Manager-release` with the signed `.apk` and `.aab`.
-The build number (`versionCode`) is the workflow run number, so it always increases.
-The visible version is `version` in `package.json`; bump it for each release.
+   *Windows without Git Bash:* run this in PowerShell instead (use the same password for both), then paste the clipboard in step 4:
+
+   ```powershell
+   keytool -genkeypair -keystore dairyfarm-release.p12 -storetype PKCS12 -alias dairyfarm -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Dairy Farm Manager, O=Hydr, C=PK"
+   [Convert]::ToBase64String([IO.File]::ReadAllBytes("dairyfarm-release.p12")) | Set-Clipboard
+   ```
+
+4. In GitHub open *your repository -> Settings -> Secrets and variables -> Actions -> **Secrets** -> New repository secret*
+   and add four secrets:
+
+   | Secret | Value |
+   | --- | --- |
+   | `ANDROID_KEYSTORE_BASE64` | the text in `dairyfarm-release.base64.txt` (select all, copy, paste) |
+   | `ANDROID_KEYSTORE_PASSWORD` | the password you chose |
+   | `ANDROID_KEY_ALIAS` | `dairyfarm` |
+   | `ANDROID_KEY_PASSWORD` | the same password again |
+
+5. Delete `dairyfarm-release.base64.txt`. **Back up `dairyfarm-release.p12` and the password** in two private places
+   (a password manager and a second copy). Never put them in the repository or send them in chat; the repository ignores
+   `*.p12`, `*.jks` and `*.keystore` files as a safety net.
+6. Run *Actions -> Build Android -> Run workflow*. The run now also produces **Dairy-Farm-Manager-release** with a signed
+   `.apk` and the `.aab` that Google Play wants. The build number (`versionCode`) is the workflow run number, so it always
+   increases; the visible version is `version` in `package.json` (bump it for each release).
+
+**Use Google Play App Signing** (Play Console offers it when you upload your first bundle, and it is the default for new
+apps). Then Google keeps the real app-signing key and yours is only an *upload key*: if you ever lose it, Google can reset it.
 
 ## Publishing on Google Play
 
