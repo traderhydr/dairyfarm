@@ -9,7 +9,7 @@
      Leave it on if you want verified emails (then the confirmation link opens your hosted web app).
    - *Authentication -> URL Configuration*: set **Site URL** to your hosted web app address
      (for example `https://<your-github-name>.github.io/dairyfarm/`).
-     Add the same address under *Redirect URLs*. Password-reset and confirmation emails point there.
+     Add the same address under *Redirect URLs*. Password-reset and confirmation emails point there. (The site root is the landing page; it forwards sign-in and reset links, token included, to the app at `/app/`, so the root address is the right one to use.)
 4. **Keys:** *Project Settings -> API*. Copy the **Project URL** and the **anon public** key
    (the anon key is designed to be public; row-level security protects the data. Never use the
    `service_role` key in this app).

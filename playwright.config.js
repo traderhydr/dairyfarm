@@ -8,9 +8,17 @@ export default defineConfig({
   projects: [
     { name: 'local', testMatch: 'app.spec.js', use: { baseURL: 'http://localhost:4173' } },
     { name: 'native', testMatch: 'native.spec.js', use: { baseURL: 'http://localhost:4173' } },
+    { name: 'site', testMatch: 'site.spec.js', use: { baseURL: 'http://localhost:4175' } },
     { name: 'cloud', testMatch: 'cloud.spec.js', use: { baseURL: 'http://localhost:4174' } }
   ],
   webServer: [
+    {
+      // The public website exactly as GitHub Pages serves it: landing page at the root, the app under /app/.
+      command: 'node scripts/build-site.mjs && node scripts/serve-site.mjs dist-site 4175 /dairyfarm',
+      url: 'http://localhost:4175/dairyfarm/',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000
+    },
     {
       command: 'npm run build && npx vite preview --port 4173 --strictPort',
       url: 'http://localhost:4173',

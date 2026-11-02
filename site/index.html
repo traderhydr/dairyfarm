@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dairy Farm Manager: farm records that fit in your pocket</title>
+  <meta name="description" content="Track your cashbook, cows, feed, milk, vaccinations and savings in one simple app. Works offline and syncs when you sign in." />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="canonical" href="%SITE_URL%" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Dairy Farm Manager" />
+  <meta property="og:title" content="Dairy Farm Manager: farm records that fit in your pocket" />
+  <meta property="og:description" content="Cashbook, cow breeding, feed, milk, vaccinations and savings goals in one simple app. Works offline." />
+  <meta property="og:url" content="%SITE_URL%" />
+  <meta property="og:image" content="%SITE_URL%og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" href="fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="landing.css" />
+  <script>
+    /* Send people who already use the app (or arrive from an email sign-in link) straight to it. */
+    document.documentElement.className += ' js';
+    (function () {
+      try {
+        var q = location.search, h = location.hash;
+        if (/(^|[?&])landing(=|&|$)/.test(q)) return;                       // ?landing always shows this page
+        var auth = /access_token|refresh_token|type=(recovery|signup|magiclink|invite|email_change)|error_description/.test(h)
+          || /(^|[?&])(code|error|error_description)=/.test(q);
+        var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+        var used = false;
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i) || '';
+          if (k.indexOf('dairy_farm_v1_') === 0 || k.indexOf('dairy_theme') === 0) { used = true; break; }
+        }
+        if (auth || standalone || used) location.replace('app/' + q + h);
+      } catch (e) { /* storage blocked: just show the page */ }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="./" aria-label="Dairy Farm Manager home">
+        <img src="icon-192.png" alt="" width="32" height="32" />
+        <span>Dairy Farm Manager</span>
+      </a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#get">Get the app</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-primary btn-sm" href="app/">Open the app</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">For dairy farmers</p>
+          <h1>Farm records that fit in your pocket.</h1>
+          <p class="lead">Keep your cashbook, cows, feed, milk and savings in one simple app. It works without internet and syncs when you sign in.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="app/">Open the app</a>
+            <a class="btn btn-ghost" href="#get">Install on your phone</a>
+          </div>
+          <ul class="chips" aria-label="Highlights">
+            <li>Works offline</li>
+            <li>Reminders for heat checks and vaccines</li>
+            <li>Private to your account</li>
+          </ul>
+        </div>
+        <div class="hero-shots" aria-hidden="false">
+          <figure class="phone phone-back"><img src="img/cows.webp" alt="Cow AI and pregnancy tracker showing heat check, pregnancy check and expected calving dates" width="780" height="1688" /></figure>
+          <figure class="phone phone-front"><img src="img/cashbook.webp" alt="Cashbook overview with income, expenses, net balance and feed due" width="780" height="1688" fetchpriority="high" /></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="wrap">
+        <p class="eyebrow">Everything in one place</p>
+        <h2>The whole farm, without the notebooks.</h2>
+        <p class="sub">Each part of your day has its own simple screen. Add a record in a few taps and the app works out the rest.</p>
+        <div class="grid features">
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2m0-8c1.1 0 2.1.4 2.6 1M12 8V7m0 1v8m0 0v1m0-1c-1.1 0-2.1-.4-2.6-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+            <h3>Cashbook</h3>
+            <p>Record income and expenses in seconds. See monthly totals, where the money goes, and your balance.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
+            <h3>Breeding and pregnancy</h3>
+            <p>Enter the AI date and get the heat check, pregnancy check, dry-off and calving dates automatically.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 15.4a2 2 0 00-1-.5l-2.4-.5a6 6 0 00-3.9.5l-.3.2a6 6 0 01-3.9.5L6 15.2a2 2 0 00-1.8.5M8 4h8l-1 1v5.2a2 2 0 00.6 1.4l5 5c1.3 1.3.4 3.4-1.4 3.4H4.8c-1.8 0-2.7-2.1-1.4-3.4l5-5A2 2 0 009 10.2V5L8 4z"/></svg></span>
+            <h3>Milk and herd</h3>
+            <p>Log morning and evening milk for every cow, and book the day's milk sale to the cashbook in one tap.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></span>
+            <h3>Feed and installments</h3>
+            <p>Keep each month's Wanda bill and pay it off in installments, with the balance always in view.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+            <h3>Health reminders</h3>
+            <p>Track vaccinations and deworming, and get a reminder before the next dose is due.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.4-1.9M17 20H7m10 0v-2c0-.7-.1-1.3-.4-1.9M7 20H2v-2a3 3 0 015.4-1.9M7 20v-2c0-.7.1-1.3.4-1.9m0 0a5 5 0 019.2 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+            <h3>Milk buyers</h3>
+            <p>A running monthly account for each buyer: liters, rate, advances received and what is still owed.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></span>
+            <h3>Savings goals</h3>
+            <p>Set a target for a new cow or a shed repair, add money as you save, and watch the progress bar fill.</p>
+          </article>
+          <article class="card reveal">
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></span>
+            <h3>Sold animals</h3>
+            <p>See the profit or loss on every animal you sell, and keep the sale in your cashbook.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Showcase -->
+    <section class="section section-alt">
+      <div class="wrap showcase">
+        <div class="showcase-copy">
+          <p class="eyebrow">Savings goals</p>
+          <h2>Save toward what matters, and see how close you are.</h2>
+          <p class="sub">Name a goal, set the amount and a date, and the app suggests how much to put aside each month. When you reach the target, it celebrates with you.</p>
+          <ul class="ticks">
+            <li>Progress bar and days left for every goal</li>
+            <li>A suggested monthly amount to reach your date</li>
+            <li>Optionally record each deposit in your cashbook</li>
+          </ul>
+        </div>
+        <div class="showcase-shots">
+          <figure class="phone"><img src="img/savings.webp" alt="Savings goal for a new milking cow showing 40 percent saved, still to save and the suggested monthly amount" width="780" height="1688" loading="lazy" /></figure>
+          <figure class="phone phone-dark"><img src="img/cashbook-dark.webp" alt="The same cashbook overview in dark mode" width="780" height="1688" loading="lazy" /></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2>Up and running in minutes.</h2>
+        <ol class="steps">
+          <li class="reveal"><span class="num">1</span><h3>Add your records</h3><p>Start with your cows and your first cashbook entries. Everything is saved on your phone straight away.</p></li>
+          <li class="reveal"><span class="num">2</span><h3>Let the app do the counting</h3><p>Dates, totals, balances and reminders are worked out for you, so nothing slips by.</p></li>
+          <li class="reveal"><span class="num">3</span><h3>Back up and share between phones</h3><p>Create a free account to keep a safe copy and use the same farm on more than one phone.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Trust -->
+    <section class="section section-alt">
+      <div class="wrap">
+        <p class="eyebrow">Built to be trusted</p>
+        <h2>Your records stay yours.</h2>
+        <div class="grid trust">
+          <div class="card reveal"><h3>Works without internet</h3><p>Open it in the shed or the field. Everything works offline and syncs the next time you are online.</p></div>
+          <div class="card reveal"><h3>Private by design</h3><p>Records are saved on your phone first. With an account, each farm can only ever see its own data.</p></div>
+          <div class="card reveal"><h3>Your data, your control</h3><p>Download a backup or a spreadsheet any time, and delete your account and data from inside the app.</p></div>
+        </div>
+        <p class="fine"><a href="privacy.html">Read the privacy policy</a></p>
+      </div>
+    </section>
+
+    <!-- Get the app -->
+    <section id="get" class="section">
+      <div class="wrap">
+        <p class="eyebrow">Get the app</p>
+        <h2>Use it on any phone.</h2>
+        <div class="grid get">
+          <div class="card reveal">
+            <h3>On the web</h3>
+            <p>Open the app in your browser. Nothing to download.</p>
+            <a class="btn btn-primary btn-sm" href="app/">Open the app</a>
+          </div>
+          <div class="card reveal">
+            <h3>Android</h3>
+            <p>The Android app is coming soon. Until then, open the app in Chrome, tap the menu, then <strong>Install app</strong>.</p>
+            <span class="pill">Coming soon</span>
+          </div>
+          <div class="card reveal">
+            <h3>iPhone</h3>
+            <p>Open the app in Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
+            <a class="btn btn-ghost btn-sm" href="app/">Open in Safari</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section section-alt">
+      <div class="wrap narrow">
+        <p class="eyebrow">Questions</p>
+        <h2>Good to know.</h2>
+        <div class="faq">
+          <details><summary>Do I need internet to use it?</summary><p>No. Everything works offline. Signing in and syncing happen when you are online.</p></details>
+          <details><summary>Where is my data stored?</summary><p>On your phone. If you create an account, a private copy is also stored securely in the cloud, so you can restore it or use another phone.</p></details>
+          <details><summary>Can I use it on more than one phone?</summary><p>Yes. Sign in with the same account on each phone and your records stay in step.</p></details>
+          <details><summary>Can I take my records out?</summary><p>Yes. Save a full backup file or export a spreadsheet (CSV) from the menu whenever you like.</p></details>
+          <details><summary>Can I delete my account?</summary><p>Yes. In the app, open Account and choose Delete my account and data. It removes your login and your cloud copy.</p></details>
+          <details><summary>Which language is it in?</summary><p>English, using the terms farmers already know: Wanda, Wachi and Doodhi.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final call -->
+    <section class="final">
+      <div class="wrap">
+        <h2>Ready to put your records in order?</h2>
+        <p class="sub">Open the app and add your first cow or your first cashbook entry.</p>
+        <a class="btn btn-primary" href="app/">Open the app</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap foot-inner">
+      <span class="brand brand-sm"><img src="icon-192.png" alt="" width="24" height="24" /> Dairy Farm Manager</span>
+      <nav aria-label="Footer">
+        <a href="app/">Open the app</a>
+        <a href="privacy.html">Privacy policy</a>
+      </nav>
+      <span class="copy">&copy; <span id="year">2026</span> Dairy Farm Manager</span>
+    </div>
+  </footer>
+
+  <script src="landing.js" defer></script>
+</body>
+</html>

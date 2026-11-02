@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | **Build Android** | every push, or run manually | tests, then a **debug APK** (install on your own phone) |
 | same, with signing secrets | every push to a branch | also a **signed release APK** and a **Play Store bundle (.aab)** |
-| **Deploy web app** | push to `main`, or manually | the web/PWA version on GitHub Pages (one-time: *Settings -> Pages -> Source: GitHub Actions*) |
+| **Deploy web app** | push to `main`, or manually | the website on GitHub Pages: landing page at the root, the app at `/app/` (one-time: *Settings -> Pages -> Source: GitHub Actions*) |
 
 Download results from *Actions -> the run -> Artifacts*.
 

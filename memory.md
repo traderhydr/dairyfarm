@@ -1,7 +1,7 @@
 # Dairy Farm Manager: project memory
 
 Living notes so anyone (or any future session) can pick the project up quickly.
-Last updated: 2026-11-03. Keep secrets out of this file.
+Last updated: 2026-11-04. Keep secrets out of this file.
 
 ## What this is
 Offline-first farm record keeping for dairy farmers: cashbook, cow AI and pregnancy tracking, monthly
@@ -12,7 +12,7 @@ many separate farms, each with private data.
 ## Where things live
 - Repo: `traderhydr/dairyfarm`. Default branch: `main`. Working branch: `claude/new-session-ig9c4u`
   (kept in step with `main`; `main` is updated by fast-forward).
-- Website: https://traderhydr.github.io/dairyfarm/ (GitHub Pages, deployed by the *Deploy web app* workflow on push to `main`).
+- Website: https://traderhydr.github.io/dairyfarm/ is the **landing page**; the web app is at `/dairyfarm/app/` (GitHub Pages, deployed by the *Deploy web app* workflow on push to `main`, built by `npm run build:site`).
 - Backend: Supabase project, reference `rykxbdnbxeqmdflhwtos` (URL `https://rykxbdnbxeqmdflhwtos.supabase.co`).
   Table `farm_data` with row-level security was created from `supabase/migrations/0001_farm_data.sql` and verified
   (4 policies, delete function, realtime).
@@ -35,6 +35,7 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
 | `src/lib/` | Pure helpers: `format`, `dates`, `calc` (totals, monthly chart data), `savings` (goal progress, days left, monthly plan), `reminders`, `platform`, `files` |
 | `src/cloud/` | `merge.js` (3-way merge by record id), `sync-engine.js`, `supabase-remote.js`, `auth.js`, `config.js` |
 | `src/native/` | Android-only: back button, reminder notifications (`init.js`, `reminders.js`) |
+| `site/` | Landing page + `sw.js` (retires the old root service worker); built into the website by `scripts/build-site.mjs` |
 | `android/` | Committed Capacitor project (icons, splash, manifest, `build.gradle` with signing + version) |
 | `supabase/migrations/` | SQL (idempotent, safe to re-run) |
 | `tests/unit`, `tests/e2e` | vitest and Playwright (`app`, `native`, `cloud` projects) |
@@ -63,6 +64,14 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
   (any `commit('local')`), Escape, backdrop or switching tab. Overview cards and reminders show only on the Cashbook tab.
   Bottom nav = Cashbook, Milkers, Cow AI, Wanda, More (More opens the drawer with Wachi, Health, Sold Cows, Doodhi,
   settings and backups). Native back button closes sheet, then modal/drawer, then returns to Cashbook, then exits.
+- **Website layout (2026-11-04):** root = landing page, app = `/app/` (the Android build is unchanged: `npm run build`, app at its own root).
+  The landing page's inline head script forwards to `app/` (keeping query + hash) when the URL carries sign-in tokens
+  (`access_token`, `type=recovery`, `code=`...), the page runs standalone (installed icon), or localStorage already holds
+  `dairy_farm_v1_*` data; `?landing` bypasses it. `site/sw.js` replaces the old root-scope service worker (which would
+  otherwise keep serving the cached old app at the root): it unregisters itself, deletes only caches ending in the root scope
+  (never the `/app/` one) and reloads tabs. `AUTH_REDIRECT_URL` can stay the site root because of the forwarding.
+  `scripts/serve-site.mjs` serves `dist-site` under `/dairyfarm/` like Pages does; `tests/e2e/site.spec.js` covers all of this.
+  Landing screenshots/OG image come from `scripts/make-screenshots.mjs`; re-run it after big UI changes.
 - **Savings goals** (`savingsGoals` collection, key `dairy_farm_v1_savings`, drawer tab "Savings Goals"): each goal has a
   target, optional date, and a list of contributions. Shows progress, days left and a suggested monthly amount; a goal due
   within 45 days appears in the Cashbook reminders; reaching the target fires confetti once (`justReached`). A contribution can
@@ -106,16 +115,16 @@ Playwright tips: in this sandbox set `PW_CHROMIUM_PATH` to the preinstalled Chro
 - The sandbox cannot reach `dl.google.com`, so Android builds can only be verified in CI.
 
 ## Status (2026-11-01)
-Done: modular rewrite, tests (60 unit, 36 e2e), accounts + cloud sync (tested against a mocked API and a real
+Done: modular rewrite, tests (60 unit, 50 e2e), accounts + cloud sync (tested against a mocked API and a real
 account), Android project with icons/splash/reminders/back button/share-sheet backups, release signing wiring,
-web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations and the professional design pass (on the working branch; `main` not yet updated).
+web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations, the professional design pass and a landing page (all on the working branch; `main` has everything up to the design pass).
 
 Open items / owner actions:
 - [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).
 - [ ] Create the signing key (`scripts/make-keystore.sh`) and add the 4 `ANDROID_*` secrets; back the key up safely.
 - [ ] Decide the final Android package name before the first Play upload (permanent afterwards).
 - [ ] Play Console: listing, screenshots, Data safety form, closed-test requirement for new accounts (see `docs/RELEASE.md`).
-- [ ] Decide whether to add a public landing/marketing page (the website root is currently the app itself).
+- [ ] Landing page: add real store links once the Android app is on Google Play (currently says "Coming soon"); add a contact email once chosen.
 - [ ] Verify the redesign on a real phone (APK) and iPhone (Add to Home Screen); collect UI feedback.
 - [ ] Optional: Urdu translation (about 600 strings; needs a native reviewer; consider RTL), per-farm sharing between staff.
 - [ ] Optional: move off the debug signing key for testers (Play internal testing track).

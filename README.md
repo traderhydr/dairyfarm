@@ -16,7 +16,8 @@ npm ci
 npm run dev          # http://localhost:5173
 npm test             # unit tests (vitest)
 npm run test:e2e     # browser tests (Playwright; first run: npx playwright install chromium)
-npm run build        # production build into dist/
+npm run build        # the app on its own, into dist/ (this is what the Android app bundles)
+npm run build:site   # the public website: landing page at the root + the app under /app/, into dist-site/
 ```
 
 Requires Node 22+.
@@ -33,6 +34,7 @@ Requires Node 22+.
 | `src/cloud/*` | Supabase auth, the sync engine and 3-way merge |
 | `src/native/*` | Android-only behaviour (back button, reminders) |
 | `supabase/migrations` | Database schema + row-level security |
+| `site/` | The landing page (`index.html`, `landing.css`, screenshots in `img/`, `og.png`) and `sw.js`, which retires the old root service worker |
 | `android/` | The Capacitor Android project (committed) |
 | `tests/unit`, `tests/e2e` | vitest and Playwright tests |
 
@@ -45,6 +47,13 @@ Without configuration the app is local-only. To enable accounts, follow [docs/CL
 See [docs/RELEASE.md](docs/RELEASE.md). In short: every push builds a debug APK in GitHub Actions
 (Actions tab -> latest run -> Artifacts). Add the keystore secrets and it also produces a signed APK
 and a Play Store bundle (`.aab`).
+
+## Website
+
+`npm run build:site` assembles what GitHub Pages serves: the **landing page** at the address root and the **web app** under
+`/app/`. Visitors who already use the app, open the installed icon, or arrive from an email sign-in link are forwarded
+to `/app/` automatically (add `?landing` to any address to see the landing page anyway). The screenshots on the page are
+regenerated from the real app with `node scripts/make-screenshots.mjs` (needs the app preview running on port 4173).
 
 ## iPhone
 

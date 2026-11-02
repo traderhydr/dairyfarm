@@ -1,4 +1,5 @@
 // Light / dark theme: remembered between visits, defaults to the phone's own setting.
+import { SystemBars, SystemBarsStyle } from '@capacitor/core';
 import { isNative } from '../lib/platform.js';
 
 const KEY = 'dairy_theme';
@@ -26,9 +27,7 @@ export function applyTheme(dark) {
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0a0a0a' : '#ffffff');
   if (isNative) {
     // keep the Android status bar icons readable against the header
-    import('@capacitor/core')
-      .then(({ SystemBars, SystemBarsStyle }) => SystemBars.setStyle({ style: dark ? SystemBarsStyle.Dark : SystemBarsStyle.Light }))
-      .catch(() => {});
+    SystemBars.setStyle({ style: dark ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {});
   }
 }
 
