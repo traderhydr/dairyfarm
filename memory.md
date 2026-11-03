@@ -120,7 +120,7 @@ account), Android project with icons/splash/reminders/back button/share-sheet ba
 web deploy, clean-and-simple UI redesign (on `main`), savings goals, animations, the professional design pass and a landing page (all on the working branch; `main` has everything up to the design pass).
 
 Open items / owner actions:
-- [ ] Replace `YOUR_CONTACT_EMAIL` in `public/privacy.html` (public page; needs the owner's chosen address).
+- [x] Contact email ranamuneercattlefarm@gmail.com added to `public/privacy.html` and the landing-page footer (2026-11-03, owner's choice; both are public pages).
 - [ ] Create the signing key on the owner's own computer (`scripts/make-keystore.sh`, steps in `docs/RELEASE.md`) and add the 4 `ANDROID_*` GitHub secrets; back the key up. (2026-11-04: a key generated in the AI session was deliberately discarded; the owner chose to make their own so no one else sees it.)
 - [ ] Play Console: listing, screenshots, Data safety form, closed-test requirement for new accounts (see `docs/RELEASE.md`).
 - [ ] Landing page: add real store links once the Android app is on Google Play (currently says "Coming soon"); add a contact email once chosen.

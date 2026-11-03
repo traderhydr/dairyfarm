@@ -58,8 +58,8 @@ apps). Then Google keeps the real app-signing key and yours is only an *upload k
 2. Complete the store listing: name, short and full description, screenshots (phone, take them from the
    app), the 512x512 icon (`public/icon-512.png`), and a feature graphic (1024x500).
 3. **Privacy policy URL:** the policy is `public/privacy.html`. After deploying the web app it is at
-   `https://<your-pages-address>/privacy.html`. Fill in the contact email placeholder
-   (`YOUR_CONTACT_EMAIL`) in that file first.
+   `https://<your-pages-address>/privacy.html`. It already lists the contact email (change it in `public/privacy.html`
+   and the website footer in `site/index.html` if it ever changes).
 4. **Data safety form:** the app collects email address and the farm records you type in (when an
    account is created); data is encrypted in transit; users can request deletion (in-app: *Account -> Delete my account*).
    No ads, no analytics, no location.
