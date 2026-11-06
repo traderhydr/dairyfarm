@@ -1,5 +1,7 @@
+import { todayStr } from '../lib/dates.js';
 import { addDays, escapeHtml, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
@@ -50,6 +52,7 @@ export function renderBreeding() {
           <button type="button" data-calve-cow="${record.id}" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold px-2.5 py-1 rounded-lg transition">
             + Record Calving
           </button>
+          <button type="button" data-edit-cow="${record.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-cow="${record.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
           </button>
@@ -105,6 +108,10 @@ function closeCalvingModal() {
 }
 
 export function initBreeding() {
+  const editor = createEditor({
+    sheetId: 'breedingSheet', formId: 'breedingForm', editTitle: 'Edit AI Record',
+    onReset: () => { document.getElementById('aiDate').value = todayStr(); updateBreedingPreview(); }
+  });
   // Live AI Date Preview
   document.getElementById('aiDate').addEventListener('input', updateBreedingPreview);
 
@@ -118,6 +125,14 @@ export function initBreeding() {
     const notes = document.getElementById('cowNotes').value.trim();
 
     if (!cowTag || !aiDate) return;
+
+    const existing = editor.find(state.breedingRecords);
+    if (existing) {
+      Object.assign(existing, { cowTag, aiDate, semenBull, pregStatus, notes });
+      commit();
+      showToast('AI record updated!');
+      return;
+    }
 
     state.breedingRecords.unshift({
       id: 'cow-' + Date.now(),
@@ -153,6 +168,18 @@ export function initBreeding() {
   });
 
   document.getElementById('breedingListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-cow]');
+    if (editBtn) {
+      const rec = state.breedingRecords.find(r => r.id === editBtn.getAttribute('data-edit-cow'));
+      if (rec) {
+        editor.begin(rec.id, () => {
+          setField('cowTag', rec.cowTag); setField('aiDate', rec.aiDate); setField('semenBull', rec.semenBull);
+          setField('pregStatus', rec.pregStatus); setField('cowNotes', rec.notes);
+          updateBreedingPreview();
+        });
+      }
+      return;
+    }
     const calveBtn = e.target.closest('[data-calve-cow]');
     if (calveBtn) {
       const id = calveBtn.getAttribute('data-calve-cow');

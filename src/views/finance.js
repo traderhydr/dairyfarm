@@ -61,7 +61,8 @@ export function renderTransactions() {
 
   filtered.forEach(item => {
     const tr = document.createElement('tr');
-    tr.className = 'hover:bg-slate-50/80 transition';
+    tr.className = 'hover:bg-slate-50/80 transition cursor-pointer';
+    tr.setAttribute('data-row-tx', item.id);
 
     const isIncome = item.type === 'income';
     const badgeClass = isIncome
@@ -263,7 +264,8 @@ export function initFinance() {
 
   // Edit or delete a transaction (event delegation)
   document.getElementById('txListBody').addEventListener('click', (e) => {
-    const editBtn = e.target.closest('[data-edit-tx]');
+    const rowEdit = !e.target.closest('button') && e.target.closest('tr[data-row-tx]');
+    const editBtn = e.target.closest('[data-edit-tx]') || (rowEdit && { getAttribute: () => rowEdit.getAttribute('data-row-tx') });
     if (editBtn) {
       const tx = state.transactions.find((t) => t.id === editBtn.getAttribute('data-edit-tx'));
       if (tx) startEditing(tx);

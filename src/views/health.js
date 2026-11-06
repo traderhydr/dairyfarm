@@ -1,5 +1,7 @@
 import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { todayStr } from '../lib/dates.js';
 import { showToast } from '../ui/toast.js';
 
 function updateHealthPreview() {
@@ -48,6 +50,7 @@ export function renderHealth() {
             <option value="Scheduled Booster" ${!isDone ? 'selected' : ''}>Scheduled Booster</option>
             <option value="Booster Completed" ${isDone ? 'selected' : ''}>Booster Completed</option>
           </select>
+          <button type="button" data-edit-health="${rec.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-health="${rec.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
           </button>
@@ -74,6 +77,10 @@ export function renderHealth() {
 }
 
 export function initHealth() {
+  const editor = createEditor({
+    sheetId: 'healthSheet', formId: 'healthForm', editTitle: 'Edit Health Record', addOnly: ['healthSyncExpense'],
+    onReset: () => { document.getElementById('healthDateGiven').value = todayStr(); updateHealthPreview(); }
+  });
   // Health Preview & Listeners
   updateHealthPreview();
   ['healthType', 'healthDateGiven'].forEach(id => {
@@ -94,6 +101,15 @@ export function initHealth() {
     const syncExpense = document.getElementById('healthSyncExpense').checked;
 
     if (!target || !dateGiven) return;
+
+    const existing = editor.find(state.healthRecords);
+    if (existing) {
+      const known = opt && opt.hasAttribute('data-days');
+      Object.assign(existing, { target, type, dateGiven, medicine, cost, intervalDays: known ? intervalDays : existing.intervalDays });
+      commit();
+      showToast('Health record updated. Cashbook entries already made are unchanged.');
+      return;
+    }
 
     state.healthRecords.unshift({
       id: 'health-' + Date.now(),
@@ -138,6 +154,18 @@ export function initHealth() {
   });
 
   document.getElementById('healthListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-health]');
+    if (editBtn) {
+      const rec = state.healthRecords.find(r => r.id === editBtn.getAttribute('data-edit-health'));
+      if (rec) {
+        editor.begin(rec.id, () => {
+          setField('healthTarget', rec.target); setField('healthType', rec.type); setField('healthDateGiven', rec.dateGiven);
+          setField('healthMedicine', rec.medicine); setField('healthCost', rec.cost || 0);
+          updateHealthPreview();
+        });
+      }
+      return;
+    }
     const delBtn = e.target.closest('[data-delete-health]');
     if (!delBtn) return;
     const id = delBtn.getAttribute('data-delete-health');

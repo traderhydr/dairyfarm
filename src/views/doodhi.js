@@ -2,6 +2,7 @@ import { todayStr } from '../lib/dates.js';
 import { sumAmounts } from '../lib/calc.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { showToast } from '../ui/toast.js';
 
 function updateDoodhiFormPreview() {
@@ -78,9 +79,10 @@ export function renderDoodhi() {
             ${escapeHtml(acc.monthLabel)} &bull; <span class="font-semibold text-slate-700">${acc.liters} Liters</span> @ ${formatCurrency(acc.ratePerLiter)}/L
           </p>
         </div>
-        <button type="button" data-delete-doodhi="${acc.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
-          Delete Khata
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-edit-doodhi="${acc.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-delete-doodhi="${acc.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete Khata</button>
+        </div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -142,6 +144,11 @@ export function renderDoodhi() {
 }
 
 export function initDoodhi() {
+  const editor = createEditor({
+    sheetId: 'doodhiSheet', formId: 'doodhiForm', editTitle: 'Edit Milk Khata',
+    addOnly: ['doodhiInitialReceived', 'doodhiSyncAdvance'],
+    onReset: () => { document.getElementById('doodhiStartDate').value = todayStr(); updateDoodhiFormPreview(); }
+  });
   // Doodhi Khata Form & List Listeners
   ['doodhiLiters', 'doodhiRate', 'doodhiInitialReceived'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateDoodhiFormPreview);
@@ -160,6 +167,15 @@ export function initDoodhi() {
     if (!buyerName || !monthLabel || liters <= 0 || ratePerLiter <= 0 || !startDate) return;
 
     const totalBill = Math.round(liters * ratePerLiter);
+
+    const existing = editor.find(state.doodhiAccounts);
+    if (existing) {
+      Object.assign(existing, { buyerName, monthLabel, startDate, liters, ratePerLiter, totalBill });
+      commit();
+      showToast('Khata updated. Payments and Cashbook entries are unchanged.');
+      return;
+    }
+
     const payments = [];
 
     if (initialReceived > 0) {
@@ -242,6 +258,18 @@ export function initDoodhi() {
   });
 
   document.getElementById('doodhiListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-doodhi]');
+    if (editBtn) {
+      const acc = state.doodhiAccounts.find(a => a.id === editBtn.getAttribute('data-edit-doodhi'));
+      if (acc) {
+        editor.begin(acc.id, () => {
+          setField('doodhiName', acc.buyerName); setField('doodhiMonth', acc.monthLabel); setField('doodhiLiters', acc.liters);
+          setField('doodhiRate', acc.ratePerLiter); setField('doodhiStartDate', acc.startDate);
+          updateDoodhiFormPreview();
+        });
+      }
+      return;
+    }
     const delPayBtn = e.target.closest('[data-delete-doodhi-pay]');
     if (delPayBtn) {
       const payId = delPayBtn.getAttribute('data-delete-doodhi-pay');

@@ -54,6 +54,7 @@ export function renderLedgers() {
           <p class="font-semibold text-slate-900 truncate">${escapeHtml(l.name)}</p>
           <span class="text-xs text-slate-400 whitespace-nowrap">${t.count} ${t.count === 1 ? 'entry' : 'entries'} &rsaquo;</span>
         </div>
+        ${l.note ? `<p class="text-xs text-slate-500 truncate">${escapeHtml(l.note)}</p>` : ''}
         <p class="text-lg font-extrabold mt-1 ${netClass(t.net)}">${signed(t.net)}</p>
         <p class="text-xs text-slate-500 mt-0.5">In ${formatCurrency(t.income)} &middot; Out ${formatCurrency(t.expense)}</p>
       </button>`;
@@ -64,6 +65,8 @@ export function renderLedgers() {
   if (!ledger) return;
   const t = totalsOf(scopedTransactions());
   $('ledgerTitle').textContent = ledger.name;
+  $('ledgerNote').textContent = ledger.note || '';
+  $('ledgerNote').classList.toggle('hidden', !ledger.note);
   $('ledgerIncome').textContent = formatCurrency(t.income);
   $('ledgerIncomeCount').textContent = t.incomeCount + (t.incomeCount === 1 ? ' entry' : ' entries');
   $('ledgerExpense').textContent = formatCurrency(t.expense);
@@ -92,9 +95,10 @@ export function isLedgerOpen() {
 
 function openLedgerSheet(renaming) {
   renamingId = renaming ? currentId : null;
-  $('ledgerSheetTitle').textContent = renaming ? 'Rename Ledger' : 'New Ledger';
-  $('ledgerForm').querySelector('button[type="submit"]').textContent = renaming ? 'Save Name' : 'Create Ledger';
+  $('ledgerSheetTitle').textContent = renaming ? 'Edit Ledger' : 'New Ledger';
+  $('ledgerForm').querySelector('button[type="submit"]').textContent = renaming ? 'Save Changes' : 'Create Ledger';
   $('ledgerName').value = renaming ? getCurrentLedger().name : '';
+  $('ledgerNoteInput').value = renaming ? getCurrentLedger().note || '' : '';
   $('ledgerNameError').classList.add('hidden');
   openSheet('ledgerSheet');
 }
@@ -116,6 +120,7 @@ export function initLedgers() {
   $('ledgerForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = $('ledgerName').value.trim().replace(/\s+/g, ' ');
+    const note = $('ledgerNoteInput').value.trim();
     if (!name) return;
     if (nameTaken(state.ledgers, name, renamingId)) {
       $('ledgerNameError').classList.remove('hidden');
@@ -123,12 +128,12 @@ export function initLedgers() {
     }
     if (renamingId) {
       const ledger = state.ledgers.find((l) => l.id === renamingId);
-      if (ledger) ledger.name = name;
+      if (ledger) Object.assign(ledger, { name, note });
       commit();
-      showToast('Ledger renamed.');
+      showToast('Ledger updated.');
       return;
     }
-    const ledger = { id: 'ledger-' + Date.now(), name };
+    const ledger = { id: 'ledger-' + Date.now(), name, ...(note ? { note } : {}) };
     state.ledgers.push(ledger);
     currentId = ledger.id; // jump straight into the new ledger
     commit();

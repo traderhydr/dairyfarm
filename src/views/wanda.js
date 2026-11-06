@@ -1,6 +1,7 @@
 import { todayStr } from '../lib/dates.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { showToast } from '../ui/toast.js';
 
 export function updateWandaFormPreview() {
@@ -66,9 +67,10 @@ export function renderWanda() {
             ${escapeHtml(batch.supplier)} &bull; <span class="font-semibold text-slate-700">${batch.bags} Bags</span> @ ${formatCurrency(batch.ratePerBag)}/bag (Arrived ${formatDisplayDate(batch.purchaseDate)})
           </p>
         </div>
-        <button type="button" data-delete-wanda="${batch.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
-          Delete Stock
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-edit-wanda="${batch.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-delete-wanda="${batch.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete Stock</button>
+        </div>
       </div>
 
       <!-- Bill Breakdown Grid -->
@@ -134,6 +136,11 @@ export function renderWanda() {
 }
 
 export function initWanda() {
+  const editor = createEditor({
+    sheetId: 'wandaSheet', formId: 'wandaForm', editTitle: 'Edit Wanda Stock',
+    addOnly: ['wandaInitialPaid', 'wandaSyncAdvance'],
+    onReset: () => { document.getElementById('wandaPurchaseDate').value = todayStr(); updateWandaFormPreview(); }
+  });
   // Live Wanda Bill Preview
   ['wandaBags', 'wandaRatePerBag', 'wandaInitialPaid'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateWandaFormPreview);
@@ -153,6 +160,15 @@ export function initWanda() {
     if (!monthLabel || !purchaseDate || isNaN(bags) || bags <= 0 || isNaN(ratePerBag) || ratePerBag <= 0) return;
 
     const totalBill = Math.round(bags * ratePerBag);
+
+    const existing = editor.find(state.wandaBatches);
+    if (existing) {
+      Object.assign(existing, { monthLabel, purchaseDate, supplier, bags, ratePerBag, totalBill });
+      commit();
+      showToast('Wanda stock updated. Payments and Cashbook entries are unchanged.');
+      return;
+    }
+
     const installments = [];
 
     if (initialPaid > 0) {
@@ -238,6 +254,18 @@ export function initWanda() {
 
   // Delete Wanda Installment or Entire Wanda Batch
   document.getElementById('wandaListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-wanda]');
+    if (editBtn) {
+      const batch = state.wandaBatches.find(b => b.id === editBtn.getAttribute('data-edit-wanda'));
+      if (batch) {
+        editor.begin(batch.id, () => {
+          setField('wandaMonth', batch.monthLabel); setField('wandaPurchaseDate', batch.purchaseDate);
+          setField('wandaSupplier', batch.supplier); setField('wandaBags', batch.bags); setField('wandaRatePerBag', batch.ratePerBag);
+          updateWandaFormPreview();
+        });
+      }
+      return;
+    }
     const delInstBtn = e.target.closest('[data-delete-inst]');
     if (delInstBtn) {
       const instId = delInstBtn.getAttribute('data-delete-inst');

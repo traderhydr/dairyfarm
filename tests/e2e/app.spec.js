@@ -563,3 +563,78 @@ test.describe('ledgers', () => {
     expect(stored).toHaveLength(1);
   });
 });
+
+test.describe('editing records in every section', () => {
+  const stored = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  // [tab button, edit button selector, sheet id, form id, field to change, new value, storage key, record field]
+  const SECTIONS = [
+    ['tabBreedingBtn', '[data-edit-cow]', 'breedingSheet', 'breedingForm', 'semenBull', 'Edited Bull', 'dairy_farm_v1_breeding', 'semenBull'],
+    ['tabMilkersBtn', '[data-edit-milker-form]', 'milkersSheet', 'milkerForm', 'milkerBreed', 'Edited Breed', 'dairy_farm_v1_milkers', 'breed'],
+    ['tabWachiBtn', '[data-edit-wachi]', 'wachiSheet', 'wachiForm', 'wachiBreed', 'Edited Breed', 'dairy_farm_v1_wachi', 'breed'],
+    ['tabWandaBtn', '[data-edit-wanda]', 'wandaSheet', 'wandaForm', 'wandaSupplier', 'Edited Supplier', 'dairy_farm_v1_wanda', 'supplier'],
+    ['tabHealthBtn', '[data-edit-health]', 'healthSheet', 'healthForm', 'healthMedicine', 'Edited Medicine', 'dairy_farm_v1_health', 'medicine'],
+    ['tabSalesBtn', '[data-edit-sale]', 'salesSheet', 'salesForm', 'saleBuyer', 'Edited Buyer', 'dairy_farm_v1_sales', 'buyer'],
+    ['tabDoodhiBtn', '[data-edit-doodhi]', 'doodhiSheet', 'doodhiForm', 'doodhiName', 'Edited Buyer', 'dairy_farm_v1_doodhi', 'buyerName'],
+    ['tabSavingsBtn', '[data-edit-goal]', 'savingsSheet', 'savingsForm', 'savingsName', 'Edited Goal', 'dairy_farm_v1_savings', 'name']
+  ];
+
+  for (const [tabId, editSel, sheetId, formId, field, value, key, prop] of SECTIONS) {
+    test(`${sheetId}: edit changes the record in place, cancel leaves the add form clean`, async ({ page }) => {
+      await loadSample(page);
+      await tab(page, tabId);
+      const before = await stored(page, key);
+      await page.locator(editSel).first().click();
+      await expect(page.locator(`#${sheetId}`)).toBeVisible();
+      await expect(page.locator(`#${sheetId}Title`)).toContainText('Edit');
+      await expect(page.locator(`#${formId} button[type="submit"]`)).toHaveText('Save Changes');
+      await fill(page, field, value);
+      await submit(page, formId);
+      const after = await stored(page, key);
+      expect(after).toHaveLength(before.length);
+      expect(after.map((r) => r[prop])).toContain(value);
+      expect(after.map((r) => r.id)).toEqual(before.map((r) => r.id));
+
+      // opening Edit then closing leaves the next "add" clean
+      await page.locator(editSel).first().click();
+      await page.keyboard.press('Escape');
+      await expect(page.locator(`#${sheetId}Title`)).not.toContainText('Edit');
+      await expect(page.locator(`#${formId} button[type="submit"]`)).not.toHaveText('Save Changes');
+      await expect(page.locator(`#${field}`)).toHaveValue('');
+    });
+  }
+
+  test('editing Wanda keeps its payments and recalculates the bill', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabWandaBtn');
+    const before = (await stored(page, 'dairy_farm_v1_wanda'))[0];
+    await page.locator('[data-edit-wanda]').first().click();
+    await expect(page.locator('#wandaInitialPaid')).toBeHidden();
+    await fill(page, 'wandaBags', '10');
+    await fill(page, 'wandaRatePerBag', '1000');
+    await submit(page, 'wandaForm');
+    const after = (await stored(page, 'dairy_farm_v1_wanda'))[0];
+    expect(after.totalBill).toBe(10000);
+    expect(after.installments).toEqual(before.installments);
+    expect((await stored(page, 'dairy_farm_v1_transactions')).length).toBe(3);
+  });
+
+  test('editing a ledger changes its name and note; tapping a cashbook row opens it for editing', async ({ page }) => {
+    await page.locator('#newLedgerBtn').click();
+    await fill(page, 'ledgerName', 'Milk');
+    await submit(page, 'ledgerForm');
+    await page.locator('#renameLedgerBtn').click();
+    await expect(page.locator('#ledgerSheetTitle')).toHaveText('Edit Ledger');
+    await fill(page, 'ledgerName', 'Milk sales');
+    await fill(page, 'ledgerNoteInput', 'All milk money');
+    await submit(page, 'ledgerForm');
+    await expect(page.locator('#ledgerTitle')).toHaveText('Milk sales');
+    await expect(page.locator('#ledgerNote')).toHaveText('All milk money');
+
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await fill(page, 'txAmount', '800');
+    await submit(page, 'financeForm');
+    await page.locator('#txListBody tr').first().locator('td').first().click();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('Edit Entry');
+    await expect(page.locator('#txAmount')).toHaveValue('800');
+  });
+});

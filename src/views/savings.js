@@ -3,6 +3,7 @@ import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js'
 import { daysLeft, goalProgress, justReached, suggestedMonthly } from '../lib/savings.js';
 import { commit, state } from '../state.js';
 import { animateBar, animateNumber, burstConfetti } from '../ui/motion.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { showToast } from '../ui/toast.js';
 
 const INPUT = 'rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500';
@@ -99,7 +100,10 @@ function goalCard(goal) {
         </div>
         <p class="text-xs text-slate-500 mt-0.5">${subtitle}</p>
       </div>
-      <button type="button" data-delete-goal="${goal.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
+      <div class="flex items-center gap-1 shrink-0">
+        <button type="button" data-edit-goal="${goal.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+        <button type="button" data-delete-goal="${goal.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
+      </div>
     </div>
 
     <div>
@@ -182,6 +186,10 @@ function updatePlanPreview() {
 }
 
 export function initSavings() {
+  const editor = createEditor({
+    sheetId: 'savingsSheet', formId: 'savingsForm', editTitle: 'Edit Savings Goal', addOnly: ['savingsStart'],
+    onReset: updatePlanPreview
+  });
   ['savingsTarget', 'savingsStart', 'savingsDate'].forEach((id) => {
     document.getElementById(id).addEventListener('input', updatePlanPreview);
   });
@@ -195,6 +203,14 @@ export function initSavings() {
     const start = parseFloat(document.getElementById('savingsStart').value) || 0;
     const notes = document.getElementById('savingsNotes').value.trim();
     if (!name || isNaN(target) || target <= 0) return;
+
+    const existing = editor.find(state.savingsGoals);
+    if (existing) {
+      Object.assign(existing, { name, target, targetDate, notes });
+      commit();
+      showToast('Savings goal updated!');
+      return;
+    }
 
     const contributions = start > 0 ? [{ id: 'gc-' + Date.now(), date: todayStr(), amount: start, note: 'Starting balance' }] : [];
     const goal = { id: 'goal-' + Date.now(), name, target, targetDate, notes, createdDate: todayStr(), contributions };
@@ -244,6 +260,18 @@ export function initSavings() {
   });
 
   list.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-goal]');
+    if (editBtn) {
+      const goal = state.savingsGoals.find((g) => g.id === editBtn.getAttribute('data-edit-goal'));
+      if (goal) {
+        editor.begin(goal.id, () => {
+          setField('savingsName', goal.name); setField('savingsTarget', goal.target);
+          setField('savingsDate', goal.targetDate); setField('savingsNotes', goal.notes);
+          updatePlanPreview();
+        });
+      }
+      return;
+    }
     const removeContribution = e.target.closest('[data-delete-contribution]');
     if (removeContribution) {
       const goal = state.savingsGoals.find((g) => g.id === removeContribution.getAttribute('data-goal-id'));

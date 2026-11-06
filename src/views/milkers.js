@@ -1,6 +1,7 @@
 import { formatLiters } from '../lib/calc.js';
 import { escapeHtml, formatCurrency } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { showToast } from '../ui/toast.js';
 
 function updateMilkerFormPreview() {
@@ -57,9 +58,10 @@ export function renderMilkers() {
           </div>
           <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(cow.breed)}</p>
         </div>
-        <button type="button" data-delete-milker="${cow.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
-          Delete
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-edit-milker-form="${cow.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-delete-milker="${cow.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
+        </div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -106,6 +108,10 @@ function updateQuickMilkCalculator() {
 }
 
 export function initMilkers() {
+  const editor = createEditor({
+    sheetId: 'milkersSheet', formId: 'milkerForm', editTitle: 'Edit Milking Cow',
+    onReset: updateMilkerFormPreview
+  });
   // Live Milker Form Yield Preview
   ['milkerMorning', 'milkerEvening'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateMilkerFormPreview);
@@ -153,6 +159,14 @@ export function initMilkers() {
 
     if (!tag || !breed) return;
 
+    const existing = editor.find(state.milkersList);
+    if (existing) {
+      Object.assign(existing, { tag, breed, morningMilk, eveningMilk, status, notes });
+      commit();
+      showToast('Milking cow updated!');
+      return;
+    }
+
     state.milkersList.unshift({
       id: 'milker-' + Date.now(),
       tag,
@@ -188,6 +202,19 @@ export function initMilkers() {
   });
 
   document.getElementById('milkersListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-milker-form]');
+    if (editBtn) {
+      const cow = state.milkersList.find(m => m.id === editBtn.getAttribute('data-edit-milker-form'));
+      if (cow) {
+        editor.begin(cow.id, () => {
+          setField('milkerTag', cow.tag); setField('milkerBreed', cow.breed);
+          setField('milkerMorning', cow.morningMilk); setField('milkerEvening', cow.eveningMilk);
+          setField('milkerStatus', cow.status); setField('milkerNotes', cow.notes);
+          updateMilkerFormPreview();
+        });
+      }
+      return;
+    }
     const delBtn = e.target.closest('[data-delete-milker]');
     if (!delBtn) return;
     const id = delBtn.getAttribute('data-delete-milker');

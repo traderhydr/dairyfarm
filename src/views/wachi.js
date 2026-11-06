@@ -1,5 +1,6 @@
 import { escapeHtml } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
@@ -49,6 +50,7 @@ export function renderWachi() {
           <button type="button" data-promote-wachi="${wachi.id}" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold px-2.5 py-1 rounded-lg transition">
             + Log 1st AI
           </button>
+          <button type="button" data-edit-wachi="${wachi.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-wachi="${wachi.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
           </button>
@@ -77,6 +79,7 @@ export function renderWachi() {
 }
 
 export function initWachi() {
+  const editor = createEditor({ sheetId: 'wachiSheet', formId: 'wachiForm', editTitle: 'Edit Wachi (Heifer)' });
   // Add New Wachi (Heifer)
   document.getElementById('wachiForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -88,6 +91,14 @@ export function initWachi() {
     const notes = document.getElementById('wachiNotes').value.trim();
 
     if (!tag || !breed || ageMonths <= 0 || weightKg <= 0) return;
+
+    const existing = editor.find(state.wachiList);
+    if (existing) {
+      Object.assign(existing, { tag, breed, ageMonths, weightKg, stage, notes });
+      commit();
+      showToast('Wachi updated!');
+      return;
+    }
 
     state.wachiList.unshift({
       id: 'wachi-' + Date.now(),
@@ -126,6 +137,17 @@ export function initWachi() {
   });
 
   document.getElementById('wachiListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-wachi]');
+    if (editBtn) {
+      const w = state.wachiList.find(x => x.id === editBtn.getAttribute('data-edit-wachi'));
+      if (w) {
+        editor.begin(w.id, () => {
+          setField('wachiTag', w.tag); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
+          setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes);
+        });
+      }
+      return;
+    }
     const promoteBtn = e.target.closest('[data-promote-wachi]');
     if (promoteBtn) {
       const id = promoteBtn.getAttribute('data-promote-wachi');

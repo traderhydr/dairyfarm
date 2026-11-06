@@ -1,5 +1,7 @@
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { todayStr } from '../lib/dates.js';
 import { showToast } from '../ui/toast.js';
 
 function updateSaleProfitPreview() {
@@ -88,9 +90,10 @@ export function renderSales() {
             Sold To: <span class="font-semibold text-slate-900">${escapeHtml(sale.buyer)}</span> &bull; <span class="text-slate-500">${formatDisplayDate(sale.saleDate)}</span>
           </p>
         </div>
-        <button type="button" data-delete-sale="${sale.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
-          Delete
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-edit-sale="${sale.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-delete-sale="${sale.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
+        </div>
       </div>
 
       <div class="grid grid-cols-3 gap-2">
@@ -115,6 +118,11 @@ export function renderSales() {
 }
 
 export function initSales() {
+  const editor = createEditor({
+    sheetId: 'salesSheet', formId: 'salesForm', editTitle: 'Edit Sold Cow',
+    addOnly: ['saleQuickPick', 'saleSyncCashbook', 'saleRemoveFromHerd'],
+    onReset: () => { document.getElementById('saleDate').value = todayStr(); updateSaleProfitPreview(); }
+  });
   // Sold Cows Form Listeners
   ['saleTotalCost', 'salePrice'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateSaleProfitPreview);
@@ -150,6 +158,14 @@ export function initSales() {
     const removeFromHerd = document.getElementById('saleRemoveFromHerd').checked;
 
     if (!cowTag || !saleDate || !buyer || salePrice <= 0) return;
+
+    const existing = editor.find(state.cattleSales);
+    if (existing) {
+      Object.assign(existing, { cowTag, saleDate, buyer, totalCost, salePrice, notes });
+      commit();
+      showToast('Sale updated. Cashbook entries already made are unchanged.');
+      return;
+    }
 
     state.cattleSales.unshift({
       id: 'sale-' + Date.now(),
@@ -195,6 +211,18 @@ export function initSales() {
   });
 
   document.getElementById('salesListContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-sale]');
+    if (editBtn) {
+      const sale = state.cattleSales.find(x => x.id === editBtn.getAttribute('data-edit-sale'));
+      if (sale) {
+        editor.begin(sale.id, () => {
+          setField('saleCowTag', sale.cowTag); setField('saleDate', sale.saleDate); setField('saleBuyer', sale.buyer);
+          setField('saleTotalCost', sale.totalCost); setField('salePrice', sale.salePrice); setField('saleNotes', sale.notes);
+          updateSaleProfitPreview();
+        });
+      }
+      return;
+    }
     const delBtn = e.target.closest('[data-delete-sale]');
     if (!delBtn) return;
     const id = delBtn.getAttribute('data-delete-sale');

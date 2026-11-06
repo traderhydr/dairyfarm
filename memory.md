@@ -86,6 +86,11 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
   overview and shows that ledger's own totals; the entry list, insights and trend chart are scoped through `scopedTransactions()`. Deleting a ledger moves
   its entries to General. New entries default to the open ledger; the Edit form can move an entry. Native back button leaves an open ledger first.
   Gotcha: Playwright reuses already-running preview servers, so after code changes rebuild `dist`, `dist-cloud` (fake Supabase env) and `dist-site` or tests run against stale code.
+- **Editing (2026-11-06):** every record type has an Edit button that reopens its add sheet filled in. Shared helper `ui/record-editor.js`
+  (`createEditor({sheetId, formId, editTitle, addOnly, onReset})`, `setField`): `begin(id, fill)`, `find(list)` in the submit handler; fields listed in
+  `addOnly` (advance payment, "also add to Cashbook", starting balance, pick-from-herd) are hidden while editing, and editing never touches payments or
+  Cashbook entries already created. Closing the sheet any way resets to add mode (`sheetclose`). Cashbook rows are also tappable to edit. Ledgers have
+  Edit (name + optional `note`). Cow AI status, Wachi stage, milk yields keep their inline controls too.
 - **Motion:** CSS keyframes + `ui/motion.js`. A tab opening adds `.tab-enter` for about 1s (so ordinary re-renders never replay
   it); money cards count up (`animateNumber`, final text is always exact); progress bars grow; sheets, dialogs and toasts
   animate. Everything respects `prefers-reduced-motion`. Beware: never animate a transform on an ancestor of a
