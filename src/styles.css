@@ -347,6 +347,19 @@ details.insights[open] > summary { border-bottom: 1px solid var(--border); }
 /* overview + reminders belong on the Cashbook (home) tab only */
 body:not([data-tab="finance"]) #overviewSection,
 body:not([data-tab="finance"]) #farmAlertsSection { display: none; }
+/* an open ledger replaces the all-ledgers overview and reminders */
+body.ledger-open #overviewSection,
+body.ledger-open #farmAlertsSection { display: none; }
+.ledger-card, .ledger-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  min-width: 0;
+}
+.ledger-card { cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
+.ledger-card:hover { border-color: var(--text-2); background: var(--surface-2); }
+.ledger-stat { background: var(--surface-2); }
 #farmAlertsSection h2 { text-transform: none; letter-spacing: -0.01em; }
 
 /* ------------------------------------------------------------------ pages and lists */

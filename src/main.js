@@ -16,6 +16,7 @@ import { initAlerts, renderAlerts } from './views/alerts.js';
 import { initBreeding, renderBreeding, updateBreedingPreview } from './views/breeding.js';
 import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
+import { initLedgers, renderLedgers } from './views/ledgers.js';
 import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
 import { initSales, renderSales } from './views/sales.js';
@@ -28,6 +29,7 @@ import { initWanda, renderWanda, updateWandaFormPreview } from './views/wanda.js
 function renderAll() {
   renderSummary();
   renderAlerts();
+  renderLedgers();
   renderTransactions();
   renderExpenseBreakdown();
   renderTrends();
@@ -65,6 +67,7 @@ function boot() {
   initTabs();
   initSheets();
   initFinance();
+  initLedgers();
   initAlerts();
   initBreeding();
   initWanda();

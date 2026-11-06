@@ -80,6 +80,12 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
 - **Cashbook editing (2026-11-06):** each entry has Edit and Delete. Edit reopens the Add sheet filled in (`editingId` in `views/finance.js`,
   title/button text switch); saving updates the same record. `closeSheets()` dispatches a `sheetclose` event so views that reuse a form
   (add/edit) reset it when the sheet closes by any route. On phones (<640px) `#txTable` renders as stacked cards so the buttons are never clipped.
+- **Ledgers (2026-11-06):** `ledgers` collection (key `dairy_farm_v1_ledgers`, `{id, name}`); entries carry an optional `ledgerId`, and entries
+  without one (old data, Wanda/Savings postings) belong to the built-in, non-removable **General** ledger (`lib/ledgers.js`). Cashbook home = overview
+  of ALL ledgers + a Ledgers card (one tap-card per ledger with balance/in/out). Opening a ledger (`views/ledgers.js`, `body.ledger-open`) hides the
+  overview and shows that ledger's own totals; the entry list, insights and trend chart are scoped through `scopedTransactions()`. Deleting a ledger moves
+  its entries to General. New entries default to the open ledger; the Edit form can move an entry. Native back button leaves an open ledger first.
+  Gotcha: Playwright reuses already-running preview servers, so after code changes rebuild `dist`, `dist-cloud` (fake Supabase env) and `dist-site` or tests run against stale code.
 - **Motion:** CSS keyframes + `ui/motion.js`. A tab opening adds `.tab-enter` for about 1s (so ordinary re-renders never replay
   it); money cards count up (`animateNumber`, final text is always exact); progress bars grow; sheets, dialogs and toasts
   animate. Everything respects `prefers-reduced-motion`. Beware: never animate a transform on an ancestor of a

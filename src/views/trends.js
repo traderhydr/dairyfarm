@@ -1,6 +1,6 @@
 import { monthlyTotals } from '../lib/calc.js';
 import { formatCurrency } from '../lib/format.js';
-import { state } from '../state.js';
+import { scopedTransactions } from './ledgers.js';
 
 const W = 300;
 const H = 120;
@@ -10,7 +10,7 @@ export function renderTrends() {
   const container = document.getElementById('monthlyTrendContainer');
   if (!container) return;
 
-  const data = monthlyTotals(state.transactions);
+  const data = monthlyTotals(scopedTransactions());
   const max = Math.max(...data.flatMap((d) => [d.income, d.expense]));
   if (max <= 0) {
     container.innerHTML = '<p class="text-xs text-slate-400 italic">No income or expenses in the last 6 months.</p>';

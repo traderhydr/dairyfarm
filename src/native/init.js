@@ -1,6 +1,7 @@
 // Native-app-only behaviour: Android back button, notification reminders, web-only UI hidden.
 import { isNative } from '../lib/platform.js';
 import { onChange, snapshot } from '../state.js';
+import { isLedgerOpen, showLedger } from '../views/ledgers.js';
 import { closeSheets, hasOpenSheet } from '../ui/sheets.js';
 import { getActiveTab, switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
@@ -32,6 +33,10 @@ export function handleBack() {
   const drawer = $('sideMenuDrawer');
   if (drawer && !drawer.classList.contains('-translate-x-full')) {
     $('closeSideMenuBtn').click();
+    return true;
+  }
+  if (getActiveTab() === 'finance' && isLedgerOpen()) {
+    showLedger(null);
     return true;
   }
   if (getActiveTab() !== 'finance') {

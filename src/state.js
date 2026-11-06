@@ -11,7 +11,8 @@ const STORAGE_KEYS = {
   healthRecords: 'dairy_farm_v1_health',
   cattleSales: 'dairy_farm_v1_sales',
   doodhiAccounts: 'dairy_farm_v1_doodhi',
-  savingsGoals: 'dairy_farm_v1_savings'
+  savingsGoals: 'dairy_farm_v1_savings',
+  ledgers: 'dairy_farm_v1_ledgers'
 };
 
 export const COLLECTIONS = Object.keys(STORAGE_KEYS);

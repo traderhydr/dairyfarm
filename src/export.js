@@ -2,6 +2,7 @@ import { sumAmounts } from './lib/calc.js';
 import { saveTextFile } from './lib/files.js';
 import { addDays } from './lib/format.js';
 import { goalProgress } from './lib/savings.js';
+import { allLedgers, ledgerIdOf } from './lib/ledgers.js';
 import { importData, snapshot, state } from './state.js';
 import { showToast } from './ui/toast.js';
 
@@ -10,8 +11,10 @@ export function exportFarmCsv() {
     ['SECTION', 'DATE / AGE', 'TAG / CATEGORY', 'STATUS / TYPE', 'AMOUNT / MILK / WEIGHT', 'DETAILS / NOTES']
   ];
 
+  const ledgerNames = new Map(allLedgers(state.ledgers).map((l) => [l.id, l.name]));
   state.transactions.forEach(t => {
-    rows.push(['Cashbook', t.date, t.category, t.type.toUpperCase(), 'Rs. ' + t.amount, t.note || '']);
+    const ledger = ledgerNames.get(ledgerIdOf(t, state.ledgers));
+    rows.push(['Cashbook', t.date, t.category, t.type.toUpperCase(), 'Rs. ' + t.amount, '[' + ledger + '] ' + (t.note || '')]);
   });
 
   state.breedingRecords.forEach(b => {

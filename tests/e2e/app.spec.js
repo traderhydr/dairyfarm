@@ -473,3 +473,93 @@ test.describe('editing cashbook entries', () => {
     await expect(page.locator('#totalExpenseDisplay')).toHaveText('Rs. 55');
   });
 });
+
+test.describe('ledgers', () => {
+  const addEntry = async (page, { type, amount, ledger }) => {
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    if (ledger) await fill(page, 'txLedger', ledger);
+    await fill(page, 'txType', type);
+    await fill(page, 'txAmount', String(amount));
+    await submit(page, 'financeForm');
+  };
+  const newLedger = async (page, name) => {
+    await page.locator('#newLedgerBtn').click();
+    await fill(page, 'ledgerName', name);
+    await submit(page, 'ledgerForm');
+  };
+
+  test('a fresh farm has only the General ledger', async ({ page }) => {
+    await expect(page.locator('[data-open-ledger]')).toHaveCount(1);
+    await expect(page.locator('[data-open-ledger="general"]')).toContainText('General');
+  });
+
+  test('home totals all ledgers; opening one shows only its own numbers', async ({ page }) => {
+    await addEntry(page, { type: 'income', amount: 1000 });            // General
+    await newLedger(page, 'Milk business');                              // opens the new ledger
+    await expect(page.locator('#ledgerTitle')).toHaveText('Milk business');
+    await addEntry(page, { type: 'income', amount: 5000 });             // defaults to the open ledger
+    await addEntry(page, { type: 'expense', amount: 2000 });
+    await expect(page.locator('#ledgerIncome')).toHaveText('Rs. 5,000');
+    await expect(page.locator('#ledgerExpense')).toHaveText('Rs. 2,000');
+    await expect(page.locator('#ledgerNet')).toHaveText('Rs. 3,000');
+    await expect(page.locator('#ledgerEntryCount')).toHaveText('2');
+    await expect(page.locator('#txListBody tr')).toHaveCount(2);
+
+    await page.locator('#ledgerBackBtn').click();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 6,000');
+    await expect(page.locator('#totalExpenseDisplay')).toHaveText('Rs. 2,000');
+    await expect(page.locator('#netBalanceDisplay')).toHaveText('Rs. 4,000');
+    await expect(page.locator('#txListBody tr')).toHaveCount(3);
+    await expect(page.locator('[data-open-ledger="general"]')).toContainText('Rs. 1,000');
+    await page.locator('[data-open-ledger]', { hasText: 'Milk business' }).click();
+    await expect(page.locator('#overviewSection')).toBeHidden();
+  });
+
+  test('an entry can be moved to another ledger by editing it', async ({ page }) => {
+    await newLedger(page, 'Household');
+    await page.locator('#ledgerBackBtn').click();
+    await addEntry(page, { type: 'expense', amount: 700 });
+    await page.locator('[data-edit-tx]').first().click();
+    await fill(page, 'txLedger', (await page.locator('#txLedger option', { hasText: 'Household' }).getAttribute('value')));
+    await submit(page, 'financeForm');
+    await expect(page.locator('[data-open-ledger="general"]')).toContainText('0 entries');
+    await expect(page.locator('[data-open-ledger]', { hasText: 'Household' })).toContainText('1 entry');
+  });
+
+  test('ledgers persist, can be renamed, names must be unique, and deleting keeps the entries', async ({ page }) => {
+    await newLedger(page, 'Feed account');
+    await addEntry(page, { type: 'expense', amount: 900 });
+    await page.reload();
+    await page.locator('[data-open-ledger]', { hasText: 'Feed account' }).click();
+    await expect(page.locator('#ledgerExpense')).toHaveText('Rs. 900');
+
+    await page.locator('#renameLedgerBtn').click();
+    await fill(page, 'ledgerName', 'General');
+    await submit(page, 'ledgerForm');
+    await expect(page.locator('#ledgerNameError')).toBeVisible();
+    await fill(page, 'ledgerName', 'Feed & fodder');
+    await submit(page, 'ledgerForm');
+    await expect(page.locator('#ledgerTitle')).toHaveText('Feed & fodder');
+
+    await page.locator('#deleteLedgerBtn').click();
+    await page.locator('#modalConfirmBtn').click();
+    await expect(page.locator('#ledgersCard')).toBeVisible();
+    await expect(page.locator('[data-open-ledger]')).toHaveCount(1);
+    await expect(page.locator('[data-open-ledger="general"]')).toContainText('Rs. 900');
+    await expect(page.locator('#totalExpenseDisplay')).toHaveText('Rs. 900');
+  });
+
+  test('the General ledger cannot be renamed or deleted', async ({ page }) => {
+    await page.locator('[data-open-ledger="general"]').click();
+    await expect(page.locator('#ledgerManageBtns')).toBeHidden();
+  });
+
+  test('ledger names are shown as text, and ledgers are included in backups', async ({ page }) => {
+    await newLedger(page, '<b>x</b>');
+    await expect(page.locator('#ledgerTitle')).toHaveText('<b>x</b>');
+    await page.locator('#ledgerBackBtn').click();
+    await expect(page.locator('#ledgerListContainer b')).toHaveCount(0);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_ledgers')));
+    expect(stored).toHaveLength(1);
+  });
+});

@@ -1,15 +1,17 @@
 import { todayStr } from '../lib/dates.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
+import { allLedgers, GENERAL_ID, ledgerIdOf } from '../lib/ledgers.js';
 import { commit, state } from '../state.js';
 import { openSheet } from '../ui/sheets.js';
 import { showToast } from '../ui/toast.js';
+import { getCurrentLedger, getCurrentLedgerId, scopedTransactions } from './ledgers.js';
 
 function updateMonthDropdown() {
   const monthSelect = document.getElementById('txMonthFilter');
   if (!monthSelect) return;
   const currentVal = monthSelect.value || 'all';
   const months = Array.from(new Set(
-    state.transactions
+    scopedTransactions()
       .map(t => (t.date || '').slice(0, 7))
       .filter(m => m.length === 7)
   )).sort().reverse();
@@ -32,7 +34,12 @@ export function renderTransactions() {
   const emptyState = document.getElementById('txEmptyState');
   const table = document.getElementById('txTable');
 
-  const filtered = state.transactions.filter(t => {
+  const ledger = getCurrentLedger();
+  document.getElementById('txListTitle').textContent = ledger ? `Entries in ${ledger.name}` : 'Recent Cashbook Entries';
+  document.getElementById('txListSub').textContent = ledger ? 'Only this ledger' : 'All ledgers \u00b7 saved on this phone';
+  const names = new Map(allLedgers(state.ledgers).map((l) => [l.id, l.name]));
+
+  const filtered = scopedTransactions().filter(t => {
     const matchesType = filterVal === 'all' ? true : t.type === filterVal;
     const matchesMonth = monthVal === 'all' ? true : (t.date || '').startsWith(monthVal);
     const matchesSearch = !searchVal
@@ -68,6 +75,7 @@ export function renderTransactions() {
       <td class="py-3 px-2">
         <div class="flex items-center gap-1.5">
           <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeClass}">${escapeHtml(item.category)}</span>
+          ${ledger ? '' : `<span class="text-[11px] text-slate-500">${escapeHtml(names.get(ledgerIdOf(item, state.ledgers)))}</span>`}
         </div>
         ${item.note ? `<p class="text-xs text-slate-500 mt-1">${escapeHtml(item.note)}</p>` : ''}
       </td>
@@ -94,7 +102,7 @@ export function renderExpenseBreakdown() {
   let totalExpense = 0;
   const categoryTotals = {};
 
-  state.transactions.forEach(t => {
+  scopedTransactions().forEach(t => {
     const amt = Number(t.amount) || 0;
     if (t.type === 'income') {
       totalIncome += amt;
@@ -172,6 +180,7 @@ function startEditing(tx) {
   setSelect('txType', tx.type === 'income' ? 'income' : 'expense');
   $('txDate').value = tx.date || todayStr();
   setSelect('txCategory', tx.category || 'Other');
+  $('txLedger').value = ledgerIdOf(tx, state.ledgers);
   $('txAmount').value = tx.amount;
   $('txNote').value = tx.note || '';
   openSheet('financeSheet');
@@ -184,6 +193,7 @@ function stopEditing() {
   setFormMode(false);
   $('txCategory').querySelectorAll('option[data-temp]').forEach((o) => o.remove());
   $('txType').value = 'income';
+  $('txLedger').value = getCurrentLedgerId() || GENERAL_ID;
   $('txCategory').value = 'Milk Sale';
   $('txDate').value = todayStr();
   $('txAmount').value = '';
@@ -195,6 +205,13 @@ export function initFinance() {
     if (e.detail.id === 'financeSheet') stopEditing();
   });
 
+  // A new entry starts in the ledger you are looking at
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-open-sheet="financeSheet"]')) {
+      $('txLedger').value = getCurrentLedgerId() || GENERAL_ID;
+    }
+  });
+
   // Add or edit a transaction
   document.getElementById('financeForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -203,12 +220,14 @@ export function initFinance() {
     const category = document.getElementById('txCategory').value;
     const amount = parseFloat(document.getElementById('txAmount').value);
     const note = document.getElementById('txNote').value.trim();
+    const ledgerId = document.getElementById('txLedger').value || GENERAL_ID;
 
     if (!date || isNaN(amount) || amount <= 0) return;
 
     const existing = editingId === null ? null : state.transactions.find((t) => t.id === editingId);
     if (existing) {
       Object.assign(existing, { type, date, category, amount, note });
+      if (ledgerId === GENERAL_ID) delete existing.ledgerId; else existing.ledgerId = ledgerId;
       commit(); // closes the sheet, which also leaves edit mode
       showToast('Entry updated!');
       return;
@@ -220,7 +239,8 @@ export function initFinance() {
       date,
       category,
       amount,
-      note
+      note,
+      ...(ledgerId === GENERAL_ID ? {} : { ledgerId })
     });
 
     commit();
