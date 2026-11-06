@@ -1,5 +1,7 @@
+import { todayStr } from '../lib/dates.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
+import { openSheet } from '../ui/sheets.js';
 import { showToast } from '../ui/toast.js';
 
 function updateMonthDropdown() {
@@ -65,12 +67,15 @@ export function renderTransactions() {
       <td class="py-3 pr-3 whitespace-nowrap text-xs text-slate-600">${formatDisplayDate(item.date)}</td>
       <td class="py-3 px-2">
         <div class="flex items-center gap-1.5">
-          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeClass}">${item.category}</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${badgeClass}">${escapeHtml(item.category)}</span>
         </div>
         ${item.note ? `<p class="text-xs text-slate-500 mt-1">${escapeHtml(item.note)}</p>` : ''}
       </td>
       <td class="py-3 px-2 text-right whitespace-nowrap ${amountClass}">${sign}${formatCurrency(item.amount)}</td>
       <td class="py-3 pl-2 text-right whitespace-nowrap">
+        <button type="button" data-edit-tx="${item.id}" aria-label="Edit entry: ${escapeHtml(item.category)} ${formatCurrency(item.amount)}" class="text-xs text-slate-500 hover:text-slate-900 font-medium px-2 py-1 rounded-lg hover:bg-slate-100 transition">
+          Edit
+        </button>
         <button type="button" data-delete-tx="${item.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
           Delete
         </button>
@@ -138,8 +143,59 @@ export function renderExpenseBreakdown() {
   });
 }
 
+// The add form is reused to edit an entry. `editingId` is the entry being edited, or null when adding.
+let editingId = null;
+
+const $ = (id) => document.getElementById(id);
+
+function setFormMode(editing) {
+  $('financeSheetTitle').textContent = editing ? 'Edit Entry' : 'Add Income or Expense';
+  $('financeForm').querySelector('button[type="submit"]').textContent = editing ? 'Save Changes' : 'Save Cashbook Entry';
+}
+
+/** Select `value`, adding it as an option if this entry uses a category the list doesn't have. */
+function setSelect(id, value) {
+  const select = $(id);
+  if (![...select.options].some((o) => o.value === value)) {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    option.dataset.temp = '1';
+    select.appendChild(option);
+  }
+  select.value = value;
+}
+
+function startEditing(tx) {
+  editingId = tx.id;
+  setFormMode(true);
+  setSelect('txType', tx.type === 'income' ? 'income' : 'expense');
+  $('txDate').value = tx.date || todayStr();
+  setSelect('txCategory', tx.category || 'Other');
+  $('txAmount').value = tx.amount;
+  $('txNote').value = tx.note || '';
+  openSheet('financeSheet');
+}
+
+/** Back to a clean "add" form (the sheet was closed or the edit was saved). */
+function stopEditing() {
+  if (editingId === null) return;
+  editingId = null;
+  setFormMode(false);
+  $('txCategory').querySelectorAll('option[data-temp]').forEach((o) => o.remove());
+  $('txType').value = 'income';
+  $('txCategory').value = 'Milk Sale';
+  $('txDate').value = todayStr();
+  $('txAmount').value = '';
+  $('txNote').value = '';
+}
+
 export function initFinance() {
-  // Add Transaction
+  document.addEventListener('sheetclose', (e) => {
+    if (e.detail.id === 'financeSheet') stopEditing();
+  });
+
+  // Add or edit a transaction
   document.getElementById('financeForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const type = document.getElementById('txType').value;
@@ -149,6 +205,14 @@ export function initFinance() {
     const note = document.getElementById('txNote').value.trim();
 
     if (!date || isNaN(amount) || amount <= 0) return;
+
+    const existing = editingId === null ? null : state.transactions.find((t) => t.id === editingId);
+    if (existing) {
+      Object.assign(existing, { type, date, category, amount, note });
+      commit(); // closes the sheet, which also leaves edit mode
+      showToast('Entry updated!');
+      return;
+    }
 
     state.transactions.unshift({
       id: 'tx-' + Date.now(),
@@ -177,8 +241,14 @@ export function initFinance() {
   });
 
 
-  // Delete Transaction (Event Delegation)
+  // Edit or delete a transaction (event delegation)
   document.getElementById('txListBody').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-edit-tx]');
+    if (editBtn) {
+      const tx = state.transactions.find((t) => t.id === editBtn.getAttribute('data-edit-tx'));
+      if (tx) startEditing(tx);
+      return;
+    }
     const btn = e.target.closest('[data-delete-tx]');
     if (!btn) return;
     const id = btn.getAttribute('data-delete-tx');

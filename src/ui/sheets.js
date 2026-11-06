@@ -8,8 +8,11 @@ export function hasOpenSheet() {
 }
 
 export function closeSheets() {
-  document.querySelectorAll('.sheet:not(.hidden)').forEach((sheet) => sheet.classList.add('hidden'));
+  const open = [...document.querySelectorAll('.sheet:not(.hidden)')];
+  open.forEach((sheet) => sheet.classList.add('hidden'));
   document.body.classList.remove('sheet-open');
+  // views that reuse a form for several jobs (add / edit) listen for this to reset it
+  open.forEach((sheet) => document.dispatchEvent(new CustomEvent('sheetclose', { detail: { id: sheet.id } })));
 }
 
 export function openSheet(id) {

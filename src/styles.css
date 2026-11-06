@@ -592,6 +592,28 @@ body.dark-mode [class~="hover:text-emerald-900"]:hover { color: #6ee7b7; }
 body.dark-mode [class~="hover:text-rose-600"]:hover { color: #fda4af; }
 
 
+/* ------------------------------------------------------------------ cashbook entries on phones
+   A four-column table ran off the screen and hid the Edit/Delete buttons, so each entry becomes a small card:
+   date and amount on top, category and note below, actions last. Wider screens keep the table. */
+@media (max-width: 639px) {
+  #txTable, #txTable tbody { display: block; width: 100%; }
+  #txTable thead { display: none; }
+  #txTable tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "date amount" "detail detail" "actions actions";
+    column-gap: 0.75rem;
+    row-gap: 0.35rem;
+    padding: 0.9rem 0;
+  }
+  #txTable tbody td { display: block; padding: 0; min-width: 0; white-space: normal; }
+  #txTable tbody td:nth-child(1) { grid-area: date; align-self: center; color: var(--muted); font-size: 0.8125rem; }
+  #txTable tbody td:nth-child(2) { grid-area: detail; }
+  #txTable tbody td:nth-child(3) { grid-area: amount; text-align: right; font-size: 1rem; white-space: nowrap; }
+  #txTable tbody td:nth-child(4) { grid-area: actions; display: flex; gap: 0.25rem; margin-left: -0.5rem; text-align: left; }
+  #txTable tbody td:nth-child(4) button { min-height: 2.25rem; padding: 0.25rem 0.75rem; }
+}
+
 /* ------------------------------------------------------------------ neutral panels
    Calculation previews, the milk logger, reminders and the menu are information or tools, not warnings:
    keep them neutral so colour only ever means success, danger or caution. */

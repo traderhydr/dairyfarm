@@ -1,7 +1,7 @@
 # Dairy Farm Manager: project memory
 
 Living notes so anyone (or any future session) can pick the project up quickly.
-Last updated: 2026-11-04. Keep secrets out of this file.
+Last updated: 2026-11-06. Keep secrets out of this file.
 
 ## What this is
 Offline-first farm record keeping for dairy farmers: cashbook, cow AI and pregnancy tracking, monthly
@@ -77,6 +77,9 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
   within 45 days appears in the Cashbook reminders; reaching the target fires confetti once (`justReached`). A contribution can
   optionally also be booked in the Cashbook as a "Savings" expense. Included in sync, backups, restore and CSV automatically
   (everything iterates `COLLECTIONS`).
+- **Cashbook editing (2026-11-06):** each entry has Edit and Delete. Edit reopens the Add sheet filled in (`editingId` in `views/finance.js`,
+  title/button text switch); saving updates the same record. `closeSheets()` dispatches a `sheetclose` event so views that reuse a form
+  (add/edit) reset it when the sheet closes by any route. On phones (<640px) `#txTable` renders as stacked cards so the buttons are never clipped.
 - **Motion:** CSS keyframes + `ui/motion.js`. A tab opening adds `.tab-enter` for about 1s (so ordinary re-renders never replay
   it); money cards count up (`animateNumber`, final text is always exact); progress bars grow; sheets, dialogs and toasts
   animate. Everything respects `prefers-reduced-motion`. Beware: never animate a transform on an ancestor of a

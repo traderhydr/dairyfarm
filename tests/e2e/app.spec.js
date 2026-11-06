@@ -357,3 +357,119 @@ test.describe('motion', () => {
     expect(parseFloat(duration)).toBeLessThan(0.05);
   });
 });
+
+test.describe('editing cashbook entries', () => {
+  const addEntry = async (page, { type = 'income', amount, note = '' }) => {
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await fill(page, 'txType', type);
+    await fill(page, 'txAmount', String(amount));
+    await fill(page, 'txNote', note);
+    await submit(page, 'financeForm');
+    await expect(page.locator('#financeSheet')).toBeHidden();
+  };
+  const editFirst = (page) => page.locator('#txListBody [data-edit-tx]').first().click();
+
+  test('the edit form opens filled in with that entry', async ({ page }) => {
+    await addEntry(page, { amount: 5000, note: 'Morning milk' });
+    await editFirst(page);
+    await expect(page.locator('#financeSheet')).toBeVisible();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('Edit Entry');
+    await expect(page.locator('#financeForm button[type="submit"]')).toHaveText('Save Changes');
+    await expect(page.locator('#txAmount')).toHaveValue('5000');
+    await expect(page.locator('#txNote')).toHaveValue('Morning milk');
+    await expect(page.locator('#txType')).toHaveValue('income');
+  });
+
+  test('saving changes updates the same entry, the totals and survives a reload', async ({ page }) => {
+    await addEntry(page, { amount: 5000, note: 'Morning milk' });
+    await editFirst(page);
+    await fill(page, 'txAmount', '6500');
+    await fill(page, 'txNote', 'Morning milk (corrected)');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#financeSheet')).toBeHidden();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 6,500');
+    await expect(page.locator('#txListBody tr')).toHaveCount(1); // edited in place, not duplicated
+    await expect(page.locator('#txListBody')).toContainText('Morning milk (corrected)');
+    await expect(page.locator('#toastMessage')).toHaveText('Entry updated!');
+
+    await page.reload();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 6,500');
+  });
+
+  test('an entry can be switched from income to expense and recategorised', async ({ page }) => {
+    await addEntry(page, { amount: 700, note: 'oops' });
+    await editFirst(page);
+    await fill(page, 'txType', 'expense');
+    await fill(page, 'txCategory', 'Vet & Medicine');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 0');
+    await expect(page.locator('#totalExpenseDisplay')).toHaveText('Rs. 700');
+    await expect(page.locator('#txListBody')).toContainText('Vet & Medicine');
+  });
+
+  test('an invalid edit is rejected and keeps the original', async ({ page }) => {
+    await addEntry(page, { amount: 900 });
+    await editFirst(page);
+    await fill(page, 'txAmount', '0');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#financeSheet')).toBeVisible();
+    await page.locator('#financeSheet .sheet-close').click();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 900');
+  });
+
+  test('closing without saving leaves no edit behind: Add starts clean', async ({ page }) => {
+    await addEntry(page, { amount: 1200, note: 'keep me' });
+    await editFirst(page);
+    await fill(page, 'txAmount', '99999');
+    await page.locator('#financeSheet .sheet-close').click();
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 1,200');
+
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('Add Income or Expense');
+    await expect(page.locator('#financeForm button[type="submit"]')).toHaveText('Save Cashbook Entry');
+    await expect(page.locator('#txAmount')).toHaveValue('');
+    await expect(page.locator('#txNote')).toHaveValue('');
+  });
+
+  test('Escape and switching tabs also cancel an edit', async ({ page }) => {
+    await addEntry(page, { amount: 300 });
+    await editFirst(page);
+    await page.keyboard.press('Escape');
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('Add Income or Expense');
+    await page.keyboard.press('Escape');
+
+    await editFirst(page);
+    await tab(page, 'tabMilkersBtn');
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('Add Income or Expense');
+  });
+
+  test('adding after an edit still creates a new entry', async ({ page }) => {
+    await addEntry(page, { amount: 100, note: 'first' });
+    await editFirst(page);
+    await fill(page, 'txNote', 'first (edited)');
+    await submit(page, 'financeForm');
+    await addEntry(page, { amount: 250, note: 'second' });
+    await expect(page.locator('#txListBody tr')).toHaveCount(2);
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 350');
+  });
+
+  test('an entry with an unusual category can be edited, and its text is shown as text', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('dairy_farm_v1_transactions', JSON.stringify([
+        { id: 'tx-x', type: 'expense', date: '2026-10-01', category: '<img src=x onerror="window.__pwned=1">', amount: 40, note: '' }
+      ]));
+    });
+    await page.goto('/');
+    await expect(page.locator('#txListBody img')).toHaveCount(0);
+    expect(await page.evaluate(() => window.__pwned)).toBeUndefined();
+    await expect(page.locator('#txListBody')).toContainText('<img src=x');
+    await editFirst(page);
+    await expect(page.locator('#txCategory')).toHaveValue('<img src=x onerror="window.__pwned=1">');
+    await fill(page, 'txAmount', '55');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#totalExpenseDisplay')).toHaveText('Rs. 55');
+  });
+});
