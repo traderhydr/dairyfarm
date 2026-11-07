@@ -314,6 +314,14 @@
         <!-- Extra Farm Modules (Moved from Main Bar) -->
         <div class="space-y-2">
           <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 px-1">More</p>
+          <button id="tabAnimalsBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>Animal Profiles</span>
+            </span>
+            <span id="animalsTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+
           <button id="tabWachiBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
             <span class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
@@ -643,7 +651,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label for="cowTag" class="block text-xs font-semibold text-slate-700 mb-1">Cow Tag / Name</label>
-              <input id="cowTag" type="text" placeholder="e.g. Cow #14 (Rani)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <input id="cowTag" list="animalTagOptions" autocomplete="off" type="text" placeholder="e.g. Cow #14 (Rani)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
             <div>
               <label for="aiDate" class="block text-xs font-semibold text-slate-700 mb-1">AI Date</label>
@@ -981,6 +989,11 @@
           </div>
 
           <div>
+            <label for="wachiDam" class="block text-xs font-semibold text-slate-700 mb-1">Mother (Dam) tag (Optional)</label>
+            <input id="wachiDam" list="animalTagOptions" autocomplete="off" type="text" placeholder="e.g. Cow #07 (Chandi)" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <div>
             <label for="wachiStage" class="block text-xs font-semibold text-slate-700 mb-1">Growth / Breeding Stage</label>
             <select id="wachiStage" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               <option value="Young Calf (< 6 Months)">Young Calf (&lt; 6 Months)</option>
@@ -1048,7 +1061,7 @@
         <form id="healthForm" class="mt-4 space-y-3.5">
           <div>
             <label for="healthTarget" class="block text-xs font-semibold text-slate-700 mb-1">Animal / Herd Group</label>
-            <input id="healthTarget" type="text" placeholder="e.g. Whole Herd (All Milkers & Wachi) or Cow #07" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <input id="healthTarget" list="animalTagOptions" autocomplete="off" type="text" placeholder="e.g. Whole Herd (All Milkers & Wachi) or Cow #07" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -1061,6 +1074,7 @@
                 <option value="BQ Vaccine (Phar Sujan)" data-days="365">BQ Vaccine (Phar Sujan — Yearly)</option>
                 <option value="Tick & Mange Control" data-days="60">Tick &amp; Mange Control (2 Mo)</option>
                 <option value="Mastitis / Vet Treatment" data-days="30">Mastitis / Vet Check (1 Mo)</option>
+                <option value="Illness Treatment" data-days="14">Illness / Disease Treatment (2 Wk)</option>
               </select>
             </div>
             <div>
@@ -1073,6 +1087,11 @@
           <div class="bg-teal-50/80 border border-teal-200/80 rounded-xl p-3 text-xs flex items-center justify-between">
             <span class="font-semibold text-teal-900">Next Repeat / Booster Due:</span>
             <span id="healthNextDuePreview" class="text-sm font-bold text-teal-800">—</span>
+          </div>
+
+          <div>
+            <label for="healthDisease" class="block text-xs font-semibold text-slate-700 mb-1">Disease / Problem (Optional)</label>
+            <input id="healthDisease" type="text" maxlength="80" placeholder="e.g. Mastitis, fever, lameness" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -1145,12 +1164,18 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label for="saleCowTag" class="block text-xs font-semibold text-slate-700 mb-1">Cow / Wachi Sold</label>
-              <input id="saleCowTag" type="text" placeholder="e.g. Cow #09 (Boori)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <input id="saleCowTag" list="animalTagOptions" autocomplete="off" type="text" placeholder="e.g. Cow #09 (Boori)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
             <div>
               <label for="saleDate" class="block text-xs font-semibold text-slate-700 mb-1">Sale Date</label>
               <input id="saleDate" type="date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
+          </div>
+
+          <div id="saleCalvesBox" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+            <p class="text-xs font-semibold text-slate-700">Sold with her calf, or without?</p>
+            <p class="text-[11px] text-slate-500">Tick a calf to sell it together with her (one price for both). Leave all unticked to sell her without a calf.</p>
+            <div id="saleCalvesList" class="space-y-1.5"></div>
           </div>
 
           <div>
@@ -1338,6 +1363,30 @@
     </section>
 
 
+    <!-- ANIMAL PROFILES -->
+    <section id="animalsSection" class="hidden grid-cols-1 gap-4">
+      <div class="list-card space-y-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Animal Profiles</h2>
+          <p class="text-xs text-slate-500">Open any animal to see her AI record, treatments, calves and sale in one place</p>
+        </div>
+        <div class="grid grid-cols-[1fr_auto] gap-2">
+          <input id="animalsSearch" type="search" placeholder="Search tag, breed, mother..." aria-label="Search animals" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <select id="animalsFilter" aria-label="Filter animals" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+            <option value="all">All</option>
+            <option value="herd">In herd</option>
+            <option value="pregnant">Pregnant</option>
+            <option value="sold">Sold</option>
+          </select>
+        </div>
+        <div id="animalsEmptyState" class="empty-state hidden">
+          <p class="empty-title">No animals yet</p>
+          <p class="empty-text">Add a cow in Milkers, a heifer in Wachi, or an AI record, and her profile appears here.</p>
+        </div>
+        <div id="animalsListContainer" class="space-y-3"></div>
+      </div>
+    </section>
+
     <!-- SAVINGS GOALS -->
     <section id="savingsSection" class="hidden grid-cols-1 gap-4">
       <!-- Add form (slide-up sheet) -->
@@ -1413,6 +1462,14 @@
       <button type="button" class="fab" data-open-sheet="savingsSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add goal</span></button>
     </section>
 
+        <div id="profileSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+      <div class="sheet-backdrop" data-close-sheet></div>
+      <div class="sheet-panel">
+        <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+        <div id="profileBody" class="space-y-4"></div>
+      </div>
+    </div>
+  <datalist id="animalTagOptions"></datalist>
   </main>
 
   <script type="module" src="/src/main.js"></script>

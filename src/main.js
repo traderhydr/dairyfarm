@@ -13,6 +13,7 @@ import { initTheme } from './ui/theme.js';
 import { initModal } from './ui/modal.js';
 import { initTabs } from './ui/tabs.js';
 import { initAlerts, renderAlerts } from './views/alerts.js';
+import { initAnimals, renderAnimals } from './views/animals.js';
 import { initBreeding, renderBreeding, updateBreedingPreview } from './views/breeding.js';
 import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
@@ -30,6 +31,7 @@ function renderAll() {
   renderSummary();
   renderAlerts();
   renderLedgers();
+  renderAnimals();
   renderTransactions();
   renderExpenseBreakdown();
   renderTrends();
@@ -68,6 +70,7 @@ function boot() {
   initSheets();
   initFinance();
   initLedgers();
+  initAnimals();
   initAlerts();
   initBreeding();
   initWanda();

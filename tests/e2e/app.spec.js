@@ -728,3 +728,143 @@ test.describe('search boxes on the record lists', () => {
     await expect(page.locator('#salesTotalRevBanner')).toHaveText(before);
   });
 });
+
+test.describe('animal profiles', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  const openAnimals = async (page) => { await loadSample(page); await tab(page, 'tabAnimalsBtn'); };
+  const profile = (page, tag) => page.locator(`#animalsListContainer [data-open-profile="${tag}"]`).click();
+
+  test('the Animals tab lists every animal once, with a status', async ({ page }) => {
+    await openAnimals(page);
+    const cards = page.locator('#animalsListContainer [data-open-profile]');
+    const tags = await cards.evaluateAll((els) => els.map((e) => e.getAttribute('data-open-profile')));
+    expect(new Set(tags).size).toBe(tags.length);
+    expect(tags).toContain('Cow #07 (Chandi)');
+    expect(tags).toContain('Wachi #01 (Noori)');
+    await expect(page.locator('#animalsTabBadge')).toHaveText(String(tags.length));
+    await expect(page.locator('#animalsListContainer [data-open-profile="Cow #07 (Chandi)"]')).toContainText('Pregnant');
+  });
+
+  test('a profile shows AI history, treatments and calves for that animal only', async ({ page }) => {
+    await openAnimals(page);
+    await profile(page, 'Cow #07 (Chandi)');
+    const body = page.locator('#profileBody');
+    await expect(body.locator('#profileTitle')).toHaveText('Cow #07 (Chandi)');
+    await expect(body).toContainText('AI & pregnancy history');
+    await expect(body).toContainText('Mastitis (rear left quarter)');
+    await expect(body).toContainText('Wachi #01 (Noori)');          // calf found from "Dam: Cow #07 Chandi"
+    await expect(body).not.toContainText('Cow #14');
+    // the calf's own profile names its mother
+    await body.locator('[data-open-profile="Wachi #01 (Noori)"]').first().click();
+    await expect(page.locator('#profileBody #profileTitle')).toHaveText('Wachi #01 (Noori)');
+    await expect(page.locator('#profileBody')).toContainText('Mother');
+  });
+
+  test('search and filters narrow the Animals list', async ({ page }) => {
+    await openAnimals(page);
+    await fill(page, 'animalsSearch', 'noori');
+    await expect(page.locator('#animalsListContainer [data-open-profile]')).toHaveCount(1);
+    await fill(page, 'animalsSearch', '');
+    await fill(page, 'animalsFilter', 'sold');
+    await expect(page.locator('#animalsListContainer [data-open-profile]')).toHaveCount(1);   // the sample's sold cow
+    await expect(page.locator('#animalsListContainer')).toContainText('Lali');
+    await fill(page, 'animalsSearch', 'noori');
+    await expect(page.locator('#animalsListContainer')).toContainText('No matches');
+  });
+
+  test('a calving is recorded as a baby record and links the calf to its mother', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabBreedingBtn');
+    await page.locator('[data-calve-cow]').first().click();
+    await fill(page, 'calfTagInput', 'Wachi #20 (Kali)');
+    await submit(page, 'calvingModalForm');
+    const ai = (await read(page, 'dairy_farm_v1_breeding')).find((r) => (r.calves || []).length);
+    expect(ai.calves[0].tag).toBe('Wachi #20 (Kali)');
+    const calf = (await read(page, 'dairy_farm_v1_wachi')).find((w) => w.tag === 'Wachi #20 (Kali)');
+    expect(calf.damTag).toBe(ai.cowTag);
+    await tab(page, 'tabAnimalsBtn');
+    await profile(page, ai.cowTag);
+    await expect(page.locator('#profileBody')).toContainText('Wachi #20 (Kali)');
+  });
+
+  test('add a treatment from the profile; it appears in her history', async ({ page }) => {
+    await openAnimals(page);
+    await profile(page, 'Cow #14 (Rani)');
+    await page.locator('[data-profile-action="treat"]').click();
+    await expect(page.locator('#healthSheet')).toBeVisible();
+    await expect(page.locator('#healthTarget')).toHaveValue('Cow #14 (Rani)');
+    await fill(page, 'healthType', 'Illness Treatment');
+    await fill(page, 'healthDisease', 'Foot rot');
+    await submit(page, 'healthForm');
+    await tab(page, 'tabAnimalsBtn');
+    await profile(page, 'Cow #14 (Rani)');
+    await expect(page.locator('#profileBody')).toContainText('Foot rot');
+    await expect(page.locator('#profileBody')).toContainText('Illness Treatment');
+  });
+
+  const calveRani = async (page) => {
+    await tab(page, 'tabBreedingBtn');
+    await page.locator('[data-calve-cow]').nth(1).click();   // Cow #14 (Rani) is the second card
+    await fill(page, 'calfTagInput', 'Wachi #21 (Moti)');
+    await submit(page, 'calvingModalForm');
+  };
+  const startSale = async (page) => {
+    await tab(page, 'tabAnimalsBtn');
+    await profile(page, 'Cow #14 (Rani)');
+    await page.locator('[data-profile-action="sell"]').click();
+    await expect(page.locator('#salesSheet')).toBeVisible();
+    await expect(page.locator('#saleCowTag')).toHaveValue(/Cow #14 \(Rani\)/);
+    await fill(page, 'saleBuyer', 'Haji Akram');
+    await fill(page, 'saleTotalCost', '200000');
+    await fill(page, 'salePrice', '320000');
+  };
+
+  test('mark sold WITHOUT the calf: she leaves the herd, the calf stays', async ({ page }) => {
+    await loadSample(page);
+    await calveRani(page);
+    await startSale(page);
+    await expect(page.locator('#saleCalvesBox')).toBeVisible();
+    await submit(page, 'salesForm');
+    const sale = (await read(page, 'dairy_farm_v1_sales'))[0];
+    expect(sale.withCalves).toBeUndefined();
+    expect((await read(page, 'dairy_farm_v1_milkers')).some((m) => m.tag.includes('Rani'))).toBe(false);
+    expect((await read(page, 'dairy_farm_v1_wachi')).some((w) => w.tag === 'Wachi #21 (Moti)')).toBe(true);
+    await tab(page, 'tabAnimalsBtn');
+    await profile(page, 'Cow #14 (Rani)');
+    await expect(page.locator('#profileBody')).toContainText('Sold on');
+    await expect(page.locator('#profileBody')).toContainText('without calf');
+    await expect(page.locator('#profileBody')).toContainText('Wachi #21 (Moti)');   // her history is kept
+    await expect(page.locator('[data-profile-action="sell"]')).toHaveCount(0);
+  });
+
+  test('mark sold WITH the calf: both leave the herd and both profiles say sold', async ({ page }) => {
+    await loadSample(page);
+    await calveRani(page);
+    await startSale(page);
+    await page.locator('#saleCalvesList input[data-calf-tag="Wachi #21 (Moti)"]').check();
+    await submit(page, 'salesForm');
+    const sale = (await read(page, 'dairy_farm_v1_sales'))[0];
+    expect(sale.withCalves.map((c) => c.tag)).toEqual(['Wachi #21 (Moti)']);
+    expect((await read(page, 'dairy_farm_v1_wachi')).some((w) => w.tag === 'Wachi #21 (Moti)')).toBe(false);
+    const income = (await read(page, 'dairy_farm_v1_transactions'))[0];
+    expect(income.note).toContain('with calf Wachi #21 (Moti)');
+    await tab(page, 'tabSalesBtn');
+    await expect(page.locator('#salesListContainer')).toContainText('Sold with calf: Wachi #21 (Moti)');
+
+    await tab(page, 'tabAnimalsBtn');
+    await profile(page, 'Cow #14 (Rani)');
+    await expect(page.locator('#profileBody')).toContainText('with calf');
+    await page.locator('#profileBody [data-open-profile="Wachi #21 (Moti)"]').first().click();
+    await expect(page.locator('#profileBody')).toContainText('Sold with mother');
+    await expect(page.locator('#profileBody')).toContainText('Haji Akram');
+  });
+
+  test('the Profile button on a Milkers card opens that cow', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('#milkersListContainer [data-open-profile]').first().click();
+    await expect(page.locator('#profileSheet')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#profileSheet')).toBeHidden();
+  });
+});

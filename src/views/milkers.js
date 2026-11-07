@@ -67,6 +67,7 @@ export function renderMilkers() {
           <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(cow.breed)}</p>
         </div>
         <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-open-profile="${escapeHtml(cow.tag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-milker-form="${cow.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-milker="${cow.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
         </div>

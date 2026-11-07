@@ -106,6 +106,17 @@ const WACHI = [
 
 const HEALTH = [
   {
+    id: 'health-0',
+    target: 'Cow #07 (Chandi)',
+    type: 'Mastitis / Vet Treatment',
+    dateGiven: '2026-06-12',
+    intervalDays: 30,
+    medicine: 'Intramammary antibiotic course (5 days)',
+    disease: 'Mastitis (rear left quarter)',
+    cost: 3200,
+    status: 'Booster Completed'
+  },
+  {
     id: 'health-1',
     target: 'Whole Herd (Milkers & Wachi)',
     type: 'FMD Vaccine (Munh Khur)',

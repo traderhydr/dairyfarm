@@ -1,4 +1,5 @@
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
+import { buildProfile } from '../lib/animals.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { todayStr } from '../lib/dates.js';
@@ -22,6 +23,25 @@ function updateSaleProfitPreview() {
     previewEl.textContent = '- ' + formatCurrency(Math.abs(diff)) + ' Loss';
     previewEl.className = 'text-sm font-bold text-rose-600';
   }
+}
+
+let salesEditor = null;
+
+/** "Sold with her calf?" box: lists the calves of the animal named in the form that are still in the herd. */
+function refreshSaleCalves() {
+  const box = document.getElementById('saleCalvesBox');
+  const list = document.getElementById('saleCalvesList');
+  if (!box || !list) return;
+  const tag = document.getElementById('saleCowTag').value.trim();
+  const calves = salesEditor && salesEditor.isEditing() || !tag
+    ? []
+    : buildProfile(tag, state).calves.filter((c) => c.inHerd && c.id);
+  box.classList.toggle('hidden', calves.length === 0);
+  list.innerHTML = calves.map((c) => `
+    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+      <input type="checkbox" data-calf-id="${escapeHtml(c.id)}" data-calf-tag="${escapeHtml(c.tag)}" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+      <span>Sell together with <strong>${escapeHtml(c.tag)}</strong>${c.stage ? ` <span class="text-slate-400">(${escapeHtml(c.stage)})</span>` : ''}</span>
+    </label>`).join('');
 }
 
 function updateSaleQuickPickDropdown() {
@@ -97,8 +117,10 @@ export function renderSales() {
           <p class="text-xs text-slate-600 mt-0.5">
             Sold To: <span class="font-semibold text-slate-900">${escapeHtml(sale.buyer)}</span> &bull; <span class="text-slate-500">${formatDisplayDate(sale.saleDate)}</span>
           </p>
+          <p class="text-xs mt-0.5 ${sale.withCalves && sale.withCalves.length ? 'text-emerald-700 font-medium' : 'text-slate-400'}">${sale.withCalves && sale.withCalves.length ? 'Sold with calf: ' + sale.withCalves.map((c) => escapeHtml(c.tag)).join(', ') : 'Sold without calf'}</p>
         </div>
         <div class="flex items-center gap-1 shrink-0">
+          <button type="button" data-open-profile="${escapeHtml(sale.cowTag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-sale="${sale.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-sale="${sale.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
         </div>
@@ -130,8 +152,10 @@ export function initSales() {
   const editor = createEditor({
     sheetId: 'salesSheet', formId: 'salesForm', editTitle: 'Edit Sold Cow',
     addOnly: ['saleQuickPick', 'saleSyncCashbook', 'saleRemoveFromHerd'],
-    onReset: () => { document.getElementById('saleDate').value = todayStr(); updateSaleProfitPreview(); }
+    onReset: () => { document.getElementById('saleDate').value = todayStr(); updateSaleProfitPreview(); refreshSaleCalves(); }
   });
+  salesEditor = editor;
+  document.getElementById('saleCowTag').addEventListener('input', refreshSaleCalves);
   // Sold Cows Form Listeners
   ['saleTotalCost', 'salePrice'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateSaleProfitPreview);
@@ -152,6 +176,7 @@ export function initSales() {
         document.getElementById('saleCowTag').value = `${w.tag} (${w.breed}, ${w.ageMonths} mo)`;
       }
     }
+    refreshSaleCalves();
   });
 
   document.getElementById('salesForm').addEventListener('submit', (e) => {
@@ -176,6 +201,16 @@ export function initSales() {
       return;
     }
 
+    const withCalves = [...document.querySelectorAll('#saleCalvesList input[data-calf-id]:checked')]
+      .map((i) => ({ id: i.getAttribute('data-calf-id'), tag: i.getAttribute('data-calf-tag') }));
+
+    // Keep a snapshot of her herd details: her herd record is removed below, but her profile still needs them
+    const herdRecord = quickPickVal ? (() => {
+      const [kind, id] = quickPickVal.split(':');
+      const r = (kind === 'milker' ? state.milkersList : state.wachiList).find((x) => x.id === id);
+      return r ? { kind, breed: r.breed, ageMonths: r.ageMonths, weightKg: r.weightKg, morningMilk: r.morningMilk, eveningMilk: r.eveningMilk, damTag: r.damTag } : null;
+    })() : null;
+
     state.cattleSales.unshift({
       id: 'sale-' + Date.now(),
       cowTag,
@@ -183,7 +218,9 @@ export function initSales() {
       buyer,
       totalCost,
       salePrice,
-      notes
+      notes,
+      ...(withCalves.length ? { withCalves } : {}),
+      ...(herdRecord ? { animal: herdRecord } : {})
     });
 
     if (syncCashbook) {
@@ -195,8 +232,13 @@ export function initSales() {
         date: saleDate,
         category: 'Calf / Cattle Sale',
         amount: salePrice,
-        note: `Sold ${cowTag} to ${buyer} (Cost: Rs. ${totalCost.toLocaleString('en-PK')}, ${profitLabel})`
+        note: `Sold ${cowTag}${withCalves.length ? ' with calf ' + withCalves.map((c) => c.tag).join(', ') : ''} to ${buyer} (Cost: Rs. ${totalCost.toLocaleString('en-PK')}, ${profitLabel})`
       });
+    }
+
+    if (removeFromHerd && withCalves.length) {
+      const ids = new Set(withCalves.map((c) => c.id));
+      state.wachiList = state.wachiList.filter((w) => !ids.has(w.id));
     }
 
     if (removeFromHerd && quickPickVal) {
@@ -216,7 +258,8 @@ export function initSales() {
     document.getElementById('salePrice').value = '';
     document.getElementById('saleNotes').value = '';
     updateSaleProfitPreview();
-    showToast('Sold cow record saved!');
+    refreshSaleCalves();
+    showToast(withCalves.length ? 'Sold with calf. Record saved!' : 'Sold cow record saved!');
   });
 
   document.getElementById('salesListContainer').addEventListener('click', (e) => {

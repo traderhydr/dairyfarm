@@ -57,6 +57,7 @@ export function renderWachi() {
           <button type="button" data-promote-wachi="${wachi.id}" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold px-2.5 py-1 rounded-lg transition">
             + Log 1st AI
           </button>
+          <button type="button" data-open-profile="${escapeHtml(wachi.tag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-wachi="${wachi.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-wachi="${wachi.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
@@ -97,12 +98,14 @@ export function initWachi() {
     const weightKg = parseFloat(document.getElementById('wachiWeight').value) || 0;
     const stage = document.getElementById('wachiStage').value;
     const notes = document.getElementById('wachiNotes').value.trim();
+    const damTag = document.getElementById('wachiDam').value.trim();
 
     if (!tag || !breed || ageMonths <= 0 || weightKg <= 0) return;
 
     const existing = editor.find(state.wachiList);
     if (existing) {
-      Object.assign(existing, { tag, breed, ageMonths, weightKg, stage, notes });
+      Object.assign(existing, { tag, breed, ageMonths, weightKg, stage, notes, damTag });
+      if (!damTag) delete existing.damTag;
       commit();
       showToast('Wachi updated!');
       return;
@@ -115,7 +118,8 @@ export function initWachi() {
       ageMonths,
       weightKg,
       stage,
-      notes
+      notes,
+      ...(damTag ? { damTag } : {})
     });
 
     commit();
@@ -124,6 +128,7 @@ export function initWachi() {
     document.getElementById('wachiAge').value = '';
     document.getElementById('wachiWeight').value = '';
     document.getElementById('wachiNotes').value = '';
+    document.getElementById('wachiDam').value = '';
     showToast('Wachi (Heifer) added!');
   });
 
@@ -151,7 +156,7 @@ export function initWachi() {
       if (w) {
         editor.begin(w.id, () => {
           setField('wachiTag', w.tag); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
-          setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes);
+          setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes); setField('wachiDam', w.damTag);
         });
       }
       return;

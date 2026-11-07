@@ -51,7 +51,7 @@ export function renderHealth() {
             <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(rec.type)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeClass}">${escapeHtml(rec.status || 'Scheduled Booster')}</span>
           </div>
-          <p class="text-xs text-slate-600 mt-0.5">Group / Animal: <span class="font-semibold text-slate-800">${escapeHtml(rec.target)}</span></p>
+          <p class="text-xs text-slate-600 mt-0.5">Group / Animal: <span class="font-semibold text-slate-800">${escapeHtml(rec.target)}</span>${rec.disease ? ` &bull; Disease: <span class="font-semibold text-slate-800">${escapeHtml(rec.disease)}</span>` : ''}</p>
         </div>
         <div class="card-actions">
           <select data-status-health="${rec.id}" aria-label="Update health booster status" class="text-xs rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-medium text-slate-700">
@@ -106,6 +106,7 @@ export function initHealth() {
     const intervalDays = parseInt(opt?.getAttribute('data-days') || '90', 10);
     const dateGiven = document.getElementById('healthDateGiven').value;
     const medicine = document.getElementById('healthMedicine').value.trim();
+    const disease = document.getElementById('healthDisease').value.trim();
     const cost = parseFloat(document.getElementById('healthCost').value) || 0;
     const syncExpense = document.getElementById('healthSyncExpense').checked;
 
@@ -114,7 +115,8 @@ export function initHealth() {
     const existing = editor.find(state.healthRecords);
     if (existing) {
       const known = opt && opt.hasAttribute('data-days');
-      Object.assign(existing, { target, type, dateGiven, medicine, cost, intervalDays: known ? intervalDays : existing.intervalDays });
+      Object.assign(existing, { target, type, dateGiven, medicine, cost, disease, intervalDays: known ? intervalDays : existing.intervalDays });
+      if (!disease) delete existing.disease;
       commit();
       showToast('Health record updated. Cashbook entries already made are unchanged.');
       return;
@@ -128,6 +130,7 @@ export function initHealth() {
       intervalDays,
       medicine,
       cost,
+      ...(disease ? { disease } : {}),
       status: 'Scheduled Booster'
     });
 
@@ -145,6 +148,7 @@ export function initHealth() {
     commit();
     document.getElementById('healthTarget').value = '';
     document.getElementById('healthMedicine').value = '';
+    document.getElementById('healthDisease').value = '';
     document.getElementById('healthCost').value = '0';
     updateHealthPreview();
     showToast('Vaccination / health record saved!');
@@ -169,7 +173,7 @@ export function initHealth() {
       if (rec) {
         editor.begin(rec.id, () => {
           setField('healthTarget', rec.target); setField('healthType', rec.type); setField('healthDateGiven', rec.dateGiven);
-          setField('healthMedicine', rec.medicine); setField('healthCost', rec.cost || 0);
+          setField('healthMedicine', rec.medicine); setField('healthDisease', rec.disease); setField('healthCost', rec.cost || 0);
           updateHealthPreview();
         });
       }

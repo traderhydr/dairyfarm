@@ -186,6 +186,22 @@ button { font-weight: 500; }
 }
 .btn-primary:hover { background: var(--primary-hover); }
 
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 500;
+}
+.btn-secondary:hover { background: var(--surface-2); }
+.animal-card { cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
+.animal-card:hover { border-color: var(--text-2); }
+
 /* ------------------------------------------------------------------ header */
 .app-header {
   background: var(--header);

@@ -76,6 +76,7 @@ export function renderBreeding() {
           <button type="button" data-calve-cow="${record.id}" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold px-2.5 py-1 rounded-lg transition">
             + Record Calving
           </button>
+          <button type="button" data-open-profile="${escapeHtml(record.cowTag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-cow="${record.id}" class="${EDIT_BTN_CLASS}">Edit</button>
           <button type="button" data-delete-cow="${record.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
@@ -286,11 +287,18 @@ export function initBreeding() {
       }
     }
 
+    // Baby record kept on the mother's AI record (shown in her profile)
+    if (action !== 'none' && calfTag) {
+      rec.calves = rec.calves || [];
+      rec.calves.push({ id: 'calf-' + Date.now(), tag: calfTag, date: calvingDate, weight: calfWeight, fate: action });
+    }
+
     // 3. Route Newborn Calf
     if (action === 'wachi' && calfTag) {
       state.wachiList.unshift({
         id: 'wachi-' + Date.now(),
         tag: calfTag,
+        damTag: rec.cowTag,
         breed: `${rec.semenBull || 'Dairy Cross'} (Dam: ${rec.cowTag})`,
         ageMonths: 1,
         weightKg: calfWeight,
