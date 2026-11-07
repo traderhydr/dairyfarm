@@ -21,3 +21,23 @@ export function addDaysDate(str, days) {
   d.setDate(d.getDate() + days);
   return d;
 }
+
+export const GESTATION_DAYS = 283;
+
+/**
+ * How far along a pregnancy is, counted from the AI date.
+ * `day` is the number of days since AI (0 on the AI day); null if the date is missing/invalid or in the future.
+ * `left` is days until the expected calving date (negative once overdue).
+ */
+export function pregnancyProgress(aiDate, now = new Date()) {
+  const start = parseLocalDate(aiDate);
+  if (!start) return null;
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const day = Math.round((today - start) / 86400000);
+  if (day < 0) return null;
+  return {
+    day,
+    left: GESTATION_DAYS - day,
+    percent: Math.max(0, Math.min(100, Math.round((day / GESTATION_DAYS) * 100)))
+  };
+}

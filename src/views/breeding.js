@@ -1,4 +1,4 @@
-import { todayStr } from '../lib/dates.js';
+import { GESTATION_DAYS, pregnancyProgress, todayStr } from '../lib/dates.js';
 import { addDays, escapeHtml, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
@@ -30,6 +30,22 @@ export function renderBreeding() {
     } else if (record.pregStatus === 'Calved') {
       badgeStyle = 'bg-sky-100 text-sky-800 border-sky-200';
     }
+
+    const progress = record.pregStatus === 'Repeat / Not Pregnant' || record.pregStatus === 'Calved'
+      ? null
+      : pregnancyProgress(record.aiDate);
+    const confirmed = record.pregStatus === 'Confirmed Pregnant';
+    const progressHtml = progress ? `
+      <div class="bg-white p-2.5 rounded-lg border border-slate-200/80 space-y-1.5" data-pregnancy-days>
+        <div class="flex items-baseline justify-between gap-2">
+          <span class="text-xs font-bold text-slate-800">${confirmed ? 'Pregnant' : 'Since AI'}: day ${progress.day} of ${GESTATION_DAYS}</span>
+          <span class="text-xs font-semibold ${progress.left < 0 ? 'text-rose-600' : 'text-emerald-700'}">${progress.left > 0
+            ? `${progress.left} ${progress.left === 1 ? 'day' : 'days'} to calving`
+            : progress.left === 0 ? 'Due today' : `${-progress.left} ${progress.left === -1 ? 'day' : 'days'} overdue`}</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full goal-fill rounded-full" style="width: ${progress.percent}%"></div></div>
+        ${confirmed ? '' : '<p class="text-[11px] text-slate-400">Not confirmed pregnant yet</p>'}
+      </div>` : '';
 
     const card = document.createElement('div');
     card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-3';
@@ -78,6 +94,8 @@ export function renderBreeding() {
         </div>
       </div>
 
+      ${progressHtml}
+
       ${record.notes ? `<p class="text-xs text-slate-600 bg-white px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(record.notes)}</p>` : ''}
     `;
     container.appendChild(card);
@@ -89,6 +107,10 @@ export function updateBreedingPreview() {
   document.getElementById('previewHeatDate').textContent = addDays(dateVal, 21);
   document.getElementById('previewPdDate').textContent = addDays(dateVal, 60);
   document.getElementById('previewCalvingDate').textContent = addDays(dateVal, 283);
+  const progress = pregnancyProgress(dateVal);
+  document.getElementById('previewPregDays').textContent = progress
+    ? `Day ${progress.day} of ${GESTATION_DAYS} (${progress.left >= 0 ? progress.left + ' left' : -progress.left + ' overdue'})`
+    : '—';
 }
 
 function openCalvingModal(cowRecord) {

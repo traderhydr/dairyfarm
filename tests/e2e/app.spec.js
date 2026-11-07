@@ -638,3 +638,47 @@ test.describe('editing records in every section', () => {
     await expect(page.locator('#txAmount')).toHaveValue('800');
   });
 });
+
+test.describe('pregnancy days in the AI section', () => {
+  const addCow = async (page, date, status) => {
+    await page.locator('#tabBreedingBtn').evaluate((el) => el.click());
+    await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
+    await fill(page, 'cowTag', 'Cow #1');
+    await fill(page, 'aiDate', date);
+    await fill(page, 'pregStatus', status);
+    await submit(page, 'breedingForm');
+  };
+  const daysAgo = (n) => {
+    const d = new Date();
+    d.setDate(d.getDate() - n);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  test('the form previews the pregnancy day for the chosen AI date', async ({ page }) => {
+    await page.locator('#tabBreedingBtn').evaluate((el) => el.click());
+    await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
+    await fill(page, 'aiDate', daysAgo(100));
+    await expect(page.locator('#previewPregDays')).toHaveText('Day 100 of 283 (183 left)');
+  });
+
+  test('a confirmed pregnancy shows its day, days to calving and a progress bar', async ({ page }) => {
+    await addCow(page, daysAgo(100), 'Confirmed Pregnant');
+    const box = page.locator('[data-pregnancy-days]');
+    await expect(box).toContainText('Pregnant: day 100 of 283');
+    await expect(box).toContainText('183 days to calving');
+    await expect(box.locator('.goal-fill')).toHaveCSS('width', /.+/);
+  });
+
+  test('an unconfirmed AI counts days since AI; overdue is flagged', async ({ page }) => {
+    await addCow(page, daysAgo(10), 'Awaiting PD Check');
+    await expect(page.locator('[data-pregnancy-days]')).toContainText('Since AI: day 10 of 283');
+    await expect(page.locator('[data-pregnancy-days]')).toContainText('Not confirmed pregnant yet');
+    await addCow(page, daysAgo(290), 'Confirmed Pregnant');
+    await expect(page.locator('[data-pregnancy-days]').first()).toContainText('7 days overdue');
+  });
+
+  test('no pregnancy days for repeat or calved cows', async ({ page }) => {
+    await addCow(page, daysAgo(40), 'Repeat / Not Pregnant');
+    await expect(page.locator('[data-pregnancy-days]')).toHaveCount(0);
+  });
+});

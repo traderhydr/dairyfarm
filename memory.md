@@ -91,6 +91,7 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
   `addOnly` (advance payment, "also add to Cashbook", starting balance, pick-from-herd) are hidden while editing, and editing never touches payments or
   Cashbook entries already created. Closing the sheet any way resets to add mode (`sheetclose`). Cashbook rows are also tappable to edit. Ledgers have
   Edit (name + optional `note`). Cow AI status, Wachi stage, milk yields keep their inline controls too.
+- **Pregnancy days (2026-11-07):** each Cow AI card (not for Repeat or Calved) shows "Pregnant: day N of 283" (or "Since AI" until confirmed), days to calving / due today / days overdue and a progress bar; the add form previews it too. `pregnancyProgress()` in `lib/dates.js` (whole local days, DST-safe).
 - **Motion:** CSS keyframes + `ui/motion.js`. A tab opening adds `.tab-enter` for about 1s (so ordinary re-renders never replay
   it); money cards count up (`animateNumber`, final text is always exact); progress bars grow; sheets, dialogs and toasts
   animate. Everything respects `prefers-reduced-motion`. Beware: never animate a transform on an ancestor of a
