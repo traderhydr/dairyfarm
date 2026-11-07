@@ -3,6 +3,7 @@ import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 export function renderWachi() {
@@ -10,11 +11,17 @@ export function renderWachi() {
   const emptyState = document.getElementById('wachiEmptyState');
   const stageFilter = document.getElementById('wachiFilter').value;
 
-  const filtered = state.wachiList.filter(w => stageFilter === 'all' ? true : w.stage === stageFilter);
+  const query = searchQuery('wachiSearch');
+  const filtered = state.wachiList.filter(w => (stageFilter === 'all' ? true : w.stage === stageFilter) && matchesSearch(w, query));
 
   container.innerHTML = '';
   if (filtered.length === 0) {
-    emptyState.classList.remove('hidden');
+    if (state.wachiList.length > 0) {
+      emptyState.classList.add('hidden');
+      container.innerHTML = noMatchHtml('wachiSearch');
+    } else {
+      emptyState.classList.remove('hidden');
+    }
     return;
   }
   emptyState.classList.add('hidden');
@@ -79,6 +86,7 @@ export function renderWachi() {
 }
 
 export function initWachi() {
+  initListSearch('wachiSearch', renderWachi);
   const editor = createEditor({ sheetId: 'wachiSheet', formId: 'wachiForm', editTitle: 'Edit Wachi (Heifer)' });
   // Add New Wachi (Heifer)
   document.getElementById('wachiForm').addEventListener('submit', (e) => {

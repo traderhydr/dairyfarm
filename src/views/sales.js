@@ -2,6 +2,7 @@ import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js'
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { todayStr } from '../lib/dates.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 function updateSaleProfitPreview() {
@@ -67,7 +68,14 @@ export function renderSales() {
   }
   emptyState.classList.add('hidden');
 
-  state.cattleSales.forEach(sale => {
+  const query = searchQuery('salesSearch');
+  const shown = state.cattleSales.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('salesSearch');
+    return;
+  }
+
+  shown.forEach(sale => {
     const cost = Number(sale.totalCost) || 0;
     const price = Number(sale.salePrice) || 0;
     const profit = price - cost;
@@ -118,6 +126,7 @@ export function renderSales() {
 }
 
 export function initSales() {
+  initListSearch('salesSearch', renderSales);
   const editor = createEditor({
     sheetId: 'salesSheet', formId: 'salesForm', editTitle: 'Edit Sold Cow',
     addOnly: ['saleQuickPick', 'saleSyncCashbook', 'saleRemoveFromHerd'],

@@ -2,6 +2,7 @@ import { todayStr } from '../lib/dates.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 export function updateWandaFormPreview() {
@@ -25,7 +26,14 @@ export function renderWanda() {
   }
   emptyState.classList.add('hidden');
 
-  state.wandaBatches.forEach(batch => {
+  const query = searchQuery('wandaSearch');
+  const shown = state.wandaBatches.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('wandaSearch');
+    return;
+  }
+
+  shown.forEach(batch => {
     const totalBill = Number(batch.totalBill) || 0;
     const installments = batch.installments || [];
     const paidAmount = installments.reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
@@ -136,6 +144,7 @@ export function renderWanda() {
 }
 
 export function initWanda() {
+  initListSearch('wandaSearch', renderWanda);
   const editor = createEditor({
     sheetId: 'wandaSheet', formId: 'wandaForm', editTitle: 'Edit Wanda Stock',
     addOnly: ['wandaInitialPaid', 'wandaSyncAdvance'],

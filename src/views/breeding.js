@@ -4,6 +4,7 @@ import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 export function renderBreeding() {
@@ -17,7 +18,14 @@ export function renderBreeding() {
   }
   emptyState.classList.add('hidden');
 
-  state.breedingRecords.forEach(record => {
+  const query = searchQuery('breedingSearch');
+  const shown = state.breedingRecords.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('breedingSearch');
+    return;
+  }
+
+  shown.forEach(record => {
     const heatDate = addDays(record.aiDate, 21);
     const pdDate = addDays(record.aiDate, 60);
     const calvingDate = addDays(record.aiDate, 283);
@@ -130,6 +138,7 @@ function closeCalvingModal() {
 }
 
 export function initBreeding() {
+  initListSearch('breedingSearch', renderBreeding);
   const editor = createEditor({
     sheetId: 'breedingSheet', formId: 'breedingForm', editTitle: 'Edit AI Record',
     onReset: () => { document.getElementById('aiDate').value = todayStr(); updateBreedingPreview(); }

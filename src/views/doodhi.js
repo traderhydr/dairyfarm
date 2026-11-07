@@ -3,6 +3,7 @@ import { sumAmounts } from '../lib/calc.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 function updateDoodhiFormPreview() {
@@ -37,7 +38,14 @@ export function renderDoodhi() {
   }
   emptyState.classList.add('hidden');
 
-  state.doodhiAccounts.forEach(acc => {
+  const query = searchQuery('doodhiSearch');
+  const shown = state.doodhiAccounts.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('doodhiSearch');
+    return;
+  }
+
+  shown.forEach(acc => {
     const totalBill = Number(acc.totalBill) || 0;
     const payments = acc.payments || [];
     const recdAmount = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
@@ -144,6 +152,7 @@ export function renderDoodhi() {
 }
 
 export function initDoodhi() {
+  initListSearch('doodhiSearch', renderDoodhi);
   const editor = createEditor({
     sheetId: 'doodhiSheet', formId: 'doodhiForm', editTitle: 'Edit Milk Khata',
     addOnly: ['doodhiInitialReceived', 'doodhiSyncAdvance'],

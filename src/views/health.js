@@ -2,6 +2,7 @@ import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/f
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { todayStr } from '../lib/dates.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 function updateHealthPreview() {
@@ -27,7 +28,14 @@ export function renderHealth() {
   }
   emptyState.classList.add('hidden');
 
-  state.healthRecords.forEach(rec => {
+  const query = searchQuery('healthSearch');
+  const shown = state.healthRecords.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('healthSearch');
+    return;
+  }
+
+  shown.forEach(rec => {
     const nextDue = addDays(rec.dateGiven, Number(rec.intervalDays) || 90);
     const isDone = rec.status === 'Booster Completed';
     const badgeClass = isDone
@@ -77,6 +85,7 @@ export function renderHealth() {
 }
 
 export function initHealth() {
+  initListSearch('healthSearch', renderHealth);
   const editor = createEditor({
     sheetId: 'healthSheet', formId: 'healthForm', editTitle: 'Edit Health Record', addOnly: ['healthSyncExpense'],
     onReset: () => { document.getElementById('healthDateGiven').value = todayStr(); updateHealthPreview(); }

@@ -682,3 +682,49 @@ test.describe('pregnancy days in the AI section', () => {
     await expect(page.locator('[data-pregnancy-days]')).toHaveCount(0);
   });
 });
+
+test.describe('search boxes on the record lists', () => {
+  // [tab button, search input, list container, storage key, field to search for]
+  const LISTS = [
+    ['tabBreedingBtn', 'breedingSearch', 'breedingListContainer', 'dairy_farm_v1_breeding', 'cowTag'],
+    ['tabMilkersBtn', 'milkersSearch', 'milkersListContainer', 'dairy_farm_v1_milkers', 'tag'],
+    ['tabWandaBtn', 'wandaSearch', 'wandaListContainer', 'dairy_farm_v1_wanda', 'supplier'],
+    ['tabWachiBtn', 'wachiSearch', 'wachiListContainer', 'dairy_farm_v1_wachi', 'tag'],
+    ['tabHealthBtn', 'healthSearch', 'healthListContainer', 'dairy_farm_v1_health', 'target'],
+    ['tabSalesBtn', 'salesSearch', 'salesListContainer', 'dairy_farm_v1_sales', 'buyer'],
+    ['tabDoodhiBtn', 'doodhiSearch', 'doodhiListContainer', 'dairy_farm_v1_doodhi', 'buyerName'],
+    ['tabSavingsBtn', 'savingsSearch', 'savingsListContainer', 'dairy_farm_v1_savings', 'name']
+  ];
+
+  for (const [tabId, searchId, listId, key, field] of LISTS) {
+    test(`${searchId}: finds a record, says when nothing matches, and clears`, async ({ page }) => {
+      await loadSample(page);
+      await tab(page, tabId);
+      const records = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+      const total = records.length;
+      const word = String(records[0][field]).split(/\s+/)[0];
+      const cards = page.locator(`#${listId} > *`);
+      await expect(cards).toHaveCount(total);
+
+      await fill(page, searchId, word.toUpperCase());          // not case sensitive
+      const expected = records.filter((r) => JSON.stringify(Object.values(r)).toLowerCase().includes(word.toLowerCase())).length;
+      await expect(cards).toHaveCount(expected);
+      await expect(page.locator(`#${listId}`)).toContainText(word);
+
+      await fill(page, searchId, 'zzzqqq');
+      await expect(page.locator(`#${listId}`)).toContainText('No matches');
+      await fill(page, searchId, '');
+      await expect(cards).toHaveCount(total);
+    });
+  }
+
+  test('search does not hide the section totals and ignores HTML in what is typed', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabSalesBtn');
+    const before = await page.locator('#salesTotalRevBanner').textContent();
+    await fill(page, 'salesSearch', '<img src=x onerror=alert(1)>');
+    await expect(page.locator('#salesListContainer')).toContainText('No matches');
+    await expect(page.locator('#salesListContainer img')).toHaveCount(0);
+    await expect(page.locator('#salesTotalRevBanner')).toHaveText(before);
+  });
+});

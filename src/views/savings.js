@@ -4,6 +4,7 @@ import { daysLeft, goalProgress, justReached, suggestedMonthly } from '../lib/sa
 import { commit, state } from '../state.js';
 import { animateBar, animateNumber, burstConfetti } from '../ui/motion.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 const INPUT = 'rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500';
@@ -147,8 +148,15 @@ export function renderSavings() {
   container.innerHTML = '';
   emptyState.classList.toggle('hidden', state.savingsGoals.length > 0);
 
+  const query = searchQuery('savingsSearch');
+  const shown = state.savingsGoals.filter((g) => matchesSearch(g, query));
+  if (state.savingsGoals.length > 0 && shown.length === 0) {
+    container.innerHTML = noMatchHtml('savingsSearch');
+    return;
+  }
+
   const now = new Map();
-  state.savingsGoals.forEach((goal) => {
+  shown.forEach((goal) => {
     container.appendChild(goalCard(goal));
     const { saved, percent } = goalProgress(goal);
     now.set(goal.id, { saved, percent });
@@ -186,6 +194,7 @@ function updatePlanPreview() {
 }
 
 export function initSavings() {
+  initListSearch('savingsSearch', renderSavings);
   const editor = createEditor({
     sheetId: 'savingsSheet', formId: 'savingsForm', editTitle: 'Edit Savings Goal', addOnly: ['savingsStart'],
     onReset: updatePlanPreview

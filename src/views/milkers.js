@@ -2,6 +2,7 @@ import { formatLiters } from '../lib/calc.js';
 import { escapeHtml, formatCurrency } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
+import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { showToast } from '../ui/toast.js';
 
 function updateMilkerFormPreview() {
@@ -35,7 +36,14 @@ export function renderMilkers() {
   }
   emptyState.classList.add('hidden');
 
-  state.milkersList.forEach(cow => {
+  const query = searchQuery('milkersSearch');
+  const shown = state.milkersList.filter((r) => matchesSearch(r, query));
+  if (shown.length === 0) {
+    container.innerHTML = noMatchHtml('milkersSearch');
+    return;
+  }
+
+  shown.forEach(cow => {
     const am = Number(cow.morningMilk) || 0;
     const pm = Number(cow.eveningMilk) || 0;
     const dailyTotal = formatLiters(am + pm);
@@ -108,6 +116,7 @@ function updateQuickMilkCalculator() {
 }
 
 export function initMilkers() {
+  initListSearch('milkersSearch', renderMilkers);
   const editor = createEditor({
     sheetId: 'milkersSheet', formId: 'milkerForm', editTitle: 'Edit Milking Cow',
     onReset: updateMilkerFormPreview
