@@ -62,8 +62,8 @@ Capacitor 8 (Android target API 36, Node 22+, JDK 21), Geist fonts (latin-only v
   (e.g. make `--primary` green).
 - **UI:** add-forms live in `.sheet` containers opened by `[data-open-sheet]` buttons and closed on save
   (any `commit('local')`), Escape, backdrop or switching tab. Overview cards and reminders show only on the Cashbook tab.
-  Bottom nav = Cashbook, Milkers, Cow AI, Wanda, More (More opens the drawer with Wachi, Health, Sold Cows, Doodhi,
-  settings and backups). Native back button closes sheet, then modal/drawer, then returns to Cashbook, then exits.
+  Bottom nav = Cashbook, Animals (profiles), Cow AI, Wanda, More (More opens the drawer with Milkers, Wachi, Health, Sold Cows, Doodhi,
+  Savings, settings and backups). Native back button closes sheet, then modal/drawer, then returns to Cashbook, then exits.
 - **Website layout (2026-11-04):** root = landing page, app = `/app/` (the Android build is unchanged: `npm run build`, app at its own root).
   The landing page's inline head script forwards to `app/` (keeping query + hash) when the URL carries sign-in tokens
   (`access_token`, `type=recovery`, `code=`...), the page runs standalone (installed icon), or localStorage already holds

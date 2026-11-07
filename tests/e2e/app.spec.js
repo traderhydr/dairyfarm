@@ -161,7 +161,7 @@ test.describe('layout', () => {
 
   test('bottom navigation has short labels and More opens the menu', async ({ page }) => {
     const labels = await page.locator('nav[aria-label="Farm Modules"] .nav-item span:not(.nav-badge)').allTextContents();
-    expect(labels).toEqual(['Cashbook', 'Milkers', 'Cow AI', 'Wanda', 'More']);
+    expect(labels).toEqual(['Cashbook', 'Animals', 'Cow AI', 'Wanda', 'More']);
     await page.locator('#openMoreBtn').click();
     await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
     await page.locator('#tabWachiBtn').click();
@@ -195,7 +195,7 @@ test.describe('layout', () => {
 
   test('no horizontal scrolling on a phone', async ({ page }) => {
     await loadSample(page);
-    for (const id of ['tabFinanceBtn', 'tabMilkersBtn', 'tabBreedingBtn', 'tabWandaBtn']) {
+    for (const id of ['tabFinanceBtn', 'tabAnimalsBtn', 'tabBreedingBtn', 'tabWandaBtn']) {
       await tab(page, id);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, id).toBeLessThanOrEqual(0);
@@ -867,4 +867,17 @@ test.describe('animal profiles', () => {
     await page.keyboard.press('Escape');
     await expect(page.locator('#profileSheet')).toBeHidden();
   });
+});
+
+test('Animals is on the bottom bar and Milkers moved into the More menu', async ({ page }) => {
+  await loadSample(page);
+  await expect(page.locator('nav[aria-label="Farm Modules"] #tabAnimalsBtn')).toBeVisible();
+  await expect(page.locator('nav[aria-label="Farm Modules"] #tabMilkersBtn')).toHaveCount(0);
+  await page.locator('nav[aria-label="Farm Modules"] #tabAnimalsBtn').click();
+  await expect(page.locator('#animalsSection')).toBeVisible();
+  await expect(page.locator('#animalsListContainer [data-open-profile]').first()).toBeVisible();
+  await page.locator('#openMoreBtn').click();
+  await page.locator('#sideMenuDrawer #tabMilkersBtn').click();
+  await expect(page.locator('#milkersSection')).toBeVisible();
+  await expect(page.locator('#sideModuleBannerName')).toHaveText('Milkers');
 });

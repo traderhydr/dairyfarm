@@ -4,14 +4,14 @@ import { closeSheets } from './sheets.js';
 // Bottom navigation (4 main modules + More) and the side menu (everything else).
 const SECTIONS = {
   finance: { section: 'financeSection', button: 'tabFinanceBtn', style: 'nav' },
-  milkers: { section: 'milkersSection', button: 'tabMilkersBtn', style: 'nav' },
+  animals: { section: 'animalsSection', button: 'tabAnimalsBtn', style: 'nav' },
   breeding: { section: 'breedingSection', button: 'tabBreedingBtn', style: 'nav' },
   wanda: { section: 'wandaSection', button: 'tabWandaBtn', style: 'nav' },
   wachi: { section: 'wachiSection', button: 'tabWachiBtn', style: 'drawer', title: 'Wachi (Heifers)' },
   health: { section: 'healthSection', button: 'tabHealthBtn', style: 'drawer', title: 'Vaccination & Deworming' },
   sales: { section: 'salesSection', button: 'tabSalesBtn', style: 'drawer', title: 'Sold Cows' },
   doodhi: { section: 'doodhiSection', button: 'tabDoodhiBtn', style: 'drawer', title: 'Milk Buyers (Doodhi)' },
-  animals: { section: 'animalsSection', button: 'tabAnimalsBtn', style: 'drawer', title: 'Animal Profiles' },
+  milkers: { section: 'milkersSection', button: 'tabMilkersBtn', style: 'drawer', title: 'Milkers' },
   savings: { section: 'savingsSection', button: 'tabSavingsBtn', style: 'drawer', title: 'Savings Goals' }
 };
 
