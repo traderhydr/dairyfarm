@@ -20,6 +20,15 @@ const submit = (page, id) => page.locator(`#${id}`).evaluate((el) => el.requestS
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', (e) => { throw e; });
+  // skip the first-run language screen (it has its own tests); only on the first page load of a test
+  await page.addInitScript(() => {
+    try {
+      if (!sessionStorage.getItem('__lang_init')) {
+        sessionStorage.setItem('__lang_init', '1');
+        if (!localStorage.getItem('dairy_farm_lang')) localStorage.setItem('dairy_farm_lang', 'en');
+      }
+    } catch (e) { /* ignore */ }
+  });
   await page.goto('/');
 });
 
@@ -1301,5 +1310,104 @@ test.describe('crops and land record', () => {
     await page.locator('#cropNav #openMoreBtn2').click();
     await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
     await expect(page.locator('#sideMenuDrawer #tabMilkersBtn')).toBeHidden();
+  });
+});
+
+test.describe('Urdu and English', () => {
+  const resetLang = async (page) => { await page.evaluate(() => localStorage.removeItem('dairy_farm_lang')); await page.reload(); };
+  const toUrdu = async (page) => { await page.locator('#langToggleBtn').click(); await expect(page.locator('html')).toHaveAttribute('lang', 'ur'); };
+
+  test('first run shows the language screen; choosing Urdu translates the app and is remembered', async ({ page }) => {
+    await resetLang(page);
+    await expect(page.locator('#languageGate')).toBeVisible();
+    await page.locator('[data-choose-lang="ur"]').click();
+    await expect(page.locator('#languageGate')).toBeHidden();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
+    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('کیش بک');
+    await expect(page.locator('#langToggleBtn')).toHaveText('English');
+    await page.reload();
+    await expect(page.locator('#languageGate')).toBeHidden();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('کیش بک');
+  });
+
+  test('choosing English keeps the app in English and the screen does not come back', async ({ page }) => {
+    await resetLang(page);
+    await page.locator('[data-choose-lang="en"]').click();
+    await expect(page.locator('#languageGate')).toBeHidden();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('Cashbook');
+    await page.reload();
+    await expect(page.locator('#languageGate')).toBeHidden();
+  });
+
+  test('the toggle switches language both ways without touching saved data', async ({ page }) => {
+    await fill(page, 'txAmount', '5000');
+    await fill(page, 'txCategory', 'Milk Sale');
+    await submit(page, 'financeForm');
+    await toUrdu(page);
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 5,000');          // digits and Rs. stay
+    await expect(page.locator('#txListBody')).toContainText('دودھ کی فروخت');            // category shown in Urdu
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_transactions'))[0].category);
+    expect(stored).toBe('Milk Sale');                                                    // stored in English
+    await page.locator('#langToggleBtn').click();
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(page.locator('#txListBody')).toContainText('Milk Sale');
+    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('Cashbook');
+  });
+
+  test('everything keeps working in Urdu: add an entry, a toast in Urdu, new rows are translated', async ({ page }) => {
+    await toUrdu(page);
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await expect(page.locator('#financeSheetTitle')).toHaveText('آمدنی یا خرچ شامل کریں');
+    await fill(page, 'txAmount', '1200');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#toastMessage')).toHaveText('کیش بک اندراج محفوظ!');
+    await expect(page.locator('#netBalanceDisplay')).toHaveText('Rs. 1,200');
+    await expect(page.locator('#profitLabel')).toHaveText('منافع');
+  });
+
+  test('Urdu dates, placeholders and aria labels are translated, user text is left alone', async ({ page }) => {
+    await loadSample(page);
+    await toUrdu(page);
+    await tab(page, 'tabBreedingBtn');
+    await expect(page.locator('#breedingListContainer')).toContainText('مئی');             // expected calving month in Urdu
+    await expect(page.locator('#breedingListContainer')).toContainText('Cow #07 (Chandi)'); // the cow's name is untouched
+    await expect(page.locator('#breedingSearch')).toHaveAttribute('placeholder', 'گائے، سانڈ، نوٹس تلاش کریں...');
+    await expect(page.locator('#txSearch')).toHaveAttribute('aria-label', 'کیش بک اندراجات تلاش کریں');
+  });
+
+  test('Urdu is laid out right to left: the floating button moves left, no horizontal scrolling', async ({ page }) => {
+    await loadSample(page);
+    await toUrdu(page);
+    const box = await page.locator('.fab[data-open-sheet="financeSheet"]').boundingBox();
+    expect(box.x).toBeLessThan(100);
+    for (const id of ['tabFinanceBtn', 'tabAnimalsBtn', 'tabBreedingBtn', 'tabWandaBtn', 'tabMilkersBtn', 'tabCropsBtn']) {
+      await tab(page, id);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth), id).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test('crops mode and the animal profile are translated too', async ({ page }) => {
+    await loadSample(page);
+    await toUrdu(page);
+    await page.locator('#modeToggle [data-mode="crops"]').click();
+    await expect(page.locator('#cropsHeroLabel')).toHaveText('منافع');
+    await page.locator('[data-open-crop="crop-1"]').click();
+    await expect(page.locator('#cropDetailBody')).toContainText('کھاد');
+    await page.keyboard.press('Escape');
+    await page.locator('#modeToggle [data-mode="farm"]').click();
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Cow #07 (Chandi)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('اے آئی اور حمل کی تاریخ');
+  });
+
+  test('the side menu opens from the right in Urdu', async ({ page }) => {
+    await toUrdu(page);
+    await page.locator('#openSideMenuBtn').click();
+    await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
+    const box = await page.locator('#sideMenuDrawer').boundingBox();
+    expect(box.x + box.width).toBeGreaterThan(300);
   });
 });

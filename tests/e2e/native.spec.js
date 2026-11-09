@@ -4,6 +4,15 @@ import { expect, test } from '@playwright/test';
 // cap.nativePromise / cap.nativeCallback. We fake those so the native code paths run in a browser.
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', (e) => { throw e; });
+  // skip the first-run language screen (it has its own tests); only on the first page load of a test
+  await page.addInitScript(() => {
+    try {
+      if (!sessionStorage.getItem('__lang_init')) {
+        sessionStorage.setItem('__lang_init', '1');
+        if (!localStorage.getItem('dairy_farm_lang')) localStorage.setItem('dairy_farm_lang', 'en');
+      }
+    } catch (e) { /* ignore */ }
+  });
   await page.addInitScript(() => {
     const calls = [];
     const listeners = {};

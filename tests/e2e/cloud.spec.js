@@ -50,6 +50,15 @@ const fill = (page, id, value) => page.locator(`#${id}`).fill(value);
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', (e) => { throw e; });
+  // skip the first-run language screen (it has its own tests); only on the first page load of a test
+  await page.addInitScript(() => {
+    try {
+      if (!sessionStorage.getItem('__lang_init')) {
+        sessionStorage.setItem('__lang_init', '1');
+        if (!localStorage.getItem('dairy_farm_lang')) localStorage.setItem('dairy_farm_lang', 'en');
+      }
+    } catch (e) { /* ignore */ }
+  });
 });
 
 test('sign in uploads local records, and they come back after sign out + sign in', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { dailyTotals, monthlyTotals, periodRange, rangeTotals } from '../lib/calc.js';
-import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
+import { escapeHtml, formatCurrency, formatDisplayDate, dateLocale } from '../lib/format.js';
 import { scopedTransactions } from './ledgers.js';
 
 const $ = (id) => document.getElementById(id);
@@ -33,7 +33,7 @@ export function renderProfit() {
     $('profitDaysTitle').textContent = 'Month by month';
     const months = monthlyTotals(txs, new Date(), new Date().getMonth() + 1).filter((m) => m.income || m.expense).reverse();
     list.innerHTML = months.length ? months.map((m) => dayRow(
-      m.month.toLocaleDateString('en-PK', { month: 'long', year: 'numeric' }), m.income, m.expense, m.income - m.expense
+      m.month.toLocaleDateString(dateLocale(), { month: 'long', year: 'numeric' }), m.income, m.expense, m.income - m.expense
     )).join('') : '<p class="text-xs text-slate-400 italic py-2">No entries this year.</p>';
     return;
   }

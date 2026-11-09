@@ -21,6 +21,7 @@ import { initProfit, renderProfit } from './views/profit.js';
 import { initLedgers, renderLedgers } from './views/ledgers.js';
 import { initCrops, renderCrops } from './views/crops.js';
 import { initLands, renderLands } from './views/lands.js';
+import { initI18n } from './i18n/index.js';
 import { initMode } from './ui/mode.js';
 import { initGoats, renderGoats } from './views/goats.js';
 import { initHorses, renderHorses } from './views/horses.js';
@@ -101,6 +102,8 @@ function boot() {
   initDataManagement();
   initModal();
   initMode();
+  initI18n();
+  document.addEventListener('langchange', renderAll);
   // Accounts + cloud sync are only bundled when the build has a Supabase project configured.
   if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
     import('./ui/account.js').then((m) => m.initAccount());

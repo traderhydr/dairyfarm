@@ -12,7 +12,7 @@ Copy each block into the matching Play Console field. Images are in this folder.
 **Full description** (max 4000):
 
 ```
-Dairy Farm Manager keeps all your farm records in one simple app, and it works even when you have no internet.
+Dairy Farm Manager keeps all your farm records in one simple app, in Urdu or English, and it works even when you have no internet.
 
 WHAT YOU CAN DO
 
@@ -37,6 +37,21 @@ Feed, health and milk buyers
 
 Savings goals
 - Set a target and a date, add money as you save, and see how much to put aside each month
+
+Animal profiles, goats, sheep and horses
+- A profile for every animal: AI and pregnancy history with pregnancy day count, treatments, calves and sale
+- Sell a cow with or without her calf
+- Goat, sheep and horse records
+
+Crops and land record
+- Switch from Farm to Crops and keep land records, own or on Theeka
+- Wheat, barseem, alfalfa, kamand and other crops: land preparation, seed, water (tubewell diesel, solar or rented), fertiliser, labour and other costs, then yield, with profit or loss per crop and per acre
+
+Daily profit and loss
+- See profit or loss for today, the last 7 days, the month and the year, day by day
+
+Urdu and English
+- Choose Urdu or English when you start, and switch any time
 
 Made for real farms
 - Works offline: your records are saved on your phone first

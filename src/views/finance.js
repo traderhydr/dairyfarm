@@ -1,5 +1,5 @@
 import { todayStr } from '../lib/dates.js';
-import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
+import { escapeHtml, formatCurrency, formatDisplayDate, dateLocale } from '../lib/format.js';
 import { allLedgers, GENERAL_ID, ledgerIdOf } from '../lib/ledgers.js';
 import { commit, state } from '../state.js';
 import { openSheet } from '../ui/sheets.js';
@@ -18,7 +18,7 @@ function updateMonthDropdown() {
 
   monthSelect.innerHTML = '<option value="all">All Months</option>' + months.map(m => {
     const [y, mo] = m.split('-');
-    const label = new Date(Number(y), Number(mo) - 1, 1).toLocaleDateString('en-PK', { year: 'numeric', month: 'short' });
+    const label = new Date(Number(y), Number(mo) - 1, 1).toLocaleDateString(dateLocale(), { year: 'numeric', month: 'short' });
     return `<option value="${m}" ${m === currentVal ? 'selected' : ''}>${label}</option>`;
   }).join('');
 }

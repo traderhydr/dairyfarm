@@ -1,5 +1,5 @@
 import { monthlyTotals } from '../lib/calc.js';
-import { formatCurrency } from '../lib/format.js';
+import { formatCurrency, dateLocale } from '../lib/format.js';
 import { scopedTransactions } from './ledgers.js';
 
 const W = 300;
@@ -24,7 +24,7 @@ export function renderTrends() {
 
   const bars = data.map((d, i) => {
     const cx = PAD.left + slot * i + slot / 2;
-    const label = d.month.toLocaleDateString('en-PK', { month: 'short' });
+    const label = d.month.toLocaleDateString(dateLocale(), { month: 'short' });
     const incomeH = (d.income / max) * plotH;
     const expenseH = (d.expense / max) * plotH;
     return `
@@ -36,7 +36,7 @@ export function renderTrends() {
   const summary = data.map((d) => `${d.key}: income ${d.income}, expenses ${d.expense}`).join('; ');
   const rows = data.slice().reverse().map((d) => {
     const net = d.income - d.expense;
-    const label = d.month.toLocaleDateString('en-PK', { month: 'short', year: 'numeric' });
+    const label = d.month.toLocaleDateString(dateLocale(), { month: 'short', year: 'numeric' });
     return `
       <tr>
         <td class="py-1 pr-2 text-slate-600">${label}</td>

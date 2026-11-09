@@ -17,8 +17,37 @@
   <meta property="og:description" content="Farm records for dairy farmers. Works offline, syncs when you sign in." />
   <meta property="og:image" content="/icon-512.png" />
   <meta name="twitter:card" content="summary" />
+  <script>
+    // apply the saved language before the first paint (the app translates the page right after it loads)
+    (function () {
+      try {
+        var l = localStorage.getItem('dairy_farm_lang');
+        if (l === 'ur' || l === 'en') document.documentElement.className += ' i18n-has-lang';
+        if (l === 'ur') {
+          document.documentElement.lang = 'ur';
+          document.documentElement.dir = 'rtl';
+          document.documentElement.className += ' lang-ur i18n-pending';
+          setTimeout(function () { document.documentElement.className = document.documentElement.className.replace(' i18n-pending', ''); }, 2500);
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body data-tab="finance" class="text-slate-800 min-h-screen flex flex-col relative overflow-x-hidden">
+
+  <!-- Language choice: shown once, before anything else -->
+  <div id="languageGate" data-no-i18n class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6 text-center">
+    <img src="/icon-192.png" alt="" width="72" height="72" class="rounded-2xl mb-5" />
+    <h1 class="text-2xl font-semibold text-slate-900">Dairy Farm Manager</h1>
+    <h2 dir="rtl" lang="ur" class="gate-ur text-xl font-semibold text-slate-900 mt-1">ڈیری فارم مینیجر</h2>
+    <p class="text-sm text-slate-500 mt-5">Choose your language</p>
+    <p dir="rtl" lang="ur" class="gate-ur text-sm text-slate-500">اپنی زبان منتخب کریں</p>
+    <div class="w-full max-w-xs mt-6 space-y-3">
+      <button type="button" data-choose-lang="ur" class="btn-primary w-full gate-ur text-lg" style="min-height:3.25rem">اردو میں جاری رکھیں</button>
+      <button type="button" data-choose-lang="en" class="btn-secondary w-full text-base" style="min-height:3.25rem">Continue in English</button>
+    </div>
+    <p class="text-xs text-slate-400 mt-6">You can change the language any time from the top of the app.<br /><span dir="rtl" lang="ur" class="gate-ur">زبان آپ ایپ کے اوپر سے کسی بھی وقت بدل سکتے ہیں۔</span></p>
+  </div>
 
   <!-- Header -->
   <header class="app-header sticky top-0 z-30">
@@ -37,11 +66,12 @@
         </button>
     </div>
     <div class="mode-bar">
-      <div class="max-w-3xl mx-auto px-3 pb-2">
+      <div class="max-w-3xl mx-auto px-3 pb-2 flex items-center gap-2">
         <div id="modeToggle" class="seg seg-full" role="tablist" aria-label="Farm or Crops">
           <button type="button" role="tab" data-mode="farm" aria-selected="true">Farm</button>
           <button type="button" role="tab" data-mode="crops" aria-selected="false">Crops &amp; Land</button>
         </div>
+        <button id="langToggleBtn" type="button" data-no-i18n class="lang-btn" aria-label="Language / زبان">اردو</button>
       </div>
     </div>
   </header>
