@@ -32,6 +32,14 @@ export function exportFarmCsv() {
     rows.push(['Milkers Herd', 'Daily Yield', m.tag, m.status, total + ' L/day (' + m.morningMilk + ' AM + ' + m.eveningMilk + ' PM)', m.breed + ' | ' + (m.notes || '')]);
   });
 
+  state.goats.forEach(g => {
+    rows.push(['Goats & Sheep', (g.ageMonths || 0) + ' Months', g.tag, g.status, (g.count || 1) + ' x ' + g.species + ' (' + g.sex + ')', (g.breed || '') + ' | ' + (g.notes || '')]);
+  });
+
+  state.horses.forEach(h => {
+    rows.push(['Horses', (h.ageYears || 0) + ' Years', h.name, h.status, 'Feed & care Rs. ' + (h.monthlyCost || 0) + '/month', (h.breed || '') + ' | ' + (h.purpose || '') + ' | ' + (h.notes || '')]);
+  });
+
   state.wachiList.forEach(w => {
     rows.push(['Wachi (Heifers)', w.ageMonths + ' Months', w.tag, w.stage, w.weightKg + ' kg', w.breed + ' | ' + (w.notes || '')]);
   });

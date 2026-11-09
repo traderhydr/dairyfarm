@@ -199,6 +199,8 @@ button { font-weight: 500; }
   font-weight: 500;
 }
 .btn-secondary:hover { background: var(--surface-2); }
+.animal-type { display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem; padding: 0.9rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); text-align: left; color: var(--text); }
+.animal-type:hover { background: var(--surface-2); border-color: var(--text-2); }
 .animal-card { cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
 .animal-card:hover { border-color: var(--text-2); }
 

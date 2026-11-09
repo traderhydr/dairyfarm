@@ -7,7 +7,15 @@ import { closeSheets, openSheet } from '../ui/sheets.js';
 import { switchTab } from '../ui/tabs.js';
 
 const $ = (id) => document.getElementById(id);
-const KIND = { milker: 'Milker', wachi: 'Wachi', other: 'Animal' };
+const KIND = { milker: 'Milker', wachi: 'Wachi', goat: 'Goat / Sheep', horse: 'Horse', other: 'Animal' };
+const kindLabel = (p) => (p.goat ? p.goat.species : KIND[p.kind] || 'Animal');
+// where each kind is managed: [tab, add sheet, tag input]
+const HOME = {
+  milker: ['milkers', 'milkersSheet', 'milkerTag'],
+  wachi: ['wachi', 'wachiSheet', 'wachiTag'],
+  goat: ['goats', 'goatsSheet', 'goatTag'],
+  horse: ['horses', 'horsesSheet', 'horseName']
+};
 
 const chip = (text, cls = 'bg-slate-100 text-slate-700 border-slate-200') =>
   `<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${cls}">${text}</span>`;
@@ -16,12 +24,13 @@ function statusChip(p) {
   if (p.sold) return chip(p.soldAsCalf ? 'Sold with mother' : 'Sold', 'bg-rose-50 text-rose-700 border-rose-200');
   const prog = p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' ? pregnancyProgress(p.pregnancy.aiDate) : null;
   if (prog) return chip(`Pregnant · day ${prog.day}`, 'bg-emerald-50 text-emerald-800 border-emerald-200');
+  if (p.goat || p.horse) return chip(escapeHtml(p.record.status || (p.horse ? 'Active' : 'In flock')), p.inHerd ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-rose-50 text-rose-700 border-rose-200');
   return p.inHerd ? chip('In herd') : chip('Not in herd list');
 }
 
 function animalCard(p) {
   const bits = [
-    p.milker ? `${escapeHtml(p.milker.breed)}` : p.wachi ? `${escapeHtml(p.wachi.breed)}` : '',
+    p.milker ? `${escapeHtml(p.milker.breed)}` : p.wachi ? `${escapeHtml(p.wachi.breed)}` : p.goat ? `${escapeHtml(p.goat.breed || p.goat.sex)}${(p.goat.count || 1) > 1 ? ' \u00b7 ' + p.goat.count + ' animals' : ''}` : p.horse ? `${escapeHtml(p.horse.breed || p.horse.purpose || '')}` : '',
     p.ai.length ? `${p.ai.length} AI` : '',
     p.health.length ? `${p.health.length} treatment${p.health.length === 1 ? '' : 's'}` : '',
     p.calves.length ? `${p.calves.length} calf${p.calves.length === 1 ? '' : 'ves'}` : ''
@@ -30,7 +39,7 @@ function animalCard(p) {
     <button type="button" data-open-profile="${escapeHtml(p.tag)}" class="animal-card w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
       <div class="flex flex-wrap items-center gap-2">
         <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(p.tag)}</h3>
-        ${chip(KIND[p.kind] || 'Animal')} ${statusChip(p)}
+        ${chip(kindLabel(p))} ${statusChip(p)}
       </div>
       ${bits ? `<p class="text-xs text-slate-500">${bits}</p>` : ''}
     </button>`;
@@ -53,7 +62,7 @@ export function renderAnimals() {
     if (filter === 'herd' && !p.inHerd) return false;
     if (filter === 'sold' && !p.sold) return false;
     if (filter === 'pregnant' && !(p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' && !p.sold)) return false;
-    return matchesSearch([p.tag, p.record, p.dam, KIND[p.kind]], query);
+    return matchesSearch([p.tag, p.record, p.dam, kindLabel(p)], query);
   });
   container.innerHTML = shown.length ? shown.map(animalCard).join('') : noMatchHtml('animalsSearch');
 }
@@ -117,6 +126,23 @@ function profileHtml(p) {
     facts.push(['Milk per day', `${am + pm} L (${am} AM + ${pm} PM)`], ['Status', escapeHtml(p.milker.status)], ['Breed', escapeHtml(p.milker.breed)]);
   } else if (p.wachi) {
     facts.push(['Age', `${p.wachi.ageMonths} months`], ['Weight', `${p.wachi.weightKg} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
+  } else if (p.goat) {
+    const g = p.goat;
+    facts.push(['Species', escapeHtml(g.species)], ['Gender', escapeHtml(g.sex)], ['Number', String(g.count || 1)]);
+    if (g.breed) facts.push(['Breed', escapeHtml(g.breed)]);
+    if (g.ageMonths) facts.push(['Age', `${g.ageMonths} months`]);
+    if (g.weightKg) facts.push(['Weight', `${g.weightKg} kg`]);
+    if (g.cost) facts.push(['Cost', formatCurrency(g.cost)]);
+    if (g.salePrice) facts.push(['Sale price', formatCurrency(g.salePrice)]);
+  } else if (p.horse) {
+    const hs = p.horse;
+    facts.push(['Gender', escapeHtml(hs.sex)], ['Purpose', escapeHtml(hs.purpose || '')]);
+    if (hs.breed) facts.push(['Breed', escapeHtml(hs.breed)]);
+    if (hs.ageYears) facts.push(['Age', `${hs.ageYears} years`]);
+    if (hs.color) facts.push(['Colour', escapeHtml(hs.color)]);
+    if (hs.monthlyCost) facts.push(['Feed & care / month', formatCurrency(hs.monthlyCost)]);
+    if (hs.cost) facts.push(['Purchase cost', formatCurrency(hs.cost)]);
+    if (hs.salePrice) facts.push(['Sale price', formatCurrency(hs.salePrice)]);
   } else if (p.sales[0] && p.sales[0].animal) {
     const a = p.sales[0].animal;
     facts.push(['Breed', escapeHtml(a.breed || '')]);
@@ -150,17 +176,30 @@ function profileHtml(p) {
     );
   }).join('');
 
-  const actions = p.sold ? '' : `
-    <div class="grid grid-cols-3 gap-2 pt-1">
-      <button type="button" data-profile-action="treat" class="btn-secondary text-xs py-2.5">+ Treatment</button>
-      <button type="button" data-profile-action="ai" class="btn-secondary text-xs py-2.5">+ AI record</button>
-      <button type="button" data-profile-action="sell" class="btn-primary text-xs py-2.5">Mark sold</button>
-    </div>`;
+  const cattle = p.kind === 'milker' || p.kind === 'wachi' || p.kind === 'other';
+  const editBtn = p.record
+    ? `<button type="button" data-profile-action="edit" class="btn-secondary text-xs py-2.5">Edit</button>`
+    : '';
+  const actions = `
+    <div class="grid grid-cols-2 gap-2 pt-1">
+      ${editBtn}
+      ${p.sold ? '' : '<button type="button" data-profile-action="treat" class="btn-secondary text-xs py-2.5">+ Treatment</button>'}
+      ${p.sold || !cattle ? '' : '<button type="button" data-profile-action="ai" class="btn-secondary text-xs py-2.5">+ AI record</button>'}
+      ${p.sold ? '' : '<button type="button" data-profile-action="sell" class="btn-primary text-xs py-2.5">Mark sold</button>'}
+    </div>
+    ${!p.record && !p.sold ? `
+    <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-xs text-amber-900 space-y-2">
+      <p>${escapeHtml(p.tag)} is not in your herd list yet. Add her so her details are kept:</p>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-profile-add="milker" class="btn-secondary text-xs py-2 px-3">As Milker</button>
+        <button type="button" data-profile-add="wachi" class="btn-secondary text-xs py-2 px-3">As Wachi</button>
+      </div>
+    </div>` : ''}`;
 
   return `
     <div class="pr-16 space-y-1.5" data-profile-tag="${escapeHtml(p.tag)}">
       <h2 id="profileTitle" class="text-lg font-bold text-slate-900">${escapeHtml(p.tag)}</h2>
-      <div class="flex flex-wrap gap-1.5">${chip(KIND[p.kind] || 'Animal')} ${statusChip(p)}</div>
+      <div class="flex flex-wrap gap-1.5">${chip(kindLabel(p))} ${statusChip(p)}</div>
     </div>
     ${salePanel(p)}
     ${pregnancyPanel(p)}
@@ -168,8 +207,8 @@ function profileHtml(p) {
       <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5"><dt class="text-[10px] uppercase font-semibold text-slate-400">${k}</dt><dd class="text-xs font-bold text-slate-800 mt-0.5">${v}</dd></div>`).join('')}</dl>` : ''}
     ${notes ? `<p class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ''}
     ${actions}
-    ${section('AI &amp; pregnancy history', p.ai.length, ai, 'No AI records for this animal.')}
-    ${section('Calves (baby record)', p.calves.length, calves, 'No calves recorded.')}
+    ${cattle ? section('AI &amp; pregnancy history', p.ai.length, ai, 'No AI records for this animal.') : ''}
+    ${cattle ? section('Calves (baby record)', p.calves.length, calves, 'No calves recorded.') : ''}
     ${section('Treatments &amp; vaccinations', p.health.length, health, 'No treatments recorded. Use the same tag when you add a health record.')}`;
 }
 
@@ -190,11 +229,16 @@ function startAction(action, p) {
     switchTab('breeding');
     openSheet('breedingSheet');
     $('cowTag').value = p.tag;
+  } else if (action === 'edit') {
+    const [tab] = HOME[p.kind] || [];
+    if (!tab || !p.record) return;
+    switchTab(tab);
+    document.dispatchEvent(new CustomEvent('animal-edit', { detail: { kind: p.kind, id: p.record.id } }));
   } else if (action === 'sell') {
     switchTab('sales');
     openSheet('salesSheet');
     const pick = $('saleQuickPick');
-    const value = p.milker ? `milker:${p.milker.id}` : p.wachi ? `wachi:${p.wachi.id}` : '';
+    const value = p.milker ? `milker:${p.milker.id}` : p.wachi ? `wachi:${p.wachi.id}` : p.goat ? `goat:${p.goat.id}` : p.horse ? `horse:${p.horse.id}` : '';
     if (value && [...pick.options].some((o) => o.value === value)) {
       pick.value = value;
       pick.dispatchEvent(new Event('change', { bubbles: true }));
@@ -205,6 +249,15 @@ function startAction(action, p) {
   }
 }
 
+/** Open the add form for one kind of animal, optionally with the tag already filled in. */
+export function startAdd(kind, tag = '') {
+  const [tab, sheet, input] = HOME[kind];
+  closeSheets();
+  switchTab(tab);
+  openSheet(sheet);
+  if (tag) $(input).value = tag;
+}
+
 export function initAnimals() {
   initListSearch('animalsSearch', renderAnimals);
   $('animalsFilter').addEventListener('change', renderAnimals);
@@ -213,6 +266,17 @@ export function initAnimals() {
     const open = e.target.closest('[data-open-profile]');
     if (open) {
       openProfile(open.getAttribute('data-open-profile'));
+      return;
+    }
+    const add = e.target.closest('[data-add-animal]');
+    if (add) {
+      startAdd(add.getAttribute('data-add-animal'));
+      return;
+    }
+    const addFromProfile = e.target.closest('[data-profile-add]');
+    if (addFromProfile) {
+      const tag = $('profileBody').querySelector('[data-profile-tag]').getAttribute('data-profile-tag');
+      startAdd(addFromProfile.getAttribute('data-profile-add'), tag);
       return;
     }
     const action = e.target.closest('[data-profile-action]');

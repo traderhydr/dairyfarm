@@ -166,6 +166,54 @@ const DOODHI = [
   }
 ];
 
+const GOATS = [
+  {
+    id: 'goat-1',
+    tag: 'Goat #01 (Bholi)',
+    species: 'Goat',
+    sex: 'Female',
+    breed: 'Beetal',
+    ageMonths: 26,
+    weightKg: 48,
+    count: 1,
+    status: 'Milking',
+    cost: 38000,
+    salePrice: 0,
+    notes: '2 litres milk per day'
+  },
+  {
+    id: 'goat-2',
+    tag: 'Sheep flock A',
+    species: 'Sheep',
+    sex: 'Female',
+    breed: 'Kajli',
+    ageMonths: 18,
+    weightKg: 40,
+    count: 12,
+    status: 'In flock',
+    cost: 0,
+    salePrice: 0,
+    notes: 'Grazing group; shearing in spring'
+  }
+];
+
+const HORSES = [
+  {
+    id: 'horse-1',
+    name: 'Raja',
+    breed: 'Nukra',
+    sex: 'Stallion',
+    ageYears: 6,
+    color: 'White',
+    purpose: 'Riding',
+    status: 'Active',
+    monthlyCost: 18000,
+    cost: 450000,
+    salePrice: 0,
+    notes: 'Shoeing due next month'
+  }
+];
+
 const SAVINGS = [
   {
     id: 'goal-1',
@@ -201,5 +249,7 @@ export const SAMPLE_DATA = {
   healthRecords: HEALTH,
   cattleSales: SALES,
   doodhiAccounts: DOODHI,
+  goats: GOATS,
+  horses: HORSES,
   savingsGoals: SAVINGS
 };

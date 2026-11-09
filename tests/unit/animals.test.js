@@ -99,3 +99,32 @@ describe('listAnimals', () => {
     expect(tags).toEqual(['Cow #07 (Chandi)', 'Wachi #01 (Noori)', 'Wachi #09 (Pinky)', 'Wachi #05 (Other)', 'Cow #14 (Rani)']);
   });
 });
+
+describe('goats and horses in profiles', () => {
+  const state = () => ({
+    milkersList: [], wachiList: [], breedingRecords: [],
+    goats: [{ id: 'g1', tag: 'Goat #01 (Bholi)', species: 'Goat', sex: 'Female', count: 1, status: 'Milking' }, { id: 'g2', tag: 'Sheep flock A', species: 'Sheep', count: 12, status: 'In flock' }],
+    horses: [{ id: 'hr1', name: 'Raja', breed: 'Nukra', status: 'Active' }],
+    healthRecords: [{ id: 'h1', target: 'Raja', type: 'Deworming (Drench / Bolus)', dateGiven: '2026-10-01' }],
+    cattleSales: []
+  });
+  it('builds profiles for goats and horses with their treatments', () => {
+    const g = buildProfile('Goat #01 (Bholi)', state());
+    expect(g.kind).toBe('goat');
+    expect(g.inHerd).toBe(true);
+    const h = buildProfile('Raja', state());
+    expect(h.kind).toBe('horse');
+    expect(h.health).toHaveLength(1);
+  });
+  it('lists them with the cattle', () => {
+    expect(listAnimals(state()).map((a) => a.tag)).toEqual(['Goat #01 (Bholi)', 'Sheep flock A', 'Raja']);
+  });
+  it('treats a Sold or Died status as out of the herd, and a sale as sold', () => {
+    const s = state();
+    s.goats[0].status = 'Sold';
+    expect(buildProfile('Goat #01 (Bholi)', s).sold).toBe(true);
+    expect(buildProfile('Goat #01 (Bholi)', s).inHerd).toBe(false);
+    s.horses[0].status = 'Died';
+    expect(buildProfile('Raja', s).inHerd).toBe(false);
+  });
+});

@@ -943,3 +943,154 @@ test.describe('profit and loss', () => {
     await expect(page.locator('#profitNet')).toHaveText('Rs. 750');
   });
 });
+
+test.describe('goats, sheep and horses', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  const fabFor = (page, sheet) => page.locator(`.fab[data-open-sheet="${sheet}"]`).click();
+
+  test('add, edit, search and delete a goat', async ({ page }) => {
+    await tab(page, 'tabGoatsBtn');
+    await expect(page.locator('#goatsEmptyState')).toBeVisible();
+    await fabFor(page, 'goatsSheet');
+    await fill(page, 'goatTag', 'Goat #07 (Moti)');
+    await fill(page, 'goatSpecies', 'Goat');
+    await fill(page, 'goatBreed', 'Beetal');
+    await fill(page, 'goatCount', '3');
+    await submit(page, 'goatForm');
+    await expect(page.locator('#goatsListContainer')).toContainText('Goat #07 (Moti)');
+    await expect(page.locator('#goatsTotalBanner')).toHaveText('3');
+    expect((await read(page, 'dairy_farm_v1_goats'))[0]).toMatchObject({ tag: 'Goat #07 (Moti)', count: 3, species: 'Goat' });
+
+    await page.locator('[data-edit-goat]').first().click();
+    await expect(page.locator('#goatsSheetTitle')).toHaveText('Edit Goat / Sheep');
+    await fill(page, 'goatStatus', 'Pregnant');
+    await fill(page, 'goatCount', '2');
+    await submit(page, 'goatForm');
+    expect((await read(page, 'dairy_farm_v1_goats'))[0]).toMatchObject({ status: 'Pregnant', count: 2 });
+    await expect(page.locator('#goatsTotalBanner')).toHaveText('2');
+
+    await fill(page, 'goatsSearch', 'zzz');
+    await expect(page.locator('#goatsListContainer')).toContainText('No matches');
+    await fill(page, 'goatsSearch', '');
+    await page.locator('[data-delete-goat]').first().click();
+    await expect(page.locator('#goatsEmptyState')).toBeVisible();
+  });
+
+  test('a goat that was sold shows its profit', async ({ page }) => {
+    await tab(page, 'tabGoatsBtn');
+    await fabFor(page, 'goatsSheet');
+    await fill(page, 'goatTag', 'Goat #08');
+    await fill(page, 'goatCost', '30000');
+    await fill(page, 'goatStatus', 'Sold');
+    await fill(page, 'goatSalePrice', '42000');
+    await submit(page, 'goatForm');
+    await expect(page.locator('#goatsListContainer')).toContainText('Profit');
+    await expect(page.locator('#goatsListContainer')).toContainText('Rs. 12,000');
+    await expect(page.locator('#goatsTotalBanner')).toHaveText('0');
+  });
+
+  test('add, edit and delete a horse; the monthly cost is totalled', async ({ page }) => {
+    await tab(page, 'tabHorsesBtn');
+    await fabFor(page, 'horsesSheet');
+    await fill(page, 'horseName', 'Raja');
+    await fill(page, 'horseMonthlyCost', '18000');
+    await submit(page, 'horseForm');
+    await expect(page.locator('#horsesCostBanner')).toHaveText('Rs. 18,000');
+    await page.locator('[data-edit-horse]').first().click();
+    await fill(page, 'horseName', 'Raja Jr');
+    await submit(page, 'horseForm');
+    expect((await read(page, 'dairy_farm_v1_horses'))[0].name).toBe('Raja Jr');
+    await page.locator('[data-delete-horse]').first().click();
+    await expect(page.locator('#horsesEmptyState')).toBeVisible();
+  });
+
+  test('sample data, backup and CSV include them; they appear in Animal Profiles', async ({ page }) => {
+    await loadSample(page);
+    expect(await read(page, 'dairy_farm_v1_goats')).toHaveLength(2);
+    expect(await read(page, 'dairy_farm_v1_horses')).toHaveLength(1);
+    await tab(page, 'tabAnimalsBtn');
+    await expect(page.locator('#animalsListContainer')).toContainText('Raja');
+    await expect(page.locator('#animalsListContainer')).toContainText('Goat #01 (Bholi)');
+    await page.locator('#animalsListContainer [data-open-profile="Raja"]').click();
+    await expect(page.locator('#profileBody')).toContainText('Nukra');
+    await expect(page.locator('#profileBody')).not.toContainText('AI & pregnancy history');
+    await expect(page.locator('[data-profile-action="ai"]')).toHaveCount(0);
+  });
+
+  test('sell a single goat from its profile: it is marked Sold with the sale price', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Goat #01 (Bholi)"]').click();
+    await page.locator('[data-profile-action="sell"]').click();
+    await expect(page.locator('#saleCowTag')).toHaveValue('Goat #01 (Bholi)');
+    await fill(page, 'saleBuyer', 'Haji Akram');
+    await fill(page, 'saleTotalCost', '38000');
+    await fill(page, 'salePrice', '52000');
+    await submit(page, 'salesForm');
+    const goat = (await read(page, 'dairy_farm_v1_goats')).find((g) => g.id === 'goat-1');
+    expect(goat).toMatchObject({ status: 'Sold', salePrice: 52000 });
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Goat #01 (Bholi)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('Sold on');
+  });
+});
+
+test.describe('add and edit animals from Animal Profiles', () => {
+  test('the Add animal button offers every kind and opens the right form', async ({ page }) => {
+    await tab(page, 'tabAnimalsBtn');
+    for (const [kind, sheet, input] of [['milker', 'milkersSheet', 'milkerTag'], ['wachi', 'wachiSheet', 'wachiTag'], ['goat', 'goatsSheet', 'goatTag'], ['horse', 'horsesSheet', 'horseName']]) {
+      await page.locator('.fab[data-open-sheet="animalTypeSheet"]').click();
+      await page.locator(`[data-add-animal="${kind}"]`).click();
+      await expect(page.locator(`#${sheet}`)).toBeVisible();
+      await expect(page.locator(`#${input}`)).toBeVisible();
+      await page.keyboard.press('Escape');
+      await tab(page, 'tabAnimalsBtn');
+    }
+  });
+
+  test('add a milker through Add animal and see her in the profiles list', async ({ page }) => {
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('.fab[data-open-sheet="animalTypeSheet"]').click();
+    await page.locator('[data-add-animal="milker"]').click();
+    await fill(page, 'milkerTag', 'Cow #30 (Gulabo)');
+    await fill(page, 'milkerBreed', 'Sahiwal');
+    await fill(page, 'milkerMorning', '6');
+    await fill(page, 'milkerEvening', '5');
+    await submit(page, 'milkerForm');
+    await tab(page, 'tabAnimalsBtn');
+    await expect(page.locator('#animalsListContainer')).toContainText('Cow #30 (Gulabo)');
+  });
+
+  test('Edit inside a profile opens that animal for editing (cow, wachi, goat, horse)', async ({ page }) => {
+    await loadSample(page);
+    const cases = [
+      ['Cow #07 (Chandi)', 'milkersSheet', 'milkerBreed', 'dairy_farm_v1_milkers', 'breed'],
+      ['Wachi #01 (Noori)', 'wachiSheet', 'wachiBreed', 'dairy_farm_v1_wachi', 'breed'],
+      ['Goat #01 (Bholi)', 'goatsSheet', 'goatBreed', 'dairy_farm_v1_goats', 'breed'],
+      ['Raja', 'horsesSheet', 'horseBreed', 'dairy_farm_v1_horses', 'breed']
+    ];
+    for (const [tag, sheet, field, key, prop] of cases) {
+      await tab(page, 'tabAnimalsBtn');
+      await page.locator(`#animalsListContainer [data-open-profile="${tag}"]`).click();
+      await page.locator('[data-profile-action="edit"]').click();
+      await expect(page.locator(`#${sheet}`)).toBeVisible();
+      await expect(page.locator(`#${sheet}Title`)).toContainText('Edit');
+      await fill(page, field, 'Edited breed');
+      await submit(page, sheet.replace('Sheet', 'Form').replace('milkersForm', 'milkerForm').replace('goatsForm', 'goatForm').replace('horsesForm', 'horseForm'));
+      const list = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+      expect(list.some((r) => r[prop] === 'Edited breed')).toBe(true);
+    }
+  });
+
+  test('an animal known only from AI records can be added to the herd from her profile', async ({ page }) => {
+    await tab(page, 'tabBreedingBtn');
+    await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
+    await fill(page, 'cowTag', 'Cow #77 (Zeenat)');
+    await submit(page, 'breedingForm');
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Cow #77 (Zeenat)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('not in your herd list');
+    await page.locator('[data-profile-add="milker"]').click();
+    await expect(page.locator('#milkerTag')).toHaveValue('Cow #77 (Zeenat)');
+  });
+});

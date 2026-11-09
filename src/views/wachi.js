@@ -89,6 +89,15 @@ export function renderWachi() {
 export function initWachi() {
   initListSearch('wachiSearch', renderWachi);
   const editor = createEditor({ sheetId: 'wachiSheet', formId: 'wachiForm', editTitle: 'Edit Wachi (Heifer)' });
+  const startEdit = (w) => editor.begin(w.id, () => {
+    setField('wachiTag', w.tag); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
+    setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes); setField('wachiDam', w.damTag);
+  });
+  document.addEventListener('animal-edit', (e) => {
+    if (e.detail.kind !== 'wachi') return;
+    const w = state.wachiList.find((x) => x.id === e.detail.id);
+    if (w) startEdit(w);
+  });
   // Add New Wachi (Heifer)
   document.getElementById('wachiForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -153,12 +162,7 @@ export function initWachi() {
     const editBtn = e.target.closest('[data-edit-wachi]');
     if (editBtn) {
       const w = state.wachiList.find(x => x.id === editBtn.getAttribute('data-edit-wachi'));
-      if (w) {
-        editor.begin(w.id, () => {
-          setField('wachiTag', w.tag); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
-          setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes); setField('wachiDam', w.damTag);
-        });
-      }
+      if (w) startEdit(w);
       return;
     }
     const promoteBtn = e.target.closest('[data-promote-wachi]');

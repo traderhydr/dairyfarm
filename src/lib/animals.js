@@ -31,8 +31,11 @@ export function salesOf(tag, sales) {
 export function buildProfile(tag, state) {
   const milker = (state.milkersList || []).find((m) => sameAnimal(m.tag, tag)) || null;
   const wachi = (state.wachiList || []).find((w) => sameAnimal(w.tag, tag)) || null;
-  const record = milker || wachi;
-  const displayTag = record ? record.tag : tag;
+  const goat = milker || wachi ? null : (state.goats || []).find((g) => sameAnimal(g.tag, tag)) || null;
+  const horse = milker || wachi || goat ? null : (state.horses || []).find((h) => sameAnimal(h.name, tag)) || null;
+  const record = milker || wachi || goat || horse;
+  const recordTag = goat ? goat.tag : horse ? horse.name : record ? record.tag : '';
+  const displayTag = record ? recordTag : tag;
 
   const ai = (state.breedingRecords || [])
     .filter((r) => sameAnimal(r.cowTag, displayTag))
@@ -66,13 +69,13 @@ export function buildProfile(tag, state) {
 
   const open = ai.find((r) => r.pregStatus !== 'Calved' && r.pregStatus !== 'Repeat / Not Pregnant');
   const dam = wachi ? damOf(wachi) : '';
-  const kind = milker ? 'milker' : wachi ? 'wachi' : (sales[0]?.animal?.kind || 'other');
-  const sold = sales.length > 0;
+  const kind = milker ? 'milker' : wachi ? 'wachi' : goat ? 'goat' : horse ? 'horse' : (sales[0]?.animal?.kind || 'other');
+  const sold = sales.length > 0 || ((goat || horse) && (goat || horse).status === 'Sold') || false;
 
   return {
-    tag: displayTag, kind, milker, wachi, record, dam, ai, health, calves, sales, sold, soldAsCalf,
+    tag: displayTag, kind, milker, wachi, goat, horse, record, dam, ai, health, calves, sales, sold, soldAsCalf,
     pregnancy: open || null,
-    inHerd: Boolean(record) && !sold
+    inHerd: Boolean(record) && !sold && !['Sold', 'Died'].includes(record.status)
   };
 }
 
@@ -87,6 +90,8 @@ export function listAnimals(state) {
   (state.milkersList || []).forEach((m) => add(m.tag));
   (state.wachiList || []).forEach((w) => add(w.tag));
   (state.breedingRecords || []).forEach((r) => add(r.cowTag));
+  (state.goats || []).forEach((g) => add(g.tag));
+  (state.horses || []).forEach((h) => add(h.name));
   (state.cattleSales || []).forEach((s) => add(s.cowTag));
   return items.map((a) => buildProfile(a.tag, state));
 }

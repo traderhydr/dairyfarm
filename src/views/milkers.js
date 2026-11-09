@@ -122,6 +122,18 @@ export function initMilkers() {
     sheetId: 'milkersSheet', formId: 'milkerForm', editTitle: 'Edit Milking Cow',
     onReset: updateMilkerFormPreview
   });
+  const startEdit = (cow) => editor.begin(cow.id, () => {
+    setField('milkerTag', cow.tag); setField('milkerBreed', cow.breed);
+    setField('milkerMorning', cow.morningMilk); setField('milkerEvening', cow.eveningMilk);
+    setField('milkerStatus', cow.status); setField('milkerNotes', cow.notes);
+    updateMilkerFormPreview();
+  });
+  document.addEventListener('animal-edit', (e) => {
+    if (e.detail.kind !== 'milker') return;
+    const cow = state.milkersList.find((m) => m.id === e.detail.id);
+    if (cow) startEdit(cow);
+  });
+
   // Live Milker Form Yield Preview
   ['milkerMorning', 'milkerEvening'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateMilkerFormPreview);
@@ -215,14 +227,7 @@ export function initMilkers() {
     const editBtn = e.target.closest('[data-edit-milker-form]');
     if (editBtn) {
       const cow = state.milkersList.find(m => m.id === editBtn.getAttribute('data-edit-milker-form'));
-      if (cow) {
-        editor.begin(cow.id, () => {
-          setField('milkerTag', cow.tag); setField('milkerBreed', cow.breed);
-          setField('milkerMorning', cow.morningMilk); setField('milkerEvening', cow.eveningMilk);
-          setField('milkerStatus', cow.status); setField('milkerNotes', cow.notes);
-          updateMilkerFormPreview();
-        });
-      }
+      if (cow) startEdit(cow);
       return;
     }
     const delBtn = e.target.closest('[data-delete-milker]');

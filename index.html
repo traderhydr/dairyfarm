@@ -330,6 +330,22 @@
             <span id="wachiTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
           </button>
 
+          <button id="tabGoatsBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              <span>Goats &amp; Sheep</span>
+            </span>
+            <span id="goatsTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button id="tabHorsesBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              <span>Horses</span>
+            </span>
+            <span id="horsesTabBadge" class="text-[11px] bg-slate-200/80 text-slate-700 px-2 py-0.5 rounded-full">0</span>
+          </button>
+
           <button id="tabHealthBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
             <span class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-teal-500"></span>
@@ -1391,6 +1407,190 @@
     </section>
 
 
+    <!-- GOATS &AMP; SHEEP -->
+    <section id="goatsSection" class="hidden grid-cols-1 gap-4">
+      <div id="goatsSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="goatsSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="goatsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Goat / Sheep</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Keep your goats and sheep: individuals or a group count, with status, cost and sale price.</p>
+          <form id="goatForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="goatTag" class="block text-xs font-semibold text-slate-700 mb-1">Tag / Name</label>
+              <input id="goatTag" type="text" required placeholder="e.g. Goat #05 (Bholi)" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="goatSpecies" class="block text-xs font-semibold text-slate-700 mb-1">Goat or Sheep</label>
+              <select id="goatSpecies"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Goat">Goat (Bakri)</option><option value="Sheep">Sheep (Bhed)</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="goatSex" class="block text-xs font-semibold text-slate-700 mb-1">Gender</label>
+              <select id="goatSex"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Female">Female</option><option value="Male">Male</option></select>
+            </div>
+            <div>
+              <label for="goatBreed" class="block text-xs font-semibold text-slate-700 mb-1">Breed (Optional)</label>
+              <input id="goatBreed" type="text" placeholder="e.g. Beetal, Teddy, Kamori" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="goatAge" class="block text-xs font-semibold text-slate-700 mb-1">Age (Months)</label>
+              <input id="goatAge" type="number" min="0" step="1" placeholder="e.g. 14" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="goatWeight" class="block text-xs font-semibold text-slate-700 mb-1">Weight (kg)</label>
+              <input id="goatWeight" type="number" min="0" step="any" placeholder="e.g. 35" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="goatCount" class="block text-xs font-semibold text-slate-700 mb-1">Number of Animals</label>
+              <input id="goatCount" type="number" min="1" step="1" value="1" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="goatStatus" class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+              <select id="goatStatus"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="In flock">In flock</option><option value="Pregnant">Pregnant</option><option value="Milking">Milking</option><option value="For sale">For sale</option><option value="Sold">Sold</option><option value="Died">Died</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="goatCost" class="block text-xs font-semibold text-slate-700 mb-1">Purchase / Rearing Cost (Rs.)</label>
+              <input id="goatCost" type="number" min="0" step="any" placeholder="Optional" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="goatSalePrice" class="block text-xs font-semibold text-slate-700 mb-1">Sale Price (Rs.)</label>
+              <input id="goatSalePrice" type="number" min="0" step="any" placeholder="If sold" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div>
+              <label for="goatNotes" class="block text-xs font-semibold text-slate-700 mb-1">Notes</label>
+              <input id="goatNotes" type="text" placeholder="e.g. Kidding due in January" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">Save Goat / Sheep</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="list-card space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Goats &amp; Sheep</h2>
+            <p id="goatsSummary" class="text-xs text-slate-500"></p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-slate-500">Total Animals</span>
+            <span id="goatsTotalBanner" class="text-sm font-bold text-slate-900">0</span>
+          </div>
+        </div>
+        <input id="goatsSearch" type="search" placeholder="Search tag, breed, notes..." aria-label="Search tag, breed, notes..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <div id="goatsEmptyState" class="empty-state hidden">
+          <p class="empty-title">No goats or sheep yet</p>
+          <p class="empty-text">Add your first goat or sheep to start the flock record.</p>
+          <button type="button" class="btn-primary" data-open-sheet="goatsSheet">Add goat / sheep</button>
+        </div>
+        <div id="goatsListContainer" class="space-y-3"></div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="goatsSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add goat / sheep</span></button>
+    </section>
+
+    <!-- HORSES -->
+    <section id="horsesSection" class="hidden grid-cols-1 gap-4">
+      <div id="horsesSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="horsesSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="horsesSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Horse</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Keep your horses: breed, age, purpose, feed and care cost, purchase and sale price.</p>
+          <form id="horseForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="horseName" class="block text-xs font-semibold text-slate-700 mb-1">Name / Tag</label>
+              <input id="horseName" type="text" required placeholder="e.g. Raja" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="horseBreed" class="block text-xs font-semibold text-slate-700 mb-1">Breed (Optional)</label>
+              <input id="horseBreed" type="text" placeholder="e.g. Nukra, Thoroughbred" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="horseSex" class="block text-xs font-semibold text-slate-700 mb-1">Gender</label>
+              <select id="horseSex"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Stallion">Stallion</option><option value="Mare">Mare</option><option value="Gelding">Gelding</option></select>
+            </div>
+            <div>
+              <label for="horseAge" class="block text-xs font-semibold text-slate-700 mb-1">Age (Years)</label>
+              <input id="horseAge" type="number" min="0" step="0.5" placeholder="e.g. 6" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="horseColor" class="block text-xs font-semibold text-slate-700 mb-1">Colour (Optional)</label>
+              <input id="horseColor" type="text" placeholder="e.g. Bay, White" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="horsePurpose" class="block text-xs font-semibold text-slate-700 mb-1">Purpose</label>
+              <select id="horsePurpose"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Riding">Riding</option><option value="Work / Tonga">Work / Tonga</option><option value="Breeding">Breeding</option><option value="Racing / Sport">Racing / Sport</option><option value="Show">Show</option><option value="Other">Other</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="horseStatus" class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+              <select id="horseStatus"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Active">Active</option><option value="Pregnant">Pregnant</option><option value="For sale">For sale</option><option value="Retired">Retired</option><option value="Sold">Sold</option><option value="Died">Died</option></select>
+            </div>
+            <div>
+              <label for="horseMonthlyCost" class="block text-xs font-semibold text-slate-700 mb-1">Monthly Feed & Care (Rs.)</label>
+              <input id="horseMonthlyCost" type="number" min="0" step="any" placeholder="Optional" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="horseCost" class="block text-xs font-semibold text-slate-700 mb-1">Purchase Cost (Rs.)</label>
+              <input id="horseCost" type="number" min="0" step="any" placeholder="Optional" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="horseSalePrice" class="block text-xs font-semibold text-slate-700 mb-1">Sale Price (Rs.)</label>
+              <input id="horseSalePrice" type="number" min="0" step="any" placeholder="If sold" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div>
+              <label for="horseNotes" class="block text-xs font-semibold text-slate-700 mb-1">Notes</label>
+              <input id="horseNotes" type="text" placeholder="e.g. Shoeing due next month" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">Save Horse</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="list-card space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Horses</h2>
+            <p id="horsesSummary" class="text-xs text-slate-500"></p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-slate-500">Monthly Feed &amp; Care</span>
+            <span id="horsesCostBanner" class="text-sm font-bold text-slate-900">Rs. 0</span>
+          </div>
+        </div>
+        <input id="horsesSearch" type="search" placeholder="Search name, breed, notes..." aria-label="Search name, breed, notes..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <div id="horsesEmptyState" class="empty-state hidden">
+          <p class="empty-title">No horses yet</p>
+          <p class="empty-text">Add your first horse to start the stable record.</p>
+          <button type="button" class="btn-primary" data-open-sheet="horsesSheet">Add horse</button>
+        </div>
+        <div id="horsesListContainer" class="space-y-3"></div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="horsesSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add horse</span></button>
+    </section>
+
     <!-- ANIMAL PROFILES -->
     <section id="animalsSection" class="hidden grid-cols-1 gap-4">
       <div class="list-card space-y-4">
@@ -1413,6 +1613,23 @@
         </div>
         <div id="animalsListContainer" class="space-y-3"></div>
       </div>
+
+      <div id="animalTypeSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="animalTypeSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="animalTypeSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Animal</h2>
+          <p class="text-xs text-slate-500 mt-0.5">What kind of animal do you want to add?</p>
+          <div class="grid grid-cols-2 gap-3 mt-4">
+            <button type="button" data-add-animal="milker" class="animal-type"><span class="font-semibold">Milking Cow</span><span class="text-xs text-slate-500">Cow giving milk</span></button>
+            <button type="button" data-add-animal="wachi" class="animal-type"><span class="font-semibold">Wachi / Calf</span><span class="text-xs text-slate-500">Heifer or young calf</span></button>
+            <button type="button" data-add-animal="goat" class="animal-type"><span class="font-semibold">Goat / Sheep</span><span class="text-xs text-slate-500">Single or a group</span></button>
+            <button type="button" data-add-animal="horse" class="animal-type"><span class="font-semibold">Horse</span><span class="text-xs text-slate-500">Stable record</span></button>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="animalTypeSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add animal</span></button>
     </section>
 
     <!-- SAVINGS GOALS -->

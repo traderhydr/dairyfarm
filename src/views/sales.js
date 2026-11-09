@@ -54,6 +54,12 @@ function updateSaleQuickPickDropdown() {
   state.wachiList.forEach(w => {
     options.push(`<option value="wachi:${w.id}">${escapeHtml(w.tag)} — Wachi (${escapeHtml(w.breed)})</option>`);
   });
+  state.goats.filter(g => g.status !== 'Sold' && g.status !== 'Died').forEach(g => {
+    options.push(`<option value="goat:${g.id}">${escapeHtml(g.tag)} — ${escapeHtml(g.species)}${(g.count || 1) > 1 ? ' (' + g.count + ' animals)' : ''}</option>`);
+  });
+  state.horses.filter(h => h.status !== 'Sold' && h.status !== 'Died').forEach(h => {
+    options.push(`<option value="horse:${h.id}">${escapeHtml(h.name)} — Horse${h.breed ? ' (' + escapeHtml(h.breed) + ')' : ''}</option>`);
+  });
   select.innerHTML = options.join('');
 }
 
@@ -175,6 +181,12 @@ export function initSales() {
       if (w) {
         document.getElementById('saleCowTag').value = `${w.tag} (${w.breed}, ${w.ageMonths} mo)`;
       }
+    } else if (kind === 'goat') {
+      const g = state.goats.find(item => item.id === id);
+      if (g) document.getElementById('saleCowTag').value = g.tag;
+    } else if (kind === 'horse') {
+      const hs = state.horses.find(item => item.id === id);
+      if (hs) document.getElementById('saleCowTag').value = hs.name;
     }
     refreshSaleCalves();
   });
@@ -207,8 +219,9 @@ export function initSales() {
     // Keep a snapshot of her herd details: her herd record is removed below, but her profile still needs them
     const herdRecord = quickPickVal ? (() => {
       const [kind, id] = quickPickVal.split(':');
-      const r = (kind === 'milker' ? state.milkersList : state.wachiList).find((x) => x.id === id);
-      return r ? { kind, breed: r.breed, ageMonths: r.ageMonths, weightKg: r.weightKg, morningMilk: r.morningMilk, eveningMilk: r.eveningMilk, damTag: r.damTag } : null;
+      const list = { milker: state.milkersList, wachi: state.wachiList, goat: state.goats, horse: state.horses }[kind] || [];
+      const r = list.find((x) => x.id === id);
+      return r ? { kind, breed: r.breed, ageMonths: r.ageMonths ?? (r.ageYears ? r.ageYears * 12 : undefined), weightKg: r.weightKg, morningMilk: r.morningMilk, eveningMilk: r.eveningMilk, damTag: r.damTag } : null;
     })() : null;
 
     state.cattleSales.unshift({
@@ -247,6 +260,14 @@ export function initSales() {
         state.milkersList = state.milkersList.filter(m => m.id !== id);
       } else if (kind === 'wachi') {
         state.wachiList = state.wachiList.filter(w => w.id !== id);
+      } else if (kind === 'goat' || kind === 'horse') {
+        // a group of animals stays on the list (change its number by hand); a single animal is marked sold
+        const rec = (kind === 'goat' ? state.goats : state.horses).find(x => x.id === id);
+        if (rec && (rec.count || 1) <= 1) {
+          rec.status = 'Sold';
+          rec.salePrice = salePrice;
+          if (!rec.cost && totalCost) rec.cost = totalCost;
+        }
       }
     }
 

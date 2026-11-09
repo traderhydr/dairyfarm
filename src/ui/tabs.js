@@ -11,6 +11,8 @@ const SECTIONS = {
   health: { section: 'healthSection', button: 'tabHealthBtn', style: 'drawer', title: 'Vaccination & Deworming' },
   sales: { section: 'salesSection', button: 'tabSalesBtn', style: 'drawer', title: 'Sold Cows' },
   doodhi: { section: 'doodhiSection', button: 'tabDoodhiBtn', style: 'drawer', title: 'Milk Buyers (Doodhi)' },
+  goats: { section: 'goatsSection', button: 'tabGoatsBtn', style: 'drawer', title: 'Goats & Sheep' },
+  horses: { section: 'horsesSection', button: 'tabHorsesBtn', style: 'drawer', title: 'Horses' },
   milkers: { section: 'milkersSection', button: 'tabMilkersBtn', style: 'drawer', title: 'Milkers' },
   savings: { section: 'savingsSection', button: 'tabSavingsBtn', style: 'drawer', title: 'Savings Goals' }
 };

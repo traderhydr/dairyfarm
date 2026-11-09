@@ -19,6 +19,8 @@ import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
 import { initProfit, renderProfit } from './views/profit.js';
 import { initLedgers, renderLedgers } from './views/ledgers.js';
+import { initGoats, renderGoats } from './views/goats.js';
+import { initHorses, renderHorses } from './views/horses.js';
 import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
 import { initSales, renderSales } from './views/sales.js';
@@ -41,6 +43,8 @@ function renderAll() {
   renderWanda();
   renderMilkers();
   renderWachi();
+  renderGoats();
+  renderHorses();
   renderHealth();
   renderSales();
   renderDoodhi();
@@ -79,6 +83,8 @@ function boot() {
   initWanda();
   initMilkers();
   initWachi();
+  initGoats();
+  initHorses();
   initHealth();
   initMenu();
   initExport();
