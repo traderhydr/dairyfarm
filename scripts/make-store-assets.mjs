@@ -9,8 +9,9 @@ fs.mkdirSync(`${OUT}/screenshots`, { recursive: true });
 const browser = await chromium.launch(process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {});
 const click = (page, id) => page.locator('#' + id).evaluate((el) => el.click());
 
-async function shot(file, steps, dark = false) {
+async function shot(file, steps, dark = false, lang = 'en') {
   const page = await browser.newPage({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 3, colorScheme: dark ? 'dark' : 'light' });
+  await page.addInitScript((LANG) => { try { if (!localStorage.getItem('dairy_farm_lang')) localStorage.setItem('dairy_farm_lang', LANG); } catch (e) { /* ignore */ } }, lang);
   await page.goto(URL);
   await page.waitForTimeout(600);
   await click(page, 'resetDemoBtn');
@@ -48,10 +49,13 @@ await shot('2-ledgers', async (p) => {
 });
 await shot('3-ledger-detail', async (p) => { await p.locator('[data-open-ledger="l-milk"]').click(); });
 await shot('4-cow-ai', async (p) => { await click(p, 'tabBreedingBtn'); });
-await shot('5-milkers', async (p) => { await click(p, 'tabMilkersBtn'); });
-await shot('6-wanda', async (p) => { await click(p, 'tabWandaBtn'); });
-await shot('7-savings', async (p) => { await p.locator('#openMoreBtn').click(); await p.locator('#tabSavingsBtn').click(); });
-await shot('8-dark', async (p) => { await p.locator('[data-open-ledger="l-milk"]').click(); }, true);
+await shot('5-animal-profile', async (p) => {
+  await click(p, 'tabAnimalsBtn');
+  await p.locator('#animalsListContainer [data-open-profile="Cow #07 (Chandi)"]').click();
+});
+await shot('6-crops', async (p) => { await p.locator('#modeToggle [data-mode="crops"]').click(); });
+await shot('7-wanda', async (p) => { await click(p, 'tabWandaBtn'); });
+await shot('8-urdu', async () => {}, false, 'ur');
 
 const b64 = (f) => fs.readFileSync(f).toString('base64');
 const g = await browser.newPage({ viewport: { width: 1024, height: 500 } });

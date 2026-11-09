@@ -121,5 +121,7 @@ export const PATTERNS = [
   [/^(Rabi \(Winter\)|Kharif \(Summer\)|Year-round) (\d{4})$/, '$1 $2'],
   [/^([\d.,]+) (Maund \(40 kg\)|Kg|Ton|Trolley|Bundles)$/, '$1 $2'],
   [/^Target: ~15 mo \/ 250\+ kg$/, 'ہدف: تقریباً 15 ماہ / 250+ کلو'],
+  // a leading sign in front of an amount would be flipped to the wrong end in right-to-left text; \u200e keeps it with the number
+  [/^([-+\u2212]) (Rs\. [\d,.]+)$/, '\u200e$1 $2'],
   [/^Rs\. ([\d,.\-]+)$/, 'Rs. $1']
 ];

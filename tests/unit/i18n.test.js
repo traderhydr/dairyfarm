@@ -26,6 +26,10 @@ describe('translate', () => {
     expect(translate('e.g. Cow #07 (Chandi)')).toBe('مثلاً Cow #07 (Chandi)');
     expect(translate('No matches for “raja”.')).toBe('“raja” کے لیے کوئی نتیجہ نہیں۔');
   });
+  it('keeps the minus sign with the amount in right-to-left text', () => {
+    expect(translate('- Rs. 17,300')).toBe('\u200e- Rs. 17,300');
+    expect(translate('+ Rs. 14,500')).toBe('\u200e+ Rs. 14,500');
+  });
   it('returns null for text it does not know (user data stays as typed)', () => {
     expect(translate('Zorro the Hamster')).toBeNull();
     expect(translate('Chaudhry Tariq')).toBeNull();

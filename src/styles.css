@@ -777,6 +777,8 @@ html.lang-ur { font-size: 17px; }
 html.lang-ur body, html.lang-ur button, html.lang-ur input, html.lang-ur select, html.lang-ur textarea {
   font-family: 'Noto Naskh Arabic Variable', 'Noto Naskh Arabic', 'Geist Variable', system-ui, sans-serif;
 }
+/* the small caps labels use a monospace font in English; Urdu letters must join, so every element uses the Urdu font */
+html.lang-ur *:not(svg):not(svg *) { font-family: 'Noto Naskh Arabic Variable', 'Noto Naskh Arabic', 'Geist Variable', system-ui, sans-serif !important; }
 html.lang-ur #languageGate .gate-ur { font-family: 'Noto Naskh Arabic Variable', 'Noto Naskh Arabic', system-ui, sans-serif; }
 /* letter-spacing and capitals are for Latin labels only */
 html.lang-ur * { letter-spacing: normal !important; text-transform: none !important; }

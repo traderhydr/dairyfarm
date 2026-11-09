@@ -13,6 +13,7 @@ const click = (page, id) => page.locator('#' + id).evaluate((el) => el.click());
 
 async function shot(name, dark, steps) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, colorScheme: dark ? 'dark' : 'light' });
+  await page.addInitScript(() => { try { if (!localStorage.getItem('dairy_farm_lang')) localStorage.setItem('dairy_farm_lang', 'en'); } catch (e) { /* ignore */ } });
   await page.goto(URL);
   await page.waitForTimeout(600);
   await click(page, 'resetDemoBtn');
