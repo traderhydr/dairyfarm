@@ -11,6 +11,8 @@ const SECTIONS = {
   health: { section: 'healthSection', button: 'tabHealthBtn', style: 'drawer', title: 'Vaccination & Deworming' },
   sales: { section: 'salesSection', button: 'tabSalesBtn', style: 'drawer', title: 'Sold Cows' },
   doodhi: { section: 'doodhiSection', button: 'tabDoodhiBtn', style: 'drawer', title: 'Milk Buyers (Doodhi)' },
+  crops: { section: 'cropsSection', button: 'tabCropsBtn', style: 'nav' },
+  lands: { section: 'landsSection', button: 'tabLandsBtn', style: 'nav' },
   goats: { section: 'goatsSection', button: 'tabGoatsBtn', style: 'drawer', title: 'Goats & Sheep' },
   horses: { section: 'horsesSection', button: 'tabHorsesBtn', style: 'drawer', title: 'Horses' },
   milkers: { section: 'milkersSection', button: 'tabMilkersBtn', style: 'drawer', title: 'Milkers' },
@@ -27,6 +29,9 @@ const $ = (id) => document.getElementById(id);
 let activeTab = 'finance';
 
 export const getActiveTab = () => activeTab;
+
+/** The tab that counts as "home" in the current mode (where the back button returns to). */
+export const homeTab = () => (document.body.dataset.mode === 'crops' ? 'crops' : 'finance');
 
 function openSideMenu() {
   $('sideMenuBackdrop').classList.remove('hidden');
@@ -77,6 +82,7 @@ export function initTabs() {
   $('closeSideMenuBtn').addEventListener('click', closeSideMenu);
   $('sideMenuBackdrop').addEventListener('click', closeSideMenu);
   $('openMoreBtn').addEventListener('click', openSideMenu);
+  $('openMoreBtn2').addEventListener('click', openSideMenu);
 
   for (const [name, entry] of Object.entries(SECTIONS)) {
     $(entry.button).addEventListener('click', () => switchTab(name));

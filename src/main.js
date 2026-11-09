@@ -19,6 +19,9 @@ import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
 import { initProfit, renderProfit } from './views/profit.js';
 import { initLedgers, renderLedgers } from './views/ledgers.js';
+import { initCrops, renderCrops } from './views/crops.js';
+import { initLands, renderLands } from './views/lands.js';
+import { initMode } from './ui/mode.js';
 import { initGoats, renderGoats } from './views/goats.js';
 import { initHorses, renderHorses } from './views/horses.js';
 import { initHealth, renderHealth } from './views/health.js';
@@ -44,6 +47,8 @@ function renderAll() {
   renderMilkers();
   renderWachi();
   renderGoats();
+  renderLands();
+  renderCrops();
   renderHorses();
   renderHealth();
   renderSales();
@@ -84,6 +89,8 @@ function boot() {
   initMilkers();
   initWachi();
   initGoats();
+  initLands();
+  initCrops();
   initHorses();
   initHealth();
   initMenu();
@@ -93,6 +100,7 @@ function boot() {
   initSavings();
   initDataManagement();
   initModal();
+  initMode();
   // Accounts + cloud sync are only bundled when the build has a Supabase project configured.
   if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
     import('./ui/account.js').then((m) => m.initAccount());

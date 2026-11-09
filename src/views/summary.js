@@ -60,5 +60,7 @@ export function renderSummary() {
   document.getElementById('doodhiTabBadge').textContent = String(state.doodhiAccounts.length);
   document.getElementById('goatsTabBadge').textContent = String(state.goats.length);
   document.getElementById('horsesTabBadge').textContent = String(state.horses.length);
+  document.getElementById('cropsTabBadge').textContent = String(state.crops.length);
+  document.getElementById('landsTabBadge').textContent = String(state.lands.length);
   document.getElementById('savingsTabBadge').textContent = String(state.savingsGoals.length);
 }

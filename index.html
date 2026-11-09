@@ -36,6 +36,14 @@
           <span id="accountBtnLabel">Sign in to back up</span>
         </button>
     </div>
+    <div class="mode-bar">
+      <div class="max-w-3xl mx-auto px-3 pb-2">
+        <div id="modeToggle" class="seg seg-full" role="tablist" aria-label="Farm or Crops">
+          <button type="button" role="tab" data-mode="farm" aria-selected="true">Farm</button>
+          <button type="button" role="tab" data-mode="crops" aria-selected="false">Crops &amp; Land</button>
+        </div>
+      </div>
+    </div>
   </header>
 
   <!-- Toast Banner -->
@@ -312,7 +320,7 @@
         </div>
 
         <!-- Extra Farm Modules (Moved from Main Bar) -->
-        <div class="space-y-2">
+        <div class="space-y-2 farm-only">
           <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 px-1">More</p>
           <button id="tabMilkersBtn" type="button" class="w-full px-3.5 py-3 text-xs sm:text-sm font-semibold rounded-xl text-slate-700 hover:bg-slate-100 flex items-center justify-between gap-2 transition text-left">
             <span class="flex items-center gap-2">
@@ -421,7 +429,7 @@
     </div>
 
     <!-- Bottom navigation: 4 main modules + More (opens the menu with the rest) -->
-    <nav aria-label="Farm Modules" class="bottom-nav fixed bottom-0 inset-x-0 z-40">
+    <nav id="farmNav" aria-label="Farm Modules" class="bottom-nav farm-only fixed bottom-0 inset-x-0 z-40">
       <div class="max-w-3xl mx-auto grid grid-cols-5">
       <button id="tabFinanceBtn" type="button" class="nav-item is-active">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -452,6 +460,25 @@
         <span id="wandaTabBadge" class="nav-badge">0</span>
       </button>
       <button id="openMoreBtn" type="button" class="nav-item">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01" /></svg>
+        <span>More</span>
+      </button>
+      </div>
+    </nav>
+
+    <nav id="cropNav" aria-label="Crop Modules" class="bottom-nav crops-only fixed bottom-0 inset-x-0 z-40">
+      <div class="max-w-3xl mx-auto grid grid-cols-3">
+      <button id="tabCropsBtn" type="button" class="nav-item">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0c0-3 2-5 5-5 0 3-2 5-5 5zm0 4c0-2.5-1.8-4.5-4.5-4.5 0 2.5 1.8 4.5 4.5 4.5zM8 21h8" /></svg>
+        <span>Crops</span>
+        <span id="cropsTabBadge" class="nav-badge">0</span>
+      </button>
+      <button id="tabLandsBtn" type="button" class="nav-item">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+        <span>Land</span>
+        <span id="landsTabBadge" class="nav-badge">0</span>
+      </button>
+      <button id="openMoreBtn2" type="button" class="nav-item">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01" /></svg>
         <span>More</span>
       </button>
@@ -1589,6 +1616,286 @@
       </div>
 
       <button type="button" class="fab" data-open-sheet="horsesSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add horse</span></button>
+    </section>
+
+    <!-- CROPS -->
+    <section id="cropsSection" class="hidden grid-cols-1 gap-4">
+      <div id="cropsSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="cropsSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="cropsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Crop</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Record a crop on your land with its seed, water, fertiliser and labour costs, then its yield, to see profit or loss.</p>
+          <form id="cropForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropName" class="block text-xs font-semibold text-slate-700 mb-1">Crop</label>
+              <select id="cropName"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Wheat">Wheat</option><option value="Barseem (Egyptian Clover)">Barseem (Egyptian Clover)</option><option value="Alfalfa (Lucerne)">Alfalfa (Lucerne)</option><option value="Kamand">Kamand</option><option value="Maize (Corn)">Maize (Corn)</option><option value="Sorghum (Jowar)">Sorghum (Jowar)</option><option value="Millet (Bajra)">Millet (Bajra)</option><option value="Rice (Paddy)">Rice (Paddy)</option><option value="Cotton">Cotton</option><option value="Sugarcane">Sugarcane</option><option value="Mustard (Sarson)">Mustard (Sarson)</option><option value="Oats (Jai)">Oats (Jai)</option><option value="Vegetables">Vegetables</option><option value="Other">Other</option></select>
+            </div>
+            <div class="hidden" id="cropOtherWrap">
+              <label for="cropOther" class="block text-xs font-semibold text-slate-700 mb-1">Crop Name (if Other)</label>
+              <input id="cropOther" type="text" maxlength="40" placeholder="e.g. Tobacco" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropSeason" class="block text-xs font-semibold text-slate-700 mb-1">Season</label>
+              <select id="cropSeason"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Rabi (Winter)">Rabi (Winter)</option><option value="Kharif (Summer)">Kharif (Summer)</option><option value="Year-round">Year-round</option></select>
+            </div>
+            <div>
+              <label for="cropYear" class="block text-xs font-semibold text-slate-700 mb-1">Year</label>
+              <input id="cropYear" type="number" min="2000" max="2100" step="1" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 pt-1">Land</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropLand" class="block text-xs font-semibold text-slate-700 mb-1">Land / Field</label>
+              <select id="cropLand"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="">Other / not listed</option></select>
+            </div>
+            <div>
+              <label for="cropLandName" class="block text-xs font-semibold text-slate-700 mb-1">Field Name (if not listed)</label>
+              <input id="cropLandName" type="text" maxlength="60" placeholder="e.g. Canal-side field" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropArea" class="block text-xs font-semibold text-slate-700 mb-1">Area</label>
+              <input id="cropArea" type="number" min="0" step="any" required placeholder="e.g. 4" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cropUnit" class="block text-xs font-semibold text-slate-700 mb-1">Unit</label>
+              <select id="cropUnit"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Acre">Acre</option><option value="Kanal">Kanal</option><option value="Marla">Marla</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropOwnership" class="block text-xs font-semibold text-slate-700 mb-1">Own Land or Theeka</label>
+              <select id="cropOwnership"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Own">Own land</option><option value="Theeka">Theeka (Rented)</option></select>
+            </div>
+            <div>
+              <label for="cropSowing" class="block text-xs font-semibold text-slate-700 mb-1">Sowing Date (Optional)</label>
+              <input id="cropSowing" type="date"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 pt-1">Seed</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropSeedVariety" class="block text-xs font-semibold text-slate-700 mb-1">Seed Variety / Details</label>
+              <input id="cropSeedVariety" type="text" maxlength="80" placeholder="e.g. Akbar-19, Seed Corp" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cropSeedRate" class="block text-xs font-semibold text-slate-700 mb-1">Seed Rate (kg per acre)</label>
+              <input id="cropSeedRate" type="number" min="0" step="any" placeholder="e.g. 50" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <p id="cropSeedNeeded" class="hidden text-xs text-slate-500 -mt-1.5"></p>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 pt-1">Water</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cropWater" class="block text-xs font-semibold text-slate-700 mb-1">Water Source</label>
+              <select id="cropWater"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Tubewell - Diesel">Tubewell - Diesel</option><option value="Tubewell - Solar">Tubewell - Solar</option><option value="Tubewell - Electric">Tubewell - Electric</option><option value="Rented Tubewell">Rented Tubewell</option><option value="Canal (Nehri)">Canal (Nehri)</option><option value="Rain-fed">Rain-fed</option><option value="Other">Other</option></select>
+            </div>
+            <div>
+              <label for="cropIrrigations" class="block text-xs font-semibold text-slate-700 mb-1">Number of Irrigations</label>
+              <input id="cropIrrigations" type="number" min="0" step="1" placeholder="e.g. 5" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+            <div>
+              <label for="cropNotes" class="block text-xs font-semibold text-slate-700 mb-1">Notes</label>
+              <input id="cropNotes" type="text" placeholder="e.g. Sown after cotton picking" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          <div id="cropInitialBox" class="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Costs so far (Rs. - leave empty if none)</p>
+            <p class="text-[11px] text-slate-500 -mt-2">You can add more cost lines and harvests later from the crop's details.</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cRent" class="block text-xs font-semibold text-slate-700 mb-1">Land Rent / Theeka (Rs.)</label>
+              <input id="cRent" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cPrep" class="block text-xs font-semibold text-slate-700 mb-1">Land Preparation (Rs.)</label>
+              <input id="cPrep" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+            <div>
+              <label for="cPrepNote" class="block text-xs font-semibold text-slate-700 mb-1">Preparation Details</label>
+              <input id="cPrepNote" type="text" maxlength="80" placeholder="e.g. 2 ploughing, rotavator, levelling" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cSeed" class="block text-xs font-semibold text-slate-700 mb-1">Seed Cost (Rs.)</label>
+              <input id="cSeed" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cWater" class="block text-xs font-semibold text-slate-700 mb-1">Water / Tubewell Cost (Rs.)</label>
+              <input id="cWater" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cFert" class="block text-xs font-semibold text-slate-700 mb-1">Fertiliser Cost (Rs.)</label>
+              <input id="cFert" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cLabour" class="block text-xs font-semibold text-slate-700 mb-1">Labour Cost (Rs.)</label>
+              <input id="cLabour" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+            <div>
+              <label for="cFertNote" class="block text-xs font-semibold text-slate-700 mb-1">Fertiliser Details</label>
+              <input id="cFertNote" type="text" maxlength="80" placeholder="e.g. 2 bags DAP + 3 bags urea" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cSpray" class="block text-xs font-semibold text-slate-700 mb-1">Spray / Pesticide (Rs.)</label>
+              <input id="cSpray" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cOther" class="block text-xs font-semibold text-slate-700 mb-1">Other Costs (Rs.)</label>
+              <input id="cOther" type="number" min="0" step="any" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 pt-1">Harvest so far (optional)</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="cYieldQty" class="block text-xs font-semibold text-slate-700 mb-1">Total Yield</label>
+              <input id="cYieldQty" type="number" min="0" step="any" placeholder="e.g. 160" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="cYieldUnit" class="block text-xs font-semibold text-slate-700 mb-1">Unit</label>
+              <select id="cYieldUnit"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Maund (40 kg)">Maund (40 kg)</option><option value="Kg">Kg</option><option value="Ton">Ton</option><option value="Trolley">Trolley</option><option value="Bundles">Bundles</option></select>
+            </div>
+          </div>
+            <div>
+              <label for="cIncome" class="block text-xs font-semibold text-slate-700 mb-1">Income From Yield (Rs.)</label>
+              <input id="cIncome" type="number" min="0" step="any" placeholder="Sale value, or value if used on farm" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">Save Crop</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Crop details: costs, harvests, profit or loss -->
+      <div id="cropDetailSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="cropDetailTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <div id="cropDetailBody" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <div id="cropsSummaryCard" class="list-card space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-base font-bold text-slate-900">Crops &amp; Profit</h2>
+          <select id="cropsYearFilter" aria-label="Filter crops by year" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700"><option value="all">All Years</option></select>
+        </div>
+        <div id="cropsHero" class="rounded-xl border p-3 flex items-center justify-between gap-3">
+          <div>
+            <p id="cropsHeroLabel" class="text-[11px] font-bold uppercase tracking-wider">Profit / Loss</p>
+            <p id="cropsHeroNet" class="text-2xl font-extrabold mt-0.5">Rs. 0</p>
+          </div>
+          <p id="cropsHeroSub" class="text-xs font-semibold text-right"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="ledger-stat"><p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Cost</p><p id="cropsCost" class="text-base font-extrabold text-rose-600 mt-1">Rs. 0</p></div>
+          <div class="ledger-stat"><p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Income</p><p id="cropsIncome" class="text-base font-extrabold text-emerald-600 mt-1">Rs. 0</p></div>
+        </div>
+        <details class="profit-days">
+          <summary class="text-xs font-semibold text-slate-600 cursor-pointer select-none py-1">Profit by crop</summary>
+          <div id="cropsByCrop" class="mt-2 divide-y divide-slate-100"></div>
+        </details>
+      </div>
+
+      <div class="list-card space-y-4">
+        <input id="cropsSearch" type="search" placeholder="Search crop, land, notes..." aria-label="Search crops" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <div id="cropsEmptyState" class="empty-state hidden">
+          <p class="empty-title">No crops yet</p>
+          <p class="empty-text">Add wheat, barseem, alfalfa or any crop to track its costs and profit.</p>
+          <button type="button" class="btn-primary" data-open-sheet="cropsSheet">+ Add crop</button>
+        </div>
+        <div id="cropsListContainer" class="space-y-3"></div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="cropsSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add crop</span></button>
+    </section>
+
+    <!-- LAND -->
+    <section id="landsSection" class="hidden grid-cols-1 gap-4">
+      <div id="landsSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="landsSheetTitle">
+        <div class="sheet-backdrop" data-close-sheet></div>
+        <div class="sheet-panel">
+          <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+          <h2 id="landsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Land</h2>
+          <p class="text-xs text-slate-500 mt-0.5">List your own and rented (Theeka) fields with their area, so each crop can be linked to its land.</p>
+          <form id="landForm" class="mt-4 space-y-3.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="landName" class="block text-xs font-semibold text-slate-700 mb-1">Land / Field Name</label>
+              <input id="landName" type="text" required maxlength="60" placeholder="e.g. Canal-side field" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="landOwnership" class="block text-xs font-semibold text-slate-700 mb-1">Own Land or Theeka</label>
+              <select id="landOwnership"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Own">Own land</option><option value="Theeka">Theeka (Rented)</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="landArea" class="block text-xs font-semibold text-slate-700 mb-1">Area</label>
+              <input id="landArea" type="number" min="0" step="any" required placeholder="e.g. 8" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="landUnit" class="block text-xs font-semibold text-slate-700 mb-1">Unit</label>
+              <select id="landUnit"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="Acre">Acre</option><option value="Kanal">Kanal</option><option value="Marla">Marla</option></select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="landTheeka" class="block text-xs font-semibold text-slate-700 mb-1">Theeka Amount (Rs. per year)</label>
+              <input id="landTheeka" type="number" min="0" step="any" placeholder="If rented" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="landOwner" class="block text-xs font-semibold text-slate-700 mb-1">Landlord / Location (Optional)</label>
+              <input id="landOwner" type="text" maxlength="60" placeholder="e.g. Ch. Aslam, Chak 12" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+            <div>
+              <label for="landWater" class="block text-xs font-semibold text-slate-700 mb-1">Water Source (Optional)</label>
+              <select id="landWater"  class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="">Not set</option><option value="Tubewell - Diesel">Tubewell - Diesel</option><option value="Tubewell - Solar">Tubewell - Solar</option><option value="Tubewell - Electric">Tubewell - Electric</option><option value="Rented Tubewell">Rented Tubewell</option><option value="Canal (Nehri)">Canal (Nehri)</option><option value="Rain-fed">Rain-fed</option><option value="Other">Other</option></select>
+            </div>
+            <div>
+              <label for="landNotes" class="block text-xs font-semibold text-slate-700 mb-1">Notes</label>
+              <input id="landNotes" type="text" placeholder="e.g. Sandy loam, near the canal" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">Save Land</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="list-card space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Land Record</h2>
+            <p id="landsSummary" class="text-xs text-slate-500"></p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-right">
+            <span class="block text-[10px] uppercase font-semibold text-slate-500">Total Land</span>
+            <span id="landsTotalBanner" class="text-sm font-bold text-slate-900">0 acres</span>
+          </div>
+        </div>
+        <input id="landsSearch" type="search" placeholder="Search land, landlord, notes..." aria-label="Search land" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        <div id="landsEmptyState" class="empty-state hidden">
+          <p class="empty-title">No land added yet</p>
+          <p class="empty-text">Add your fields, own or on Theeka, to keep your land record.</p>
+          <button type="button" class="btn-primary" data-open-sheet="landsSheet">+ Add land</button>
+        </div>
+        <div id="landsListContainer" class="space-y-3"></div>
+      </div>
+
+      <button type="button" class="fab" data-open-sheet="landsSheet"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" /></svg><span>Add land</span></button>
     </section>
 
     <!-- ANIMAL PROFILES -->

@@ -41,6 +41,6 @@ export function initSheets() {
 
   // A saved record commits the state; that is the signal to close the form.
   onChange((source) => {
-    if (source === 'local') closeSheets();
+    if (source === 'local') closeSheets(); // 'local-keep' = a local edit made inside an open sheet
   });
 }

@@ -214,6 +214,85 @@ const HORSES = [
   }
 ];
 
+const LANDS = [
+  {
+    id: 'land-1',
+    name: 'Canal-side field',
+    ownership: 'Own',
+    area: 8,
+    unit: 'Acre',
+    theeka: 0,
+    owner: 'Chak 12',
+    water: 'Tubewell - Solar',
+    notes: 'Good loam soil, near the canal'
+  },
+  {
+    id: 'land-2',
+    name: 'Ch. Aslam field (Theeka)',
+    ownership: 'Theeka',
+    area: 4,
+    unit: 'Acre',
+    theeka: 160000,
+    owner: 'Ch. Aslam',
+    water: 'Rented Tubewell',
+    notes: 'Rented for the year'
+  }
+];
+
+const CROPS = [
+  {
+    id: 'crop-1',
+    crop: 'Wheat',
+    cropOther: '',
+    season: 'Rabi (Winter)',
+    year: 2026,
+    landId: 'land-1',
+    area: 4,
+    areaUnit: 'Acre',
+    ownership: 'Own',
+    sowingDate: '2025-11-12',
+    seedVariety: 'Akbar-19 (certified seed)',
+    seedRate: 50,
+    water: 'Tubewell - Solar',
+    irrigations: 5,
+    notes: 'Harvested in April',
+    status: 'Harvested',
+    costs: [
+      { id: 'cost-1', category: 'Land Preparation', label: '2 ploughing + rotavator + planking', amount: 14000, date: '2025-11-08' },
+      { id: 'cost-2', category: 'Seed', label: 'Akbar-19, 200 kg', amount: 24000, date: '2025-11-12' },
+      { id: 'cost-3', category: 'Water / Irrigation', label: 'Solar tubewell upkeep', amount: 6000, date: '2025-12-20' },
+      { id: 'cost-4', category: 'Fertiliser', label: '4 bags DAP + 6 bags urea', amount: 42000, date: '2025-12-01' },
+      { id: 'cost-5', category: 'Pesticide / Spray', label: 'Weedicide spray', amount: 3500, date: '2026-01-10' },
+      { id: 'cost-6', category: 'Labour', label: 'Sowing, irrigation, harvest labour', amount: 20000, date: '2026-04-10' }
+    ],
+    harvests: [{ id: 'harvest-1', date: '2026-04-18', qty: 160, unit: 'Maund (40 kg)', income: 336000, note: 'Sold at Rs. 2,100 per maund' }]
+  },
+  {
+    id: 'crop-2',
+    crop: 'Barseem (Egyptian Clover)',
+    cropOther: '',
+    season: 'Rabi (Winter)',
+    year: 2026,
+    landId: 'land-2',
+    area: 2,
+    areaUnit: 'Acre',
+    ownership: 'Theeka',
+    sowingDate: '2026-10-20',
+    seedVariety: 'Local barseem',
+    seedRate: 8,
+    water: 'Rented Tubewell',
+    irrigations: 3,
+    notes: 'Fodder for the milkers',
+    status: 'Growing',
+    costs: [
+      { id: 'cost-7', category: 'Land Rent (Theeka)', label: 'Share of yearly Theeka', amount: 40000, date: '2026-10-20' },
+      { id: 'cost-8', category: 'Seed', label: '16 kg barseem seed', amount: 9600, date: '2026-10-20' },
+      { id: 'cost-9', category: 'Water / Irrigation', label: 'Rented tubewell hours', amount: 7500, date: '2026-11-02' }
+    ],
+    harvests: []
+  }
+];
+
 const SAVINGS = [
   {
     id: 'goal-1',
@@ -251,5 +330,7 @@ export const SAMPLE_DATA = {
   doodhiAccounts: DOODHI,
   goats: GOATS,
   horses: HORSES,
+  lands: LANDS,
+  crops: CROPS,
   savingsGoals: SAVINGS
 };

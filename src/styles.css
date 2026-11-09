@@ -378,15 +378,21 @@ body.ledger-open #farmAlertsSection { display: none; }
 .ledger-card { cursor: pointer; transition: border-color 0.15s ease, background-color 0.15s ease; }
 .ledger-card:hover { border-color: var(--text-2); background: var(--surface-2); }
 .ledger-stat { background: var(--surface-2); }
+/* Farm / Crops mode */
+body[data-mode="crops"] .farm-only { display: none !important; }
+body:not([data-mode="crops"]) .crops-only { display: none !important; }
+.mode-bar { background: var(--header); }
+.seg-full { display: flex; width: 100%; }
+.seg-full button { flex: 1; padding: 0.4rem 0.5rem; font-size: 0.8125rem; }
 /* segmented control (Profit & Loss periods) */
 .seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 2px; gap: 2px; }
 .seg button { padding: 0.3rem 0.65rem; border-radius: 8px; font-size: 0.75rem; font-weight: 500; color: var(--muted); }
 .seg button[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); font-weight: 600; }
-#profitHero { background: var(--surface-2); border-color: var(--border); }
-#profitHero[data-state="profit"] { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
-#profitHero[data-state="loss"] { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
-body.dark-mode #profitHero[data-state="profit"] { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); color: #6ee7b7; }
-body.dark-mode #profitHero[data-state="loss"] { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.35); color: #fca5a5; }
+#profitHero, #cropsHero, #cropDetailHero, .crop-result { background: var(--surface-2); border-color: var(--border); }
+[data-state="profit"]:is(#profitHero, #cropsHero, #cropDetailHero, .crop-result) { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+[data-state="loss"]:is(#profitHero, #cropsHero, #cropDetailHero, .crop-result) { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+body.dark-mode [data-state="profit"]:is(#profitHero, #cropsHero, #cropDetailHero, .crop-result) { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); color: #6ee7b7; }
+body.dark-mode [data-state="loss"]:is(#profitHero, #cropsHero, #cropDetailHero, .crop-result) { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.35); color: #fca5a5; }
 details.profit-days > summary::marker { color: var(--muted); }
 #farmAlertsSection h2 { text-transform: none; letter-spacing: -0.01em; }
 

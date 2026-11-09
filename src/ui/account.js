@@ -249,7 +249,7 @@ export function initAccount() {
   $('accountDeleteBtn').addEventListener('click', confirmDelete);
 
   onChange((source) => {
-    if (source === 'local') engine?.notifyLocalChange();
+    if (source === 'local' || source === 'local-keep') engine?.notifyLocalChange();
   });
 
   auth.onChange((event, session) => {

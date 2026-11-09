@@ -24,7 +24,7 @@ export function renderGoats() {
   const goatN = count(live, 'Goat');
   const sheepN = count(live, 'Sheep');
   $('goatsTotalBanner').textContent = String(goatN + sheepN);
-  $('goatsSummary').textContent = `${goatN} goats · ${sheepN} sheep in the flock`;
+  $('goatsSummary').textContent = `${goatN} ${goatN === 1 ? 'goat' : 'goats'} · ${sheepN} sheep in the flock`;
 
   container.innerHTML = '';
   if (state.goats.length === 0) { empty.classList.remove('hidden'); return; }

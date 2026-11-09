@@ -3,7 +3,7 @@ import { isNative } from '../lib/platform.js';
 import { onChange, snapshot } from '../state.js';
 import { isLedgerOpen, showLedger } from '../views/ledgers.js';
 import { closeSheets, hasOpenSheet } from '../ui/sheets.js';
-import { getActiveTab, switchTab } from '../ui/tabs.js';
+import { getActiveTab, homeTab, switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
 import { createReminderScheduler, remindersPref } from './reminders.js';
 
@@ -39,8 +39,8 @@ export function handleBack() {
     showLedger(null);
     return true;
   }
-  if (getActiveTab() !== 'finance') {
-    switchTab('finance');
+  if (getActiveTab() !== homeTab()) {
+    switchTab(homeTab());
     return true;
   }
   return false;

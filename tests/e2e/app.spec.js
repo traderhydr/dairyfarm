@@ -925,7 +925,7 @@ test.describe('profit and loss', () => {
     await add(page, 'expense', 800, daysAgo(1));
     await add(page, 'income', 300, daysAgo(0));
     await page.locator('#profitPeriods [data-period="week"]').click();
-    await page.locator('.profit-days summary').click();
+    await page.locator('#profitCard .profit-days summary').click();
     const rows = page.locator('#profitDaysList > div');
     await expect(rows).toHaveCount(2);
     await expect(rows.nth(0)).toContainText('Rs. 300');
@@ -1092,5 +1092,214 @@ test.describe('add and edit animals from Animal Profiles', () => {
     await expect(page.locator('#profileBody')).toContainText('not in your herd list');
     await page.locator('[data-profile-add="milker"]').click();
     await expect(page.locator('#milkerTag')).toHaveValue('Cow #77 (Zeenat)');
+  });
+});
+
+test.describe('crops and land record', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  const crops = (page) => page.locator('#modeToggle [data-mode="crops"]').click();
+
+  test('the Farm / Crops toggle swaps the bottom bar and sections, and is remembered', async ({ page }) => {
+    await expect(page.locator('#farmNav')).toBeVisible();
+    await expect(page.locator('#cropNav')).toBeHidden();
+    await crops(page);
+    await expect(page.locator('#cropNav')).toBeVisible();
+    await expect(page.locator('#farmNav')).toBeHidden();
+    await expect(page.locator('#cropsSection')).toBeVisible();
+    await expect(page.locator('#financeSection')).toBeHidden();
+    await expect(page.locator('#overviewSection')).toBeHidden();
+    await page.reload();
+    await expect(page.locator('#cropsSection')).toBeVisible();
+    await page.locator('#modeToggle [data-mode="farm"]').click();
+    await expect(page.locator('#financeSection')).toBeVisible();
+    await expect(page.locator('#farmNav')).toBeVisible();
+    await page.reload();
+    await expect(page.locator('#financeSection')).toBeVisible();
+  });
+
+  test('add own and Theeka land; the totals split them', async ({ page }) => {
+    await crops(page);
+    await page.locator('#cropNav #tabLandsBtn').click();
+    await expect(page.locator('#landsEmptyState')).toBeVisible();
+    await page.locator('.fab[data-open-sheet="landsSheet"]').click();
+    await fill(page, 'landName', 'Canal field');
+    await fill(page, 'landArea', '8');
+    await submit(page, 'landForm');
+    await page.locator('.fab[data-open-sheet="landsSheet"]').click();
+    await fill(page, 'landName', 'Aslam Theeka');
+    await fill(page, 'landOwnership', 'Theeka');
+    await fill(page, 'landArea', '16');
+    await fill(page, 'landUnit', 'Kanal');         // 2 acres
+    await fill(page, 'landTheeka', '90000');
+    await submit(page, 'landForm');
+    await expect(page.locator('#landsTotalBanner')).toHaveText('10 acres');
+    await expect(page.locator('#landsSummary')).toContainText('8 acres own');
+    await expect(page.locator('#landsSummary')).toContainText('2 acres on Theeka');
+    await expect(page.locator('#landsListContainer')).toContainText('Rs. 90,000');
+    await page.locator('[data-edit-land]').first().click();
+    await expect(page.locator('#landsSheetTitle')).toHaveText('Edit Land');
+    await page.keyboard.press('Escape');
+  });
+
+  test('add a wheat crop with its costs and yield: totals, profit and per-acre figures', async ({ page }) => {
+    await crops(page);
+    await page.locator('.fab[data-open-sheet="cropsSheet"]').click();
+    await fill(page, 'cropName', 'Wheat');
+    await fill(page, 'cropArea', '4');
+    await fill(page, 'cropSeedVariety', 'Akbar-19');
+    await fill(page, 'cropSeedRate', '50');
+    await expect(page.locator('#cropSeedNeeded')).toContainText('200 kg');
+    await fill(page, 'cropWater', 'Tubewell - Solar');
+    await fill(page, 'cPrep', '12000');
+    await fill(page, 'cSeed', '20000');
+    await fill(page, 'cFert', '30000');
+    await fill(page, 'cLabour', '10000');
+    await fill(page, 'cYieldQty', '160');
+    await fill(page, 'cIncome', '288000');
+    await submit(page, 'cropForm');
+
+    await expect(page.locator('#cropsHeroNet')).toHaveText('Rs. 216,000');
+    await expect(page.locator('#cropsHero')).toHaveAttribute('data-state', 'profit');
+    await expect(page.locator('#cropsCost')).toHaveText('Rs. 72,000');
+    await expect(page.locator('#cropsIncome')).toHaveText('Rs. 288,000');
+    const crop = (await read(page, 'dairy_farm_v1_crops'))[0];
+    expect(crop.costs).toHaveLength(4);
+    expect(crop.harvests[0]).toMatchObject({ qty: 160, income: 288000 });
+
+    await page.locator('[data-open-crop]').first().click();
+    const body = page.locator('#cropDetailBody');
+    await expect(body).toContainText('Profit');
+    await expect(body).toContainText('Rs. 18,000');           // cost per acre
+    await expect(body).toContainText('Rs. 54,000');           // profit per acre
+    await expect(body).toContainText('Fertiliser');
+    await expect(body).toContainText('160 Maund (40 kg)');
+  });
+
+  test('a crop that costs more than it earns shows a loss', async ({ page }) => {
+    await crops(page);
+    await page.locator('.fab[data-open-sheet="cropsSheet"]').click();
+    await fill(page, 'cropName', 'Maize (Corn)');
+    await fill(page, 'cropArea', '1');
+    await fill(page, 'cLabour', '50000');
+    await fill(page, 'cIncome', '20000');
+    await submit(page, 'cropForm');
+    await expect(page.locator('#cropsHero')).toHaveAttribute('data-state', 'loss');
+    await expect(page.locator('#cropsHeroNet')).toHaveText('- Rs. 30,000');
+  });
+
+  test('"Other" needs a crop name', async ({ page }) => {
+    await crops(page);
+    await page.locator('.fab[data-open-sheet="cropsSheet"]').click();
+    await fill(page, 'cropName', 'Other');
+    await expect(page.locator('#cropOtherWrap')).toBeVisible();
+    await fill(page, 'cropArea', '1');
+    await submit(page, 'cropForm');
+    expect(await read(page, 'dairy_farm_v1_crops')).toBeNull();
+    await fill(page, 'cropOther', 'Tobacco');
+    await submit(page, 'cropForm');
+    await expect(page.locator('#cropsListContainer')).toContainText('Tobacco');
+  });
+
+  test('details: add, edit and remove cost lines and harvests, and the totals follow', async ({ page }) => {
+    await crops(page);
+    await page.locator('.fab[data-open-sheet="cropsSheet"]').click();
+    await fill(page, 'cropName', 'Barseem (Egyptian Clover)');
+    await fill(page, 'cropArea', '2');
+    await submit(page, 'cropForm');
+    await page.locator('[data-open-crop]').first().click();
+    const body = page.locator('#cropDetailBody');
+
+    const cost = body.locator('form[data-cost-form]');
+    await cost.locator('select[name="category"]').selectOption('Fertiliser');
+    await cost.locator('input[name="amount"]').fill('5000');
+    await cost.locator('input[name="label"]').fill('2 bags urea');
+    await cost.locator('button[type="submit"]').click();
+    await expect(page.locator('#cropDetailSheet')).toBeVisible();          // stays open after saving
+    await expect(body).toContainText('2 bags urea');
+    await expect(body).toContainText('Rs. 5,000');
+
+    await body.locator('[data-edit-line]').first().click();
+    await expect(body).toContainText('Edit cost line');
+    await body.locator('form[data-cost-form] input[name="amount"]').fill('6000');
+    await body.locator('form[data-cost-form] button[type="submit"]').click();
+    await expect(body.locator('#cropDetailHero')).toContainText('- Rs. 6,000');
+
+    const harvest = body.locator('form[data-harvest-form]');
+    await harvest.locator('input[name="qty"]').fill('12');
+    await harvest.locator('select[name="unit"]').selectOption('Trolley');
+    await harvest.locator('input[name="income"]').fill('15000');
+    await harvest.locator('input[name="note"]').fill('1st cutting');
+    await harvest.locator('button[type="submit"]').click();
+    await expect(body.locator('#cropDetailHero')).toContainText('Rs. 9,000');
+    await expect(body).toContainText('1st cutting');
+    expect((await read(page, 'dairy_farm_v1_crops'))[0].status).toBe('Harvested');
+
+    await body.locator('[data-del-harvest]').first().click();
+    await body.locator('[data-del-line]').first().click();
+    await expect(body.locator('#cropDetailHero')).toContainText('Rs. 0');
+    await body.locator('[data-crop-action="status"]').click();
+    expect((await read(page, 'dairy_farm_v1_crops'))[0].status).toBe('Growing');
+  });
+
+  test('choosing a Theeka land fills the area and the rent; editing keeps the costs', async ({ page }) => {
+    await loadSample(page);
+    await crops(page);
+    await page.locator('.fab[data-open-sheet="cropsSheet"]').click();
+    await fill(page, 'cropLand', 'land-2');
+    await expect(page.locator('#cropArea')).toHaveValue('4');
+    await expect(page.locator('#cropOwnership')).toHaveValue('Theeka');
+    await expect(page.locator('#cRent')).toHaveValue('160000');
+    await page.keyboard.press('Escape');
+
+    const before = (await read(page, 'dairy_farm_v1_crops')).find((c) => c.id === 'crop-1');
+    await page.locator('[data-edit-crop="crop-1"]').click();
+    await expect(page.locator('#cropsSheetTitle')).toHaveText('Edit Crop');
+    await expect(page.locator('#cropInitialBox')).toBeHidden();
+    await fill(page, 'cropSeedVariety', 'Edited seed');
+    await submit(page, 'cropForm');
+    const after = (await read(page, 'dairy_farm_v1_crops')).find((c) => c.id === 'crop-1');
+    expect(after.seedVariety).toBe('Edited seed');
+    expect(after.costs).toEqual(before.costs);
+    expect(after.harvests).toEqual(before.harvests);
+  });
+
+  test('sample data: overall profit, profit by crop, year filter, search, delete', async ({ page }) => {
+    await loadSample(page);
+    await crops(page);
+    await expect(page.locator('#cropsHeroNet')).toHaveText('Rs. 169,400');     // 336,000 - 109,500 - 57,100
+    await page.locator('#cropsSummaryCard summary').click();
+    await expect(page.locator('#cropsByCrop')).toContainText('Wheat');
+    await expect(page.locator('#cropsByCrop')).toContainText('Barseem');
+    await fill(page, 'cropsSearch', 'barseem');
+    await expect(page.locator('#cropsListContainer > div')).toHaveCount(1);
+    await fill(page, 'cropsSearch', 'zzz');
+    await expect(page.locator('#cropsListContainer')).toContainText('No matches');
+    await fill(page, 'cropsSearch', '');
+    await page.locator('[data-delete-crop="crop-2"]').click();
+    await page.locator('#modalConfirmBtn').click();
+    await expect(page.locator('#cropsHeroNet')).toHaveText('Rs. 226,500');
+  });
+
+  test('deleting a land keeps its crops; backups include crops and land', async ({ page }) => {
+    await loadSample(page);
+    await crops(page);
+    await page.locator('#cropNav #tabLandsBtn').click();
+    await page.locator('[data-delete-land="land-1"]').click();
+    const wheat = (await read(page, 'dairy_farm_v1_crops')).find((c) => c.id === 'crop-1');
+    expect(wheat.landId).toBeUndefined();
+    expect(wheat.landName).toBe('Canal-side field');
+    expect(await read(page, 'dairy_farm_v1_lands')).toHaveLength(1);
+  });
+
+  test('crops mode has no horizontal scrolling on a phone and the More menu shows only the app settings', async ({ page }) => {
+    await loadSample(page);
+    await crops(page);
+    for (const id of ['tabCropsBtn', 'tabLandsBtn']) {
+      await tab(page, id);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth), id).toBeLessThanOrEqual(0);
+    }
+    await page.locator('#cropNav #openMoreBtn2').click();
+    await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
+    await expect(page.locator('#sideMenuDrawer #tabMilkersBtn')).toBeHidden();
   });
 });

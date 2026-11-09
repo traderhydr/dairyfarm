@@ -1,4 +1,5 @@
 import { sumAmounts } from './lib/calc.js';
+import { cropDisplayName, cropTotals } from './lib/crops.js';
 import { saveTextFile } from './lib/files.js';
 import { addDays } from './lib/format.js';
 import { goalProgress } from './lib/savings.js';
@@ -38,6 +39,15 @@ export function exportFarmCsv() {
 
   state.horses.forEach(h => {
     rows.push(['Horses', (h.ageYears || 0) + ' Years', h.name, h.status, 'Feed & care Rs. ' + (h.monthlyCost || 0) + '/month', (h.breed || '') + ' | ' + (h.purpose || '') + ' | ' + (h.notes || '')]);
+  });
+
+  state.lands.forEach(l => {
+    rows.push(['Land Record', l.area + ' ' + l.unit, l.name, l.ownership === 'Theeka' ? 'Theeka (Rented)' : 'Own', l.theeka ? 'Theeka Rs. ' + l.theeka + '/year' : '', (l.owner || '') + ' | ' + (l.notes || '')]);
+  });
+
+  state.crops.forEach(c => {
+    const t = cropTotals(c);
+    rows.push(['Crops', c.season + ' ' + c.year, cropDisplayName(c), c.status || 'Growing', 'Cost: Rs. ' + t.cost + ' | Income: Rs. ' + t.income + ' | ' + (t.net >= 0 ? 'Profit' : 'Loss') + ': Rs. ' + Math.abs(t.net), c.area + ' ' + c.areaUnit + ' | ' + (c.ownership === 'Theeka' ? 'Theeka' : 'Own') + ' | ' + (c.notes || '')]);
   });
 
   state.wachiList.forEach(w => {
