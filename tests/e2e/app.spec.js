@@ -1501,3 +1501,41 @@ test.describe('hostile data (a restored backup or the cloud could contain anythi
     expect(await page.locator('main b, .sheet-panel b').evaluateAll((els) => els.filter((e) => e.textContent === 'pwn').length)).toBe(0);
   });
 });
+
+test.describe('confirmation tick', () => {
+  test('a saved entry shows a small tick in the upper right corner instead of a text bar', async ({ page }) => {
+    await fill(page, 'txAmount', '700');
+    await submit(page, 'financeForm');
+    const banner = page.locator('#toastBanner');
+    await expect(banner).toHaveClass(/toast-tick/);
+    await expect(banner).toBeVisible();
+    const box = await banner.boundingBox();
+    const vp = page.viewportSize();
+    expect(box.width).toBeLessThan(50);
+    expect(box.y).toBeLessThan(30);
+    expect(box.x + box.width).toBeGreaterThan(vp.width - 40);
+    await expect(page.locator('#toastMessage')).toHaveText('Cashbook entry saved!');   // kept for screen readers
+    await expect(page.locator('#toastMessage')).not.toBeVisible();                      // but not drawn
+    await expect(banner).toBeHidden({ timeout: 4000 });
+  });
+
+  test('a longer message that carries information still uses the text bar', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabSalesBtn');
+    await page.locator('[data-edit-sale]').first().click();
+    await fill(page, 'saleBuyer', 'Someone else');
+    await submit(page, 'salesForm');
+    const banner = page.locator('#toastBanner');
+    await expect(banner).not.toHaveClass(/toast-tick/);
+    await expect(page.locator('#toastMessage')).toBeVisible();
+    await expect(page.locator('#toastMessage')).toContainText('Cashbook entries already made are unchanged');
+  });
+
+  test('the tick is in the same corner in Urdu', async ({ page }) => {
+    await page.locator('#langToggleBtn').click();
+    await fill(page, 'txAmount', '300');
+    await submit(page, 'financeForm');
+    const box = await page.locator('#toastBanner').boundingBox();
+    expect(box.x + box.width).toBeGreaterThan(page.viewportSize().width - 40);
+  });
+});

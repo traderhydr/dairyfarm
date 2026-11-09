@@ -71,16 +71,16 @@ async function initReminders() {
       if (remindersPref.get()) {
         await scheduler.disable();
         remindersPref.set(false);
-        showToast('Reminders turned off');
+        showToast('Reminders turned off', 'info');
       } else if (await scheduler.requestPermission()) {
         remindersPref.set(true);
         const count = await scheduler.reschedule();
-        showToast(count ? `Reminders on - ${count} upcoming` : 'Reminders on - nothing due yet');
+        showToast(count ? `Reminders on - ${count} upcoming` : 'Reminders on - nothing due yet', 'info');
       } else {
-        showToast('Allow notifications in your phone settings to get reminders');
+        showToast('Allow notifications in your phone settings to get reminders', 'error');
       }
     } catch (e) {
-      showToast('Could not change reminders');
+      showToast('Could not change reminders', 'error');
     }
     renderRemindersButton();
   });

@@ -198,7 +198,7 @@ function confirmSignOut() {
       try {
         await auth.signOut();
       } catch (err) {
-        showToast(friendlyAuthError(err));
+        showToast(friendlyAuthError(err), 'error');
         return;
       }
       user = null;
@@ -221,7 +221,7 @@ function confirmDelete() {
         engine = null;
         await auth.deleteAccount();
       } catch (err) {
-        showToast(friendlyAuthError(err));
+        showToast(friendlyAuthError(err), 'error');
         if (user) startSync(user);
         return;
       }

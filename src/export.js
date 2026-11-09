@@ -77,7 +77,7 @@ export function exportFarmCsv() {
   const csvContent = rows.map(r => r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
   return saveTextFile('dairy_farm_records_backup.csv', csvContent, 'text/csv;charset=utf-8;')
     .then((how) => showToast(how === 'shared' ? 'Choose where to save your CSV' : 'Farm CSV backup downloaded!'))
-    .catch(() => showToast('Could not save the CSV file.'));
+    .catch(() => showToast('Could not save the CSV file.', 'error'));
 }
 
 export function exportFarmJsonBackup() {
@@ -89,7 +89,7 @@ export function exportFarmJsonBackup() {
   };
   return saveTextFile('dairy_farm_full_backup.json', JSON.stringify(payload, null, 2), 'application/json')
     .then((how) => showToast(how === 'shared' ? 'Choose where to save your backup' : 'Full JSON backup saved!'))
-    .catch(() => showToast('Could not save the backup file.'));
+    .catch(() => showToast('Could not save the backup file.', 'error'));
 }
 
 export function initExport() {
@@ -114,7 +114,7 @@ export function initExport() {
         importData(data);
         showToast('Farm backup restored successfully!');
       } catch (err) {
-        showToast('Invalid backup file format.');
+        showToast('Invalid backup file format.', 'error');
       }
       e.target.value = '';
     };
