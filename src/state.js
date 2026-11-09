@@ -16,7 +16,8 @@ const STORAGE_KEYS = {
   goats: 'dairy_farm_v1_goats',
   horses: 'dairy_farm_v1_horses',
   lands: 'dairy_farm_v1_lands',
-  crops: 'dairy_farm_v1_crops'
+  crops: 'dairy_farm_v1_crops',
+  farmProfile: 'dairy_farm_v1_farm'
 };
 
 export const COLLECTIONS = Object.keys(STORAGE_KEYS);
@@ -85,9 +86,10 @@ export function replaceAll(data, source = 'local') {
 }
 
 export function loadSampleData() {
-  replaceAll(structuredClone(SAMPLE_DATA));
+  // the farm profile is who you are, not a record: sample data never replaces it
+  replaceAll({ ...structuredClone(SAMPLE_DATA), farmProfile: state.farmProfile });
 }
 
 export function clearAllData() {
-  replaceAll({});
+  replaceAll({ farmProfile: state.farmProfile });
 }

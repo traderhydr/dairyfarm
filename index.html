@@ -262,6 +262,19 @@
   <main class="max-w-3xl w-full mx-auto px-4 pt-4 pb-36 flex-1 space-y-4">
 
     <!-- Top Summary Cards -->
+    <!-- Who is using the app: greeting, farm name -->
+    <section id="farmCard" class="farm-card" aria-label="Farm profile">
+      <div id="farmAvatar" class="farm-avatar" aria-hidden="true">+</div>
+      <div class="min-w-0 flex-1">
+        <p id="farmGreeting" class="farm-name truncate"></p>
+        <p id="farmName" class="farm-sub truncate"></p>
+        <p id="farmMeta" class="farm-meta truncate hidden"></p>
+      </div>
+      <button type="button" id="editFarmBtn" class="farm-edit" aria-label="Edit farm profile">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.2 5.8l3 3M4 20l1-4L16.4 4.6a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8 19l-4 1z" /></svg>
+      </button>
+    </section>
+
     <section id="overviewSection" aria-label="Farm Overview Metrics" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
       <div class="kpi-card bg-white p-3.5 rounded-2xl border border-slate-200/90">
         <div class="flex items-center justify-between">
@@ -2063,6 +2076,35 @@
       <div class="sheet-panel">
         <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <div id="profileBody" class="space-y-4"></div>
+      </div>
+    </div>
+    <div id="farmSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="farmSheetTitle">
+      <div class="sheet-backdrop" data-close-sheet></div>
+      <div class="sheet-panel">
+        <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
+        <h2 id="farmSheetTitle" class="text-base font-bold text-slate-900 pr-16">Farm Profile</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Your name and your farm's name are shown at the top of the home screen.</p>
+        <form id="farmForm" class="mt-4 space-y-3.5">
+          <div>
+            <label for="farmOwnerInput" class="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
+            <input id="farmOwnerInput" type="text" maxlength="40" placeholder="e.g. Muneer" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label for="farmNameInput" class="block text-xs font-semibold text-slate-700 mb-1">Farm Name</label>
+            <input id="farmNameInput" type="text" maxlength="60" placeholder="e.g. Rana Cattle Farm" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="farmLocationInput" class="block text-xs font-semibold text-slate-700 mb-1">Village / Location (Optional)</label>
+              <input id="farmLocationInput" type="text" maxlength="60" placeholder="e.g. Chak 12, Okara" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="farmPhoneInput" class="block text-xs font-semibold text-slate-700 mb-1">Phone (Optional)</label>
+              <input id="farmPhoneInput" type="tel" maxlength="30" placeholder="e.g. 0300-1234567" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">Save Profile</button>
+        </form>
       </div>
     </div>
   <datalist id="animalTagOptions"></datalist>

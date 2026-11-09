@@ -1539,3 +1539,79 @@ test.describe('confirmation tick', () => {
     expect(box.x + box.width).toBeGreaterThan(page.viewportSize().width - 40);
   });
 });
+
+test.describe('farm profile on the home screen', () => {
+  const setProfile = async (page, owner, farm, extra = {}) => {
+    await page.locator('#editFarmBtn').click();
+    await fill(page, 'farmOwnerInput', owner);
+    await fill(page, 'farmNameInput', farm);
+    if (extra.location) await fill(page, 'farmLocationInput', extra.location);
+    if (extra.phone) await fill(page, 'farmPhoneInput', extra.phone);
+    await submit(page, 'farmForm');
+  };
+
+  test('a new user sees an invitation, then "Hi, name" and the farm name', async ({ page }) => {
+    await expect(page.locator('#farmGreeting')).toHaveText('Set up your farm');
+    await expect(page.locator('#farmAvatar')).toHaveText('+');
+    await page.locator('#farmCard').click();                                   // the whole card opens the form
+    await expect(page.locator('#farmSheet')).toBeVisible();
+    await fill(page, 'farmOwnerInput', 'Muneer');
+    await fill(page, 'farmNameInput', 'Rana Cattle Farm');
+    await fill(page, 'farmLocationInput', 'Chak 12, Okara');
+    await fill(page, 'farmPhoneInput', '0300-1234567');
+    await submit(page, 'farmForm');
+    await expect(page.locator('#farmGreeting')).toHaveText('Hi, Muneer');
+    await expect(page.locator('#farmName')).toHaveText('Rana Cattle Farm');
+    await expect(page.locator('#farmMeta')).toHaveText('Chak 12, Okara · 0300-1234567');
+    await expect(page.locator('#farmAvatar')).toHaveText('RC');
+    await page.reload();
+    await expect(page.locator('#farmGreeting')).toHaveText('Hi, Muneer');
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_farm')));
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).toMatchObject({ id: 'farm', ownerName: 'Muneer', farmName: 'Rana Cattle Farm' });
+  });
+
+  test('edit the profile; with only a farm name it shows the farm name as the heading', async ({ page }) => {
+    await setProfile(page, 'Muneer', 'Rana Cattle Farm');
+    await page.locator('#editFarmBtn').click();
+    await expect(page.locator('#farmOwnerInput')).toHaveValue('Muneer');          // opens filled in
+    await fill(page, 'farmOwnerInput', '');
+    await submit(page, 'farmForm');
+    await expect(page.locator('#farmGreeting')).toHaveText('Rana Cattle Farm');
+    await expect(page.locator('#farmName')).toBeHidden();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_farm')).length)).toBe(1);   // edited, not duplicated
+  });
+
+  test('only on the Cashbook home screen, not in other tabs or an open ledger', async ({ page }) => {
+    await expect(page.locator('#farmCard')).toBeVisible();
+    await tab(page, 'tabAnimalsBtn');
+    await expect(page.locator('#farmCard')).toBeHidden();
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('[data-open-ledger="general"]').click();
+    await expect(page.locator('#farmCard')).toBeHidden();
+  });
+
+  test('loading sample data or clearing records keeps who you are', async ({ page }) => {
+    await setProfile(page, 'Muneer', 'Rana Cattle Farm');
+    await loadSample(page);
+    await expect(page.locator('#farmGreeting')).toHaveText('Hi, Muneer');
+    await page.locator('#clearAllBtn').evaluate((el) => el.click());
+    await page.locator('#modalConfirmBtn').evaluate((el) => el.click());
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 0');
+    await expect(page.locator('#farmGreeting')).toHaveText('Hi, Muneer');
+  });
+
+  test('the greeting is translated in Urdu and the names stay as typed', async ({ page }) => {
+    await setProfile(page, 'Muneer', 'Rana Cattle Farm');
+    await page.locator('#langToggleBtn').click();
+    await expect(page.locator('#farmGreeting')).toHaveText('السلام علیکم، Muneer');
+    await expect(page.locator('#farmName')).toHaveText('Rana Cattle Farm');
+  });
+
+  test('names are shown as text, never as markup', async ({ page }) => {
+    await setProfile(page, '<img src=x onerror=window.__p=1>', '<b>Farm</b>');
+    await expect(page.locator('#farmCard img')).toHaveCount(0);
+    expect(await page.evaluate(() => window.__p)).toBeUndefined();
+    await expect(page.locator('#farmName')).toHaveText('<b>Farm</b>');
+  });
+});

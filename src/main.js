@@ -19,6 +19,7 @@ import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
 import { initProfit, renderProfit } from './views/profit.js';
 import { initLedgers, renderLedgers } from './views/ledgers.js';
+import { initFarm, renderFarm } from './views/farm.js';
 import { initCrops, renderCrops } from './views/crops.js';
 import { initLands, renderLands } from './views/lands.js';
 import { initI18n } from './i18n/index.js';
@@ -36,6 +37,7 @@ import { initWanda, renderWanda, updateWandaFormPreview } from './views/wanda.js
 
 function renderAll() {
   renderSummary();
+  renderFarm();
   renderAlerts();
   renderLedgers();
   renderAnimals();
@@ -75,7 +77,7 @@ function boot() {
   updateBreedingPreview();
   updateWandaFormPreview();
   renderAll();
-  playEnter(document.getElementById('financeSection'), document.getElementById('overviewSection'), document.getElementById('farmAlertsSection'));
+  playEnter(document.getElementById('financeSection'), document.getElementById('farmCard'), document.getElementById('overviewSection'), document.getElementById('farmAlertsSection'));
   onChange(renderAll);
 
   initTabs();
@@ -92,6 +94,7 @@ function boot() {
   initGoats();
   initLands();
   initCrops();
+  initFarm();
   initHorses();
   initHealth();
   initMenu();

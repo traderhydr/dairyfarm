@@ -59,3 +59,23 @@ describe('state store', () => {
     expect(mod.state.transactions).toEqual([]);
   });
 });
+
+describe('farm profile', () => {
+  it('is part of backups and sync, and survives sample data and "clear all"', () => {
+    mod.loadState();
+    mod.state.farmProfile = [{ id: 'farm', ownerName: 'Muneer', farmName: 'Rana Cattle Farm' }];
+    mod.commit();
+    expect(mod.snapshot().farmProfile).toEqual([{ id: 'farm', ownerName: 'Muneer', farmName: 'Rana Cattle Farm' }]);
+    mod.loadSampleData();
+    expect(mod.state.transactions.length).toBeGreaterThan(0);
+    expect(mod.state.farmProfile[0].ownerName).toBe('Muneer');
+    mod.clearAllData();
+    expect(mod.state.transactions).toEqual([]);
+    expect(mod.state.farmProfile[0].farmName).toBe('Rana Cattle Farm');
+  });
+  it('is wiped by replaceAll (signing out clears the phone\'s copy)', () => {
+    mod.state.farmProfile = [{ id: 'farm', ownerName: 'M' }];
+    mod.replaceAll({});
+    expect(mod.state.farmProfile).toEqual([]);
+  });
+});

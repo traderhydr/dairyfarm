@@ -65,7 +65,7 @@ export function switchTab(target) {
   section.classList.remove('hidden');
   section.classList.add('grid');
   setActive(active, true);
-  playEnter(section, ...(target === 'finance' ? [$('overviewSection'), $('farmAlertsSection')] : []));
+  playEnter(section, ...(target === 'finance' ? [$('farmCard'), $('overviewSection'), $('farmAlertsSection')] : []));
   document.body.dataset.tab = target;
   closeSheets();
 
