@@ -93,3 +93,20 @@ describe('profit and loss periods', () => {
     ]);
   });
 });
+
+import { wandaTotals } from '../../src/lib/calc.js';
+
+describe('wandaTotals', () => {
+  it('adds up cost, paid, balance and bags over all batches', () => {
+    const t = wandaTotals([
+      { totalBill: 120000, bags: 30, installments: [{ amount: 30000 }, { amount: 30000 }, { amount: 30000 }] },
+      { totalBill: 80000, bags: 20, installments: [{ amount: 10000 }] }
+    ]);
+    expect(t).toEqual({ cost: 200000, paid: 100000, due: 100000, bags: 50, percent: 50, count: 2 });
+  });
+  it('handles no batches, missing installments and overpayment', () => {
+    expect(wandaTotals([])).toEqual({ cost: 0, paid: 0, due: 0, bags: 0, percent: 0, count: 0 });
+    expect(wandaTotals([{ totalBill: 1000, bags: 1 }]).due).toBe(1000);
+    expect(wandaTotals([{ totalBill: 1000, installments: [{ amount: 1500 }] }])).toMatchObject({ due: 0, percent: 100 });
+  });
+});

@@ -1411,3 +1411,45 @@ test.describe('Urdu and English', () => {
     expect(box.x + box.width).toBeGreaterThan(300);
   });
 });
+
+test.describe('Wanda totals', () => {
+  test('total cost, total paid and balance due follow the stock and its payments', async ({ page }) => {
+    await tab(page, 'tabWandaBtn');
+    await expect(page.locator('#wandaTotalCost')).toHaveText('Rs. 0');
+    await loadSample(page);
+    await tab(page, 'tabWandaBtn');
+    await expect(page.locator('#wandaTotalCost')).toHaveText('Rs. 120,000');
+    await expect(page.locator('#wandaTotalPaid')).toHaveText('Rs. 90,000');
+    await expect(page.locator('#wandaTotalDue')).toHaveText('Rs. 30,000');
+    await expect(page.locator('#wandaSummaryBags')).toContainText('30 Bags');
+    await expect(page.locator('#wandaSummaryBags')).toContainText('75% Paid');
+
+    // a second purchase adds to the totals
+    await page.locator('.fab[data-open-sheet="wandaSheet"]').click();
+    await fill(page, 'wandaMonth', 'November 2026 Stock');
+    await fill(page, 'wandaSupplier', 'Dealer');
+    await fill(page, 'wandaBags', '10');
+    await fill(page, 'wandaRatePerBag', '4000');
+    await fill(page, 'wandaInitialPaid', '15000');
+    await submit(page, 'wandaForm');
+    await expect(page.locator('#wandaTotalCost')).toHaveText('Rs. 160,000');
+    await expect(page.locator('#wandaTotalPaid')).toHaveText('Rs. 105,000');
+    await expect(page.locator('#wandaTotalDue')).toHaveText('Rs. 55,000');
+
+    // paying an installment lowers the balance
+    const form = page.locator('[data-installment-form]').first();
+    await form.locator('input[name="instAmount"]').evaluate((el) => { el.value = '5000'; });
+    await form.evaluate((f) => f.requestSubmit());
+    await expect(page.locator('#wandaTotalPaid')).toHaveText('Rs. 110,000');
+    await expect(page.locator('#wandaTotalDue')).toHaveText('Rs. 50,000');
+  });
+
+  test('the Wanda totals show in Urdu', async ({ page }) => {
+    await loadSample(page);
+    await page.locator('#langToggleBtn').click();
+    await tab(page, 'tabWandaBtn');
+    await expect(page.locator('#wandaSummary')).toContainText('ونڈا کا کل خرچ');
+    await expect(page.locator('#wandaSummary')).toContainText('کل ادا شدہ');
+    await expect(page.locator('#wandaSummaryBags')).toContainText('30 بوریاں');
+  });
+});

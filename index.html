@@ -912,6 +912,19 @@
           </div>
         </div>
 
+        <div id="wandaSummary" class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Wanda Summary</p>
+            <p id="wandaSummaryBags" class="text-xs text-slate-500"></p>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Wanda Cost</p><p id="wandaTotalCost" class="text-[13px] whitespace-nowrap font-extrabold text-slate-900 mt-1">Rs. 0</p></div>
+            <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Paid</p><p id="wandaTotalPaid" class="text-[13px] whitespace-nowrap font-extrabold text-emerald-600 mt-1">Rs. 0</p></div>
+            <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Balance Due</p><p id="wandaTotalDue" class="text-[13px] whitespace-nowrap font-extrabold text-rose-600 mt-1">Rs. 0</p></div>
+          </div>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Wanda paid"><div id="wandaTotalBar" class="goal-fill h-full rounded-full" style="width: 0%"></div></div>
+        </div>
+
         <input id="wandaSearch" type="search" placeholder="Search stock, dealer, month..." aria-label="Search stock, dealer, month..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
 
         <div id="wandaEmptyState" class="empty-state hidden">

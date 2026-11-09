@@ -82,3 +82,16 @@ export function dailyTotals(transactions, from, to) {
   }
   return [...days.values()].sort((a, b) => b.date.localeCompare(a.date));
 }
+
+/** Total cost, total paid, balance due and bags over all Wanda stock batches. */
+export function wandaTotals(batches) {
+  let cost = 0;
+  let paid = 0;
+  let bags = 0;
+  for (const b of batches || []) {
+    cost += Number(b.totalBill) || 0;
+    paid += sumAmounts(b.installments);
+    bags += Number(b.bags) || 0;
+  }
+  return { cost, paid, due: Math.max(0, cost - paid), bags, percent: cost > 0 ? Math.min(100, Math.round((paid / cost) * 100)) : 0, count: (batches || []).length };
+}

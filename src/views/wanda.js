@@ -1,3 +1,4 @@
+import { wandaTotals } from '../lib/calc.js';
 import { todayStr } from '../lib/dates.js';
 import { escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
@@ -18,6 +19,15 @@ export function updateWandaFormPreview() {
 export function renderWanda() {
   const container = document.getElementById('wandaListContainer');
   const emptyState = document.getElementById('wandaEmptyState');
+
+  const totals = wandaTotals(state.wandaBatches);
+  document.getElementById('wandaTotalCost').textContent = formatCurrency(totals.cost);
+  document.getElementById('wandaTotalPaid').textContent = formatCurrency(totals.paid);
+  document.getElementById('wandaTotalDue').textContent = formatCurrency(totals.due);
+  document.getElementById('wandaTotalBar').style.width = totals.percent + '%';
+  document.getElementById('wandaSummaryBags').textContent = totals.count
+    ? `${totals.bags} Bags \u00b7 ${totals.percent}% Paid`
+    : '';
 
   container.innerHTML = '';
   if (state.wandaBatches.length === 0) {
