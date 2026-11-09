@@ -72,6 +72,19 @@ describe('sync engine', () => {
     expect(remote.doc.data.tx.map((r) => r.id).sort()).toEqual(['cloud', 'mine']);
   });
 
+  it('never deletes collections it does not know about (written by a newer app version)', async () => {
+    // the cloud holds "crops" and "goats", which this (older) device has no code for
+    const remote = fakeRemote({ data: { tx: [rec('1')], crops: [rec('c1')], goats: [rec('g1')] }, version: 4 });
+    const a = device(remote, { tx: [rec('1')] });
+    await a.engine.start('u1');
+    a.local = { tx: [rec('1'), rec('2')] };           // a local edit, then a push on an unchanged cloud version
+    a.engine.notifyLocalChange();
+    await new Promise((r) => setTimeout(r, 80));
+    expect(remote.doc.data.tx.map((r) => r.id)).toEqual(['1', '2']);
+    expect(remote.doc.data.crops).toEqual([rec('c1')]);
+    expect(remote.doc.data.goats).toEqual([rec('g1')]);
+  });
+
   it('pushes local edits after the debounce and does not push when nothing changed', async () => {
     const remote = fakeRemote();
     const a = device(remote, { tx: [] });

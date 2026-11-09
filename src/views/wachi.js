@@ -68,11 +68,11 @@ export function renderWachi() {
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
         <div class="bg-white p-2.5 rounded-lg border border-slate-200/80">
           <span class="block text-[10px] uppercase font-semibold text-slate-400">Current Age</span>
-          <span class="text-xs font-bold text-slate-800">${wachi.ageMonths} Months</span>
+          <span class="text-xs font-bold text-slate-800">${escapeHtml(String(wachi.ageMonths))} Months</span>
         </div>
         <div class="bg-white p-2.5 rounded-lg border border-slate-200/80">
           <span class="block text-[10px] uppercase font-semibold text-slate-400">Approx. Weight</span>
-          <span class="text-xs font-bold text-slate-800">${wachi.weightKg} kg</span>
+          <span class="text-xs font-bold text-slate-800">${escapeHtml(String(wachi.weightKg))} kg</span>
         </div>
         <div class="bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-200 col-span-2 sm:col-span-1">
           <span class="block text-[10px] uppercase font-semibold text-emerald-700">1st AI Target Guide</span>

@@ -84,7 +84,7 @@ export function renderDoodhi() {
             ${statusBadge}
           </div>
           <p class="text-xs text-slate-500 mt-0.5">
-            ${escapeHtml(acc.monthLabel)} &bull; <span class="font-semibold text-slate-700">${acc.liters} Liters</span> @ ${formatCurrency(acc.ratePerLiter)}/L
+            ${escapeHtml(acc.monthLabel)} &bull; <span class="font-semibold text-slate-700">${escapeHtml(String(acc.liters))} Liters</span> @ ${formatCurrency(acc.ratePerLiter)}/L
           </p>
         </div>
         <div class="flex items-center gap-1 shrink-0">

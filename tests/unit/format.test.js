@@ -22,3 +22,12 @@ describe('format helpers', () => {
     expect(escapeHtml(`<b a="1">'&'</b>`)).toBe('&lt;b a=&quot;1&quot;&gt;&#039;&amp;&#039;&lt;/b&gt;');
   });
 });
+
+describe('formatDisplayDate with damaged data', () => {
+  it('never returns the raw text (it ends up inside HTML)', () => {
+    expect(formatDisplayDate('<img src=x onerror=alert(1)>')).toBe('—');
+    expect(formatDisplayDate('2026-13-45x')).toBe('—');
+    expect(formatDisplayDate(12345)).toBe('—');
+    expect(addDays('<b>x</b>', 3)).toBe('—');
+  });
+});

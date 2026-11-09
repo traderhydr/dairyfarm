@@ -8,7 +8,7 @@ import { switchTab } from '../ui/tabs.js';
 
 const $ = (id) => document.getElementById(id);
 const KIND = { milker: 'Milker', wachi: 'Wachi', goat: 'Goat / Sheep', horse: 'Horse', other: 'Animal' };
-const kindLabel = (p) => (p.goat ? p.goat.species : KIND[p.kind] || 'Animal');
+const kindLabel = (p) => (p.goat ? escapeHtml(p.goat.species) : KIND[p.kind] || 'Animal');
 // where each kind is managed: [tab, add sheet, tag input]
 const HOME = {
   milker: ['milkers', 'milkersSheet', 'milkerTag'],
@@ -30,7 +30,7 @@ function statusChip(p) {
 
 function animalCard(p) {
   const bits = [
-    p.milker ? `${escapeHtml(p.milker.breed)}` : p.wachi ? `${escapeHtml(p.wachi.breed)}` : p.goat ? `${escapeHtml(p.goat.breed || p.goat.sex)}${(p.goat.count || 1) > 1 ? ' \u00b7 ' + p.goat.count + ' animals' : ''}` : p.horse ? `${escapeHtml(p.horse.breed || p.horse.purpose || '')}` : '',
+    p.milker ? `${escapeHtml(p.milker.breed)}` : p.wachi ? `${escapeHtml(p.wachi.breed)}` : p.goat ? `${escapeHtml(p.goat.breed || p.goat.sex)}${(p.goat.count || 1) > 1 ? ' \u00b7 ' + escapeHtml(String(p.goat.count)) + ' animals' : ''}` : p.horse ? `${escapeHtml(p.horse.breed || p.horse.purpose || '')}` : '',
     p.ai.length ? `${p.ai.length} AI` : '',
     p.health.length ? `${p.health.length} treatment${p.health.length === 1 ? '' : 's'}` : '',
     p.calves.length ? `${p.calves.length} calf${p.calves.length === 1 ? '' : 'ves'}` : ''
@@ -125,20 +125,20 @@ function profileHtml(p) {
     const pm = Number(p.milker.eveningMilk) || 0;
     facts.push(['Milk per day', `${am + pm} L (${am} AM + ${pm} PM)`], ['Status', escapeHtml(p.milker.status)], ['Breed', escapeHtml(p.milker.breed)]);
   } else if (p.wachi) {
-    facts.push(['Age', `${p.wachi.ageMonths} months`], ['Weight', `${p.wachi.weightKg} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
+    facts.push(['Age', `${escapeHtml(String(p.wachi.ageMonths))} months`], ['Weight', `${escapeHtml(String(p.wachi.weightKg))} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
   } else if (p.goat) {
     const g = p.goat;
-    facts.push(['Species', escapeHtml(g.species)], ['Gender', escapeHtml(g.sex)], ['Number', String(g.count || 1)]);
+    facts.push(['Species', escapeHtml(g.species)], ['Gender', escapeHtml(g.sex)], ['Number', escapeHtml(String(g.count || 1))]);
     if (g.breed) facts.push(['Breed', escapeHtml(g.breed)]);
-    if (g.ageMonths) facts.push(['Age', `${g.ageMonths} months`]);
-    if (g.weightKg) facts.push(['Weight', `${g.weightKg} kg`]);
+    if (g.ageMonths) facts.push(['Age', `${escapeHtml(String(g.ageMonths))} months`]);
+    if (g.weightKg) facts.push(['Weight', `${escapeHtml(String(g.weightKg))} kg`]);
     if (g.cost) facts.push(['Cost', formatCurrency(g.cost)]);
     if (g.salePrice) facts.push(['Sale price', formatCurrency(g.salePrice)]);
   } else if (p.horse) {
     const hs = p.horse;
     facts.push(['Gender', escapeHtml(hs.sex)], ['Purpose', escapeHtml(hs.purpose || '')]);
     if (hs.breed) facts.push(['Breed', escapeHtml(hs.breed)]);
-    if (hs.ageYears) facts.push(['Age', `${hs.ageYears} years`]);
+    if (hs.ageYears) facts.push(['Age', `${escapeHtml(String(hs.ageYears))} years`]);
     if (hs.color) facts.push(['Colour', escapeHtml(hs.color)]);
     if (hs.monthlyCost) facts.push(['Feed & care / month', formatCurrency(hs.monthlyCost)]);
     if (hs.cost) facts.push(['Purchase cost', formatCurrency(hs.cost)]);
@@ -146,7 +146,7 @@ function profileHtml(p) {
   } else if (p.sales[0] && p.sales[0].animal) {
     const a = p.sales[0].animal;
     facts.push(['Breed', escapeHtml(a.breed || '')]);
-    if (a.ageMonths) facts.push(['Age when sold', `${a.ageMonths} months`]);
+    if (a.ageMonths) facts.push(['Age when sold', `${escapeHtml(String(a.ageMonths))} months`]);
     if (a.morningMilk || a.eveningMilk) facts.push(['Milk when sold', `${(Number(a.morningMilk) || 0) + (Number(a.eveningMilk) || 0)} L/day`]);
   }
   const mother = p.dam ? ['Mother', profileLink(p.dam)] : null;
@@ -172,7 +172,7 @@ function profileHtml(p) {
     return row(
       profileLink(c.tag),
       status,
-      [c.born ? `Born ${formatDisplayDate(c.born)}` : '', c.weightKg ? `${c.weightKg} kg` : ''].filter(Boolean).join(' · ')
+      [c.born ? `Born ${formatDisplayDate(c.born)}` : '', c.weightKg ? `${escapeHtml(String(c.weightKg))} kg` : ''].filter(Boolean).join(' · ')
     );
   }).join('');
 

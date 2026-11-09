@@ -82,7 +82,7 @@ export function renderWanda() {
             ${statusBadge}
           </div>
           <p class="text-xs text-slate-500 mt-0.5">
-            ${escapeHtml(batch.supplier)} &bull; <span class="font-semibold text-slate-700">${batch.bags} Bags</span> @ ${formatCurrency(batch.ratePerBag)}/bag (Arrived ${formatDisplayDate(batch.purchaseDate)})
+            ${escapeHtml(batch.supplier)} &bull; <span class="font-semibold text-slate-700">${escapeHtml(String(batch.bags))} Bags</span> @ ${formatCurrency(batch.ratePerBag)}/bag (Arrived ${formatDisplayDate(batch.purchaseDate)})
           </p>
         </div>
         <div class="flex items-center gap-1 shrink-0">

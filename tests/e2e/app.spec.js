@@ -1453,3 +1453,51 @@ test.describe('Wanda totals', () => {
     await expect(page.locator('#wandaSummaryBags')).toContainText('30 بوریاں');
   });
 });
+
+test.describe('hostile data (a restored backup or the cloud could contain anything)', () => {
+  test('no field of any record can run script or inject markup, anywhere in the app', async ({ page }) => {
+    const PAYLOAD = '<img src=x onerror="window.__pwned=1"><b>pwn</b>';
+    await loadSample(page);
+    // replace every text and number in every collection with the payload (record ids stay, so the app can still find them)
+    await page.evaluate((payload) => {
+      const poison = (v, key) => {
+        if (Array.isArray(v)) return v.map((x) => poison(x, key));
+        if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k === 'id' || k.endsWith('Id') ? x : poison(x, k)]));
+        if (typeof v === 'string' || typeof v === 'number') return payload;
+        return v;
+      };
+      for (const k of Object.keys(localStorage)) {
+        if (!k.startsWith('dairy_farm_v1_')) continue;
+        localStorage.setItem(k, JSON.stringify(poison(JSON.parse(localStorage.getItem(k)), k)));
+      }
+    }, PAYLOAD);
+    await page.reload();
+    await page.waitForTimeout(500);
+
+    const ids = ['tabFinanceBtn', 'tabAnimalsBtn', 'tabBreedingBtn', 'tabWandaBtn', 'tabMilkersBtn', 'tabWachiBtn', 'tabGoatsBtn', 'tabHorsesBtn', 'tabHealthBtn', 'tabSalesBtn', 'tabDoodhiBtn', 'tabSavingsBtn'];
+    for (const id of ids) await tab(page, id);
+    await page.locator('#toggleAlertsBtn').evaluate((el) => el.click());
+    // profiles of every animal, crop details, edit forms
+    await tab(page, 'tabAnimalsBtn');
+    const profiles = await page.locator('#animalsListContainer [data-open-profile]').count();
+    for (let i = 0; i < profiles; i++) {
+      await page.locator('#animalsListContainer [data-open-profile]').nth(i).evaluate((el) => el.click());
+      await page.keyboard.press('Escape');
+    }
+    await page.locator('#modeToggle [data-mode="crops"]').click();
+    for (const id of ['tabCropsBtn', 'tabLandsBtn']) await tab(page, id);
+    await tab(page, 'tabCropsBtn');
+    for (const el of await page.locator('[data-open-crop]').all()) { await el.evaluate((e) => e.click()); await page.keyboard.press('Escape'); }
+    // Urdu mode runs the translator over the same content
+    await page.locator('#langToggleBtn').click();
+    for (const id of ['tabCropsBtn', 'tabLandsBtn']) await tab(page, id);
+    await page.locator('#modeToggle [data-mode="farm"]').click();
+    for (const id of ids) await tab(page, id);
+    await page.waitForTimeout(300);
+
+    expect(await page.evaluate(() => window.__pwned), 'script ran').toBeUndefined();
+    // the payload is shown as text, never as an element
+    expect(await page.locator('main img[src="x"], .sheet img[src="x"]').count()).toBe(0);
+    expect(await page.locator('main b, .sheet-panel b').evaluateAll((els) => els.filter((e) => e.textContent === 'pwn').length)).toBe(0);
+  });
+});

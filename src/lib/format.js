@@ -5,7 +5,7 @@ export function dateLocale() {
 
 export function addDays(dateStr, days) {
   if (!dateStr) return '—';
-  const parts = dateStr.split('-');
+  const parts = String(dateStr).split('-');
   if (parts.length !== 3) return '—';
   const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
   if (isNaN(d.getTime())) return '—';
@@ -15,10 +15,11 @@ export function addDays(dateStr, days) {
 
 export function formatDisplayDate(dateStr) {
   if (!dateStr) return '—';
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
+  const parts = String(dateStr).split('-');
+  // never hand back the raw text: it ends up inside HTML, and a damaged or hostile record must not become markup
+  if (parts.length !== 3) return '\u2014';
   const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-  if (isNaN(d.getTime())) return dateStr;
+  if (isNaN(d.getTime())) return '\u2014';
   return d.toLocaleDateString(dateLocale(), { year: 'numeric', month: 'short', day: 'numeric' });
 }
 

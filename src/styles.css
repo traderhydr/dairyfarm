@@ -806,3 +806,12 @@ html[dir="rtl"] .search-clear, html[dir="rtl"] input[type="search"]::-webkit-sea
 /* the closed side menu waits just outside the right edge in Urdu; never let it widen the page */
 html[dir="rtl"] { overflow-x: hidden; }
 html[dir="rtl"] #sideMenuDrawer.-translate-x-full { visibility: hidden; transition: transform 0.2s ease-out, visibility 0s 0.2s; }
+
+/* variants added after the colour pass (exact class names, like the rules above) */
+[class~="bg-amber-50/60"] { background: rgba(217,119,6,0.10); }
+[class~="bg-emerald-50/60"] { background: rgba(5,150,105,0.09); }
+[class~="bg-rose-50/60"] { background: rgba(220,38,38,0.08); }
+body.dark-mode [class~="bg-amber-50/60"] { background: rgba(245,158,11,0.15); }
+body.dark-mode [class~="bg-emerald-50/60"] { background: rgba(16,185,129,0.14); }
+body.dark-mode [class~="bg-rose-50/60"] { background: rgba(244,63,94,0.15); }
+body.dark-mode [class~="text-rose-900"] { color: #fda4af; }

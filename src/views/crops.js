@@ -36,7 +36,7 @@ export function renderCrops() {
   const years = [...new Set(state.crops.map((c) => c.year).filter(Boolean))].sort((a, b) => b - a);
   const yearSel = $('cropsYearFilter');
   const yearKeep = yearSel.value || 'all';
-  yearSel.innerHTML = '<option value="all">All Years</option>' + years.map((y) => `<option value="${y}">${y}</option>`).join('');
+  yearSel.innerHTML = '<option value="all">All Years</option>' + years.map((y) => `<option value="${escapeHtml(String(y))}">${escapeHtml(String(y))}</option>`).join('');
   yearSel.value = years.map(String).includes(yearKeep) ? yearKeep : 'all';
 
   const inYear = state.crops.filter((c) => yearSel.value === 'all' || String(c.year) === yearSel.value);

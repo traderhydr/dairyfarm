@@ -67,10 +67,14 @@ export function createSyncEngine({
       }
 
       if (!snapshotsEqual(target, local)) applyLocal(target);
-      if (snapshotsEqual(target, doc.data)) return saveBase(doc.version, target);
+      // Keep collections this version does not know about (written by a newer app version), so an older
+      // app syncing the same account never deletes them.
+      const extras = Object.fromEntries(Object.entries(doc.data || {}).filter(([key]) => !(key in target)));
+      const outgoing = { ...extras, ...target };
+      if (snapshotsEqual(outgoing, doc.data)) return saveBase(doc.version, outgoing);
 
-      const res = await remote.push(target, doc.version);
-      if (res.ok) return saveBase(res.version, target);
+      const res = await remote.push(outgoing, doc.version);
+      if (res.ok) return saveBase(res.version, outgoing);
     }
     throw new Error('Could not sync after several attempts');
   }
