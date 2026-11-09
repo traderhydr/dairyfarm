@@ -40,3 +40,45 @@ export function monthlyTotals(transactions, now = new Date(), months = 6) {
   }
   return buckets;
 }
+
+const pad = (n) => String(n).padStart(2, '0');
+const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+/** First and last date (YYYY-MM-DD, inclusive) of a profit & loss period ending today. */
+export function periodRange(period, now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (period === 'today') return { from: ymd(today), to: ymd(today) };
+  if (period === 'week') return { from: ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)), to: ymd(today) };
+  if (period === 'year') return { from: `${today.getFullYear()}-01-01`, to: ymd(today) };
+  return { from: `${today.getFullYear()}-${pad(today.getMonth() + 1)}-01`, to: ymd(today) };
+}
+
+/** Income, expenses, profit/loss (net) and margin over entries dated within [from, to]. */
+export function rangeTotals(transactions, from, to) {
+  const out = { income: 0, expense: 0, net: 0, count: 0, margin: null };
+  for (const t of transactions || []) {
+    const date = String(t.date || '');
+    if (date < from || date > to) continue;
+    const amount = Number(t.amount) || 0;
+    if (t.type === 'income') out.income += amount; else out.expense += amount;
+    out.count++;
+  }
+  out.net = out.income - out.expense;
+  out.margin = out.income > 0 ? Math.round((out.net / out.income) * 100) : null;
+  return out;
+}
+
+/** One row per day that has entries within [from, to], newest first: { date, income, expense, net }. */
+export function dailyTotals(transactions, from, to) {
+  const days = new Map();
+  for (const t of transactions || []) {
+    const date = String(t.date || '');
+    if (date < from || date > to) continue;
+    const row = days.get(date) || { date, income: 0, expense: 0, net: 0 };
+    const amount = Number(t.amount) || 0;
+    if (t.type === 'income') row.income += amount; else row.expense += amount;
+    row.net = row.income - row.expense;
+    days.set(date, row);
+  }
+  return [...days.values()].sort((a, b) => b.date.localeCompare(a.date));
+}

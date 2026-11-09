@@ -17,6 +17,7 @@ import { initAnimals, renderAnimals } from './views/animals.js';
 import { initBreeding, renderBreeding, updateBreedingPreview } from './views/breeding.js';
 import { initDoodhi, renderDoodhi } from './views/doodhi.js';
 import { initFinance, renderExpenseBreakdown, renderTransactions } from './views/finance.js';
+import { initProfit, renderProfit } from './views/profit.js';
 import { initLedgers, renderLedgers } from './views/ledgers.js';
 import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
@@ -33,6 +34,7 @@ function renderAll() {
   renderLedgers();
   renderAnimals();
   renderTransactions();
+  renderProfit();
   renderExpenseBreakdown();
   renderTrends();
   renderBreeding();
@@ -70,6 +72,7 @@ function boot() {
   initSheets();
   initFinance();
   initLedgers();
+  initProfit();
   initAnimals();
   initAlerts();
   initBreeding();

@@ -881,3 +881,65 @@ test('Animals is on the bottom bar and Milkers moved into the More menu', async 
   await expect(page.locator('#milkersSection')).toBeVisible();
   await expect(page.locator('#sideModuleBannerName')).toHaveText('Milkers');
 });
+
+test.describe('profit and loss', () => {
+  const add = async (page, type, amount, date) => {
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await fill(page, 'txType', type);
+    await fill(page, 'txAmount', String(amount));
+    if (date) await fill(page, 'txDate', date);
+    await submit(page, 'financeForm');
+  };
+  const daysAgo = (n) => {
+    const d = new Date(); d.setDate(d.getDate() - n);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  test("today's profit, loss and margin", async ({ page }) => {
+    await expect(page.locator('#profitNet')).toHaveText('Rs. 0');
+    await add(page, 'income', 1000);
+    await add(page, 'expense', 400);
+    await expect(page.locator('#profitLabel')).toHaveText('Profit');
+    await expect(page.locator('#profitNet')).toHaveText('Rs. 600');
+    await expect(page.locator('#profitMargin')).toContainText('60% margin');
+    await expect(page.locator('#profitIncome')).toHaveText('Rs. 1,000');
+    await expect(page.locator('#profitExpense')).toHaveText('Rs. 400');
+    await add(page, 'expense', 900);
+    await expect(page.locator('#profitLabel')).toHaveText('Loss');
+    await expect(page.locator('#profitNet')).toHaveText('- Rs. 300');
+    await expect(page.locator('#profitHero')).toHaveAttribute('data-state', 'loss');
+  });
+
+  test('periods include older days only where they belong', async ({ page }) => {
+    await add(page, 'income', 1000, daysAgo(3));
+    await add(page, 'expense', 200, daysAgo(0));
+    await expect(page.locator('#profitNet')).toHaveText('- Rs. 200');                    // today only
+    await page.locator('#profitPeriods [data-period="week"]').click();
+    await expect(page.locator('#profitNet')).toHaveText('Rs. 800');
+    await page.locator('#profitPeriods [data-period="year"]').click();
+    await expect(page.locator('#profitDaysTitle')).toHaveText('Month by month');
+  });
+
+  test('day by day lists each day with its own profit or loss', async ({ page }) => {
+    await add(page, 'income', 500, daysAgo(1));
+    await add(page, 'expense', 800, daysAgo(1));
+    await add(page, 'income', 300, daysAgo(0));
+    await page.locator('#profitPeriods [data-period="week"]').click();
+    await page.locator('.profit-days summary').click();
+    const rows = page.locator('#profitDaysList > div');
+    await expect(rows).toHaveCount(2);
+    await expect(rows.nth(0)).toContainText('Rs. 300');
+    await expect(rows.nth(1)).toContainText('- Rs. 300');
+  });
+
+  test('follows the open ledger', async ({ page }) => {
+    await add(page, 'income', 1000);
+    await page.locator('#newLedgerBtn').click();
+    await fill(page, 'ledgerName', 'Household');
+    await submit(page, 'ledgerForm');
+    await add(page, 'expense', 250);
+    await expect(page.locator('#profitNet')).toHaveText('- Rs. 250');
+    await page.locator('#ledgerBackBtn').click();
+    await expect(page.locator('#profitNet')).toHaveText('Rs. 750');
+  });
+});

@@ -53,3 +53,43 @@ describe('monthlyTotals', () => {
     expect(monthlyTotals([], new Date(2026, 1, 10), 4).map((m) => m.key)).toEqual(['2025-11', '2025-12', '2026-01', '2026-02']);
   });
 });
+
+import { dailyTotals, periodRange, rangeTotals } from '../../src/lib/calc.js';
+
+describe('profit and loss periods', () => {
+  const now = new Date(2026, 10, 9, 14, 0);
+  const tx = [
+    { type: 'income', date: '2026-11-09', amount: 1000 },
+    { type: 'expense', date: '2026-11-09', amount: 400 },
+    { type: 'income', date: '2026-11-05', amount: 500 },
+    { type: 'expense', date: '2026-11-01', amount: 900 },
+    { type: 'income', date: '2026-10-31', amount: 7000 },
+    { type: 'expense', date: '2026-02-03', amount: 100 }
+  ];
+  it('computes the ranges', () => {
+    expect(periodRange('today', now)).toEqual({ from: '2026-11-09', to: '2026-11-09' });
+    expect(periodRange('week', now)).toEqual({ from: '2026-11-03', to: '2026-11-09' });
+    expect(periodRange('month', now)).toEqual({ from: '2026-11-01', to: '2026-11-09' });
+    expect(periodRange('year', now)).toEqual({ from: '2026-01-01', to: '2026-11-09' });
+  });
+  it('week range crosses a month boundary correctly', () => {
+    expect(periodRange('week', new Date(2026, 2, 3))).toEqual({ from: '2026-02-25', to: '2026-03-03' });
+  });
+  it('totals profit or loss for a period', () => {
+    const today = periodRange('today', now);
+    expect(rangeTotals(tx, today.from, today.to)).toEqual({ income: 1000, expense: 400, net: 600, count: 2, margin: 60 });
+    const month = periodRange('month', now);
+    expect(rangeTotals(tx, month.from, month.to)).toMatchObject({ income: 1500, expense: 1300, net: 200 });
+  });
+  it('shows a loss as a negative number and has no margin without income', () => {
+    expect(rangeTotals([{ type: 'expense', date: '2026-11-09', amount: 50 }], '2026-11-09', '2026-11-09')).toEqual({ income: 0, expense: 50, net: -50, count: 1, margin: null });
+  });
+  it('lists the days with entries, newest first', () => {
+    const month = periodRange('month', now);
+    expect(dailyTotals(tx, month.from, month.to)).toEqual([
+      { date: '2026-11-09', income: 1000, expense: 400, net: 600 },
+      { date: '2026-11-05', income: 500, expense: 0, net: 500 },
+      { date: '2026-11-01', income: 0, expense: 900, net: -900 }
+    ]);
+  });
+});
