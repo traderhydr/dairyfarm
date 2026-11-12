@@ -152,7 +152,7 @@ export function breedingSectionHtml(profile) {
       ${pd}
       ${startBtn}
       ${views.length ? `<div class="rounded-xl border border-slate-200 bg-white px-3 divide-y divide-slate-100"><p class="py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Past protocols (${views.length})</p>${views.map(historyRow).join('')}</div>`
-        : !active && !pd ? '<p class="text-xs text-slate-400 italic">No breeding protocols yet. Start one to get a timed schedule for each injection and the AI.</p>' : ''}
+        : !active && !pd ? '<p class="text-xs text-slate-400 italic">No breeding protocols yet.</p>' : ''}
     </section>`;
 }
 
@@ -168,7 +168,7 @@ function renderStartPreview() {
         <span class="font-semibold text-slate-800">${Number(s.index) + 1}. ${escapeHtml(s.label)}</span>
         <span class="text-right shrink-0 text-slate-600">${escapeHtml(dateTimeText(s.dueAt))}${s.windowStart ? `<span class="block text-amber-700 font-semibold">${escapeHtml(windowText(s))}</span>` : ''}</span>
       </div>`).join('')
-    : '<p class="text-xs text-slate-400 italic py-2">Pick a date and time for Day 0 to see the schedule.</p>';
+    : '<p class="text-xs text-slate-400 italic py-2">Pick Day 0 to see the schedule.</p>';
 }
 
 function openStart(tags = []) {
@@ -203,8 +203,8 @@ function openAction(action, ctx) {
   pending = { action, ...ctx };
   const titles = { ftai: 'Final AI (FTAI)', early: 'Early Heat / Breed Now', pd: 'Pregnancy Check (PD) Result' };
   const intros = {
-    ftai: 'Record the insemination. She is marked Inseminated, the 283-day countdown starts, and a pregnancy check is scheduled for 30 to 35 days later.',
-    early: 'She came into natural heat. Log the AI now: the remaining injections of this protocol are cancelled and a pregnancy check is scheduled.',
+    ftai: 'Record the AI. A pregnancy check is scheduled for 30 to 35 days later.',
+    early: 'Log the AI now. The remaining injections are cancelled.',
     pd: 'What did the vet find?'
   };
   $('protocolActionTitle').textContent = titles[action];

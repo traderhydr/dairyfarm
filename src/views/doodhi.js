@@ -134,7 +134,7 @@ export function renderDoodhi() {
         <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
           <label class="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
             <input type="checkbox" name="syncCashbook" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-            <span>Also add to Daily Cashbook Income (Milk Sale)</span>
+            <span>Also add to Cashbook</span>
           </label>
           <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
             + Record Payment Received

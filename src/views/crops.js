@@ -173,7 +173,7 @@ function detailHtml(c) {
     ${c.notes ? `<p class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(c.notes)}</p>` : ''}
 
     ${breakdown ? section('Where the money went', breakdown, '') : ''}
-    ${section(`Cost lines (${(c.costs || []).length})`, lines, 'No costs recorded yet.')}
+    ${section(`Cost lines (${(c.costs || []).length})`, lines, 'No costs yet.')}
     <form data-cost-form class="rounded-xl border border-slate-200 bg-slate-50/60 p-3 space-y-2">
       <p class="text-xs font-semibold text-slate-700">${line ? 'Edit cost line' : 'Add a cost'}</p>
       <div class="grid grid-cols-2 gap-2">
@@ -190,7 +190,7 @@ function detailHtml(c) {
       </div>
     </form>
 
-    ${section(`Harvests / yield (${(c.harvests || []).length})`, harvests, 'No harvest recorded yet. Add each cutting or the final yield.')}
+    ${section(`Harvests / yield (${(c.harvests || []).length})`, harvests, 'No harvests yet.')}
     <form data-harvest-form class="rounded-xl border border-slate-200 bg-slate-50/60 p-3 space-y-2">
       <p class="text-xs font-semibold text-slate-700">Add a harvest</p>
       <div class="grid grid-cols-2 gap-2">

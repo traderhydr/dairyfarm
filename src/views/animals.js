@@ -212,9 +212,9 @@ function profileHtml(p) {
       <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5"><dt class="text-[10px] uppercase font-semibold text-slate-400">${k}</dt><dd class="text-xs font-bold text-slate-800 mt-0.5">${v}</dd></div>`).join('')}</dl>` : ''}
     ${notes ? `<p class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ''}
     ${actions}
-    ${cattle ? section('AI &amp; pregnancy history', p.ai.length, ai, 'No AI records for this animal.') : ''}
-    ${cattle ? section('Calves (baby record)', p.calves.length, calves, 'No calves recorded.') : ''}
-    ${section('Treatments &amp; vaccinations', p.health.length, health, 'No treatments recorded. Use the same tag when you add a health record.')}`;
+    ${cattle ? section('AI &amp; pregnancy history', p.ai.length, ai, 'No AI records.') : ''}
+    ${cattle ? section('Calves (baby record)', p.calves.length, calves, 'No calves yet.') : ''}
+    ${section('Treatments &amp; vaccinations', p.health.length, health, 'No treatments yet.')}`;
 }
 
 const formatDate = formatDisplayDate;

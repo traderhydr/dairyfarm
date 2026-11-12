@@ -300,7 +300,6 @@
           <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs font-bold">=</span>
         </div>
         <p id="netBalanceDisplay" class="text-lg sm:text-xl font-extrabold text-slate-800 mt-1.5">Rs. 0</p>
-        <p class="text-xs text-slate-400 mt-0.5">Income &minus; expenses</p>
       </div>
 
       <div class="kpi-card bg-white p-3.5 rounded-2xl border border-slate-200/90">
@@ -538,8 +537,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="financeSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Income or Expense</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Record daily milk sales, feed purchases, medicine, or labor costs.</p>
-
         <form id="financeForm" class="mt-4 space-y-3.5">
           <div>
             <label for="txLedger" class="block text-xs font-semibold text-slate-700 mb-1">Ledger</label>
@@ -601,7 +598,6 @@
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Ledgers</h2>
-            <p class="text-xs text-slate-500">Keep separate books, e.g. Milk business, Household, Feed account. Open one to see its own totals.</p>
           </div>
           <button type="button" id="newLedgerBtn" class="btn-primary whitespace-nowrap">+ New ledger</button>
         </div>
@@ -729,7 +725,6 @@
         <div id="txEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No entries to show</p>
-          <p class="empty-text">Try a different filter, or record your first income or expense.</p>
           <button type="button" class="btn-primary" data-open-sheet="financeSheet">+ Add entry</button>
         </div>
 
@@ -760,8 +755,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="breedingSheetTitle" class="text-base font-bold text-slate-900 pr-16">Record Cow AI &amp; Pregnancy</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Enter the AI date and we'll automatically calculate the 21-day heat check and 283-day expected calving date.</p>
-
         <form id="breedingForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -829,7 +822,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
             <h2 class="text-base font-bold text-slate-900">AI &amp; Pregnancy</h2>
-            <p class="text-xs text-slate-500">Update pregnancy status anytime using the dropdown on each card</p>
           </div>
         </div>
 
@@ -838,7 +830,6 @@
         <div id="breedingEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No AI records yet</p>
-          <p class="empty-text">Track heat checks, pregnancy checks and the expected calving date for each cow.</p>
           <button type="button" class="btn-primary" data-open-sheet="breedingSheet">+ Add AI record</button>
         </div>
 
@@ -857,8 +848,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="wandaSheetTitle" class="text-base font-bold text-slate-900 pr-16">Purchase Monthly Wanda Stock</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Log a 1-month Wanda stock purchase and repay it in installments over the month.</p>
-
         <form id="wandaForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -906,7 +895,7 @@
 
           <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
             <input id="wandaSyncAdvance" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-            <span>Automatically log advance payment in Daily Cashbook Expenses</span>
+            <span>Also add to Cashbook</span>
           </label>
 
           <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
@@ -922,7 +911,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
             <h2 class="text-base font-bold text-slate-900">Wanda Stock</h2>
-            <p class="text-xs text-slate-500">Add installment payments anytime during the month to reduce your balance due</p>
           </div>
         </div>
 
@@ -944,7 +932,6 @@
         <div id="wandaEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No feed stock yet</p>
-          <p class="empty-text">Record each month's Wanda purchase and track installment payments.</p>
           <button type="button" class="btn-primary" data-open-sheet="wandaSheet">+ Add stock</button>
         </div>
 
@@ -963,8 +950,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="milkersSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Milker (Milking Cow)</h2>
-        <p class="text-xs text-slate-500 mt-0.5">List cows currently giving milk and track their morning and evening milk yield.</p>
-
         <form id="milkerForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1022,7 +1007,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Milking Cows</h2>
-            <p class="text-xs text-slate-500">Adjust morning or evening milk anytime as daily yield changes</p>
           </div>
           <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
             <span class="block text-[10px] uppercase font-semibold text-sky-600">Total Farm Daily Milk</span>
@@ -1035,7 +1019,6 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h3 class="text-xs font-bold text-emerald-950 uppercase tracking-wide">1-Click Daily Milk Sale Logger</h3>
-              <p class="text-[11px] text-emerald-800">Multiplies your herd's daily milk by your rate and saves directly to the Daily Cashbook</p>
             </div>
             <span id="quickMilkRevenuePreview" class="text-sm font-bold text-emerald-900 bg-white px-2.5 py-1 rounded-lg border border-emerald-200">Rs. 0</span>
           </div>
@@ -1072,7 +1055,6 @@
         <div id="milkersEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No milking cows yet</p>
-          <p class="empty-text">Add your cows to track daily milk and log milk sales to the Cashbook.</p>
           <button type="button" class="btn-primary" data-open-sheet="milkersSheet">+ Add cow</button>
         </div>
 
@@ -1091,8 +1073,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="wachiSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Wachi (Heifer)</h2>
-        <p class="text-xs text-slate-500 mt-0.5">List your young female calves and heifers (Wachi) to track their age, weight, and readiness for 1st AI.</p>
-
         <form id="wachiForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1149,7 +1129,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Wachi (Heifers)</h2>
-            <p class="text-xs text-slate-500">Track young heifers growing into future milkers</p>
           </div>
           <select id="wachiFilter" aria-label="Filter Wachi by stage" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
             <option value="all">All Stages</option>
@@ -1165,7 +1144,6 @@
         <div id="wachiEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No heifers yet</p>
-          <p class="empty-text">Add calves and heifers to follow their growth and breeding readiness.</p>
           <button type="button" class="btn-primary" data-open-sheet="wachiSheet">+ Add heifer</button>
         </div>
 
@@ -1184,8 +1162,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="healthSheetTitle" class="text-base font-bold text-slate-900 pr-16">Log Vaccination or Deworming</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Record FMD (Munh Khur), HS (Gal Ghotu), BQ, or deworming for your herd and calculate the next booster date automatically.</p>
-
         <form id="healthForm" class="mt-4 space-y-3.5">
           <div>
             <label for="healthTarget" class="block text-xs font-semibold text-slate-700 mb-1">Animal / Herd Group</label>
@@ -1235,7 +1211,7 @@
 
           <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
             <input id="healthSyncExpense" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-            <span>Automatically log cost in Daily Cashbook (Vet &amp; Medicine)</span>
+            <span>Also add to Cashbook</span>
           </label>
 
           <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
@@ -1251,7 +1227,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Vaccination &amp; Deworming</h2>
-            <p class="text-xs text-slate-500">Keep your Milkers and Wachi protected on time</p>
           </div>
           <button type="button" data-protocol-start="" class="btn-primary text-xs px-3">Start Breeding Protocol</button>
         </div>
@@ -1267,7 +1242,6 @@
         <div id="healthEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No health records yet</p>
-          <p class="empty-text">Log vaccinations and deworming to see when the next dose is due.</p>
           <button type="button" class="btn-primary" data-open-sheet="healthSheet">+ Add record</button>
         </div>
 
@@ -1286,8 +1260,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="salesSheetTitle" class="text-base font-bold text-slate-900 pr-16">Record Sold Cow / Wachi</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Save which cow was sold, to whom (buyer), total cost spent on her, and final sale price to see your exact profit.</p>
-
         <form id="salesForm" class="mt-4 space-y-3.5">
           <div>
             <label for="saleQuickPick" class="block text-xs font-semibold text-slate-700 mb-1">Pick from Herd (Optional Shortcut)</label>
@@ -1308,8 +1280,8 @@
           </div>
 
           <div id="saleCalvesBox" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
-            <p class="text-xs font-semibold text-slate-700">Sold with her calf, or without?</p>
-            <p class="text-[11px] text-slate-500">Tick a calf to sell it together with her (one price for both). Leave all unticked to sell her without a calf.</p>
+            <p class="text-xs font-semibold text-slate-700">Sell with her calf?</p>
+            <p class="text-[11px] text-slate-500">Tick a calf to sell it with her.</p>
             <div id="saleCalvesList" class="space-y-1.5"></div>
           </div>
 
@@ -1343,11 +1315,11 @@
           <div class="space-y-2 pt-0.5">
             <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
               <input id="saleSyncCashbook" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-              <span>Automatically add Sale Price to Daily Cashbook Income (Calf / Cattle Sale)</span>
+              <span>Also add to Cashbook</span>
             </label>
             <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
               <input id="saleRemoveFromHerd" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-              <span>If selected from Milkers or Wachi, remove from active herd list</span>
+              <span>Remove from herd list</span>
             </label>
           </div>
 
@@ -1364,7 +1336,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Sold Cows</h2>
-            <p class="text-xs text-slate-500">Complete history of cattle sold, buyer details, total cost, and net profit</p>
           </div>
         </div>
 
@@ -1389,7 +1360,6 @@
         <div id="salesEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No sales yet</p>
-          <p class="empty-text">Record cattle you sell to see the profit or loss on each animal.</p>
           <button type="button" class="btn-primary" data-open-sheet="salesSheet">+ Add sale</button>
         </div>
 
@@ -1408,8 +1378,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="doodhiSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Milk Buyer (Doodhi) Khata</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Track monthly milk delivered to your Doodhi/collector, advances (Peshgi) received, and remaining balance due.</p>
-
         <form id="doodhiForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1458,7 +1426,7 @@
 
           <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
             <input id="doodhiSyncAdvance" type="checkbox" checked class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-            <span>Automatically log Peshgi received in Daily Cashbook Income (Milk Sale)</span>
+            <span>Also add to Cashbook</span>
           </label>
 
           <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
@@ -1474,7 +1442,6 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-base font-bold text-slate-900">Milk Buyers (Doodhi)</h2>
-            <p class="text-xs text-slate-500">Record weekly or end-of-month payments received from your milk buyer</p>
           </div>
           <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
             <span class="block text-[10px] uppercase font-semibold text-sky-700">Total Doodhi Receivable</span>
@@ -1487,7 +1454,6 @@
         <div id="doodhiEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No milk buyers yet</p>
-          <p class="empty-text">Add a buyer to keep a running monthly account of milk and payments.</p>
           <button type="button" class="btn-primary" data-open-sheet="doodhiSheet">+ Add khata</button>
         </div>
 
@@ -1505,7 +1471,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="goatsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Goat / Sheep</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Keep your goats and sheep: individuals or a group count, with status, cost and sale price.</p>
           <form id="goatForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1581,7 +1546,6 @@
         <input id="goatsSearch" type="search" placeholder="Search tag, breed, notes..." aria-label="Search tag, breed, notes..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         <div id="goatsEmptyState" class="empty-state hidden">
           <p class="empty-title">No goats or sheep yet</p>
-          <p class="empty-text">Add your first goat or sheep to start the flock record.</p>
           <button type="button" class="btn-primary" data-open-sheet="goatsSheet">Add goat / sheep</button>
         </div>
         <div id="goatsListContainer" class="space-y-3"></div>
@@ -1597,7 +1561,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="horsesSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Horse</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Keep your horses: breed, age, purpose, feed and care cost, purchase and sale price.</p>
           <form id="horseForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1673,7 +1636,6 @@
         <input id="horsesSearch" type="search" placeholder="Search name, breed, notes..." aria-label="Search name, breed, notes..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         <div id="horsesEmptyState" class="empty-state hidden">
           <p class="empty-title">No horses yet</p>
-          <p class="empty-text">Add your first horse to start the stable record.</p>
           <button type="button" class="btn-primary" data-open-sheet="horsesSheet">Add horse</button>
         </div>
         <div id="horsesListContainer" class="space-y-3"></div>
@@ -1689,7 +1651,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="cropsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Crop</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Record a crop on your land with its seed, water, fertiliser and labour costs, then its yield, to see profit or loss.</p>
           <form id="cropForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1771,7 +1732,7 @@
             </div>
           <div id="cropInitialBox" class="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
             <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Costs so far (Rs. - leave empty if none)</p>
-            <p class="text-[11px] text-slate-500 -mt-2">You can add more cost lines and harvests later from the crop's details.</p>
+            <p class="text-[11px] text-slate-500 -mt-2">More costs and harvests can be added later.</p>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label for="cRent" class="block text-xs font-semibold text-slate-700 mb-1">Land Rent / Theeka (Rs.)</label>
@@ -1877,7 +1838,6 @@
         <input id="cropsSearch" type="search" placeholder="Search crop, land, notes..." aria-label="Search crops" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         <div id="cropsEmptyState" class="empty-state hidden">
           <p class="empty-title">No crops yet</p>
-          <p class="empty-text">Add wheat, barseem, alfalfa or any crop to track its costs and profit.</p>
           <button type="button" class="btn-primary" data-open-sheet="cropsSheet">+ Add crop</button>
         </div>
         <div id="cropsListContainer" class="space-y-3"></div>
@@ -1893,7 +1853,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="landsSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Land</h2>
-          <p class="text-xs text-slate-500 mt-0.5">List your own and rented (Theeka) fields with their area, so each crop can be linked to its land.</p>
           <form id="landForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -1953,7 +1912,6 @@
         <input id="landsSearch" type="search" placeholder="Search land, landlord, notes..." aria-label="Search land" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         <div id="landsEmptyState" class="empty-state hidden">
           <p class="empty-title">No land added yet</p>
-          <p class="empty-text">Add your fields, own or on Theeka, to keep your land record.</p>
           <button type="button" class="btn-primary" data-open-sheet="landsSheet">+ Add land</button>
         </div>
         <div id="landsListContainer" class="space-y-3"></div>
@@ -1967,7 +1925,6 @@
       <div class="list-card space-y-4">
         <div>
           <h2 class="text-base font-bold text-slate-900">Animal Profiles</h2>
-          <p class="text-xs text-slate-500">Open any animal to see her AI record, treatments, calves and sale in one place</p>
         </div>
         <div class="grid grid-cols-[1fr_auto] gap-2">
           <input id="animalsSearch" type="search" placeholder="Search tag, breed, mother..." aria-label="Search animals" class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
@@ -1980,7 +1937,6 @@
         </div>
         <div id="animalsEmptyState" class="empty-state hidden">
           <p class="empty-title">No animals yet</p>
-          <p class="empty-text">Add a cow in Milkers, a heifer in Wachi, or an AI record, and her profile appears here.</p>
         </div>
         <div id="animalsListContainer" class="space-y-3"></div>
       </div>
@@ -1990,7 +1946,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="animalTypeSheetTitle" class="text-base font-bold text-slate-900 pr-16">Add Animal</h2>
-          <p class="text-xs text-slate-500 mt-0.5">What kind of animal do you want to add?</p>
           <div class="grid grid-cols-2 gap-3 mt-4">
             <button type="button" data-add-animal="milker" class="animal-type"><span class="font-semibold">Milking Cow</span><span class="text-xs text-slate-500">Cow giving milk</span></button>
             <button type="button" data-add-animal="wachi" class="animal-type"><span class="font-semibold">Wachi / Calf</span><span class="text-xs text-slate-500">Heifer or young calf</span></button>
@@ -2011,8 +1966,6 @@
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
           <h2 id="savingsSheetTitle" class="text-base font-bold text-slate-900 pr-16">New Savings Goal</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Set a target, then add money whenever you save. Good for a new cow, feed stock or a shed repair.</p>
-
           <form id="savingsForm" class="mt-4 space-y-3.5">
             <div>
               <label for="savingsName" class="block text-xs font-semibold text-slate-700 mb-1">What are you saving for?</label>
@@ -2055,7 +2008,6 @@
         <div class="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 class="text-base font-bold text-slate-900">Savings Goals</h2>
-            <p class="text-xs text-slate-500">Money set aside for what matters, and how close you are</p>
           </div>
           <div class="bg-sky-50 border border-sky-200 px-3 py-1.5 rounded-xl text-right">
             <span class="block text-[10px] uppercase font-semibold text-sky-700">Total saved</span>
@@ -2068,7 +2020,6 @@
         <div id="savingsEmptyState" class="empty-state hidden">
           <div class="empty-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0h-4.5a1 1 0 00-.9.55l-.7 1.4a1 1 0 01-.9.55h-2a1 1 0 01-.9-.55l-.7-1.4a1 1 0 00-.9-.55H4" /></svg></div>
           <p class="empty-title">No savings goals yet</p>
-          <p class="empty-text">Set a target for something you're saving toward, like a new cow or feed stock.</p>
           <button type="button" class="btn-primary" data-open-sheet="savingsSheet">+ Add goal</button>
         </div>
 
@@ -2090,7 +2041,6 @@
       <div class="sheet-panel">
         <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="farmSheetTitle" class="text-base font-bold text-slate-900 pr-16">Farm Profile</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Your name and your farm's name are shown at the top of the home screen.</p>
         <form id="farmForm" class="mt-4 space-y-3.5">
           <div>
             <label for="farmOwnerInput" class="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
@@ -2119,7 +2069,7 @@
       <div class="sheet-panel">
         <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
         <h2 id="protocolStartTitle" class="text-base font-bold text-slate-900 pr-16">Start Breeding Protocol</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Every injection and the AI become timed tasks in the Treatment list, with a reminder before each one. These are the usual timings: your vet decides the drugs, doses and protocol.</p>
+        <p class="text-xs text-slate-500 mt-0.5">Usual timings. Your vet decides the drugs and doses.</p>
         <form id="protocolStartForm" class="mt-4 space-y-3.5">
           <div class="space-y-3.5">
             <div>

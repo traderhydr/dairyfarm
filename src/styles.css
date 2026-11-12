@@ -867,3 +867,7 @@ body.dark-mode [class~="text-rose-900"] { color: #fda4af; }
 
 /* confirmations asked from inside a sheet (cancel a protocol) must sit above it */
 #confirmModal { z-index: 90; }
+
+/* less text: small explanatory sub-lines under the home numbers and lists are not needed */
+#incomeCountDisplay, #expenseCountDisplay, #wandaPaidSubDisplay, #totalCowsCountDisplay, #herdWachiSubDisplay,
+#txListSub { display: none; }

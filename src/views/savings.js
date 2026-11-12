@@ -72,7 +72,7 @@ function contributionForm(goal) {
       <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
         <label class="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
           <input type="checkbox" name="syncCashbook" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
-          <span>Also record in Cashbook (as a Savings expense)</span>
+          <span>Also add to Cashbook</span>
         </label>
         <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">+ Add to Goal</button>
       </div>

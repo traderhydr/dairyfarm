@@ -681,7 +681,6 @@ test.describe('pregnancy days in the AI section', () => {
   test('an unconfirmed AI counts days since AI; overdue is flagged', async ({ page }) => {
     await addCow(page, daysAgo(10), 'Awaiting PD Check');
     await expect(page.locator('[data-pregnancy-days]')).toContainText('Since AI: day 10 of 283');
-    await expect(page.locator('[data-pregnancy-days]')).toContainText('Not confirmed pregnant yet');
     await addCow(page, daysAgo(290), 'Confirmed Pregnant');
     await expect(page.locator('[data-pregnancy-days]').first()).toContainText('7 days overdue');
   });
@@ -1640,7 +1639,7 @@ test.describe('breeding protocols', () => {
   test('start Ovsynch from the profile: timed tasks appear in the Treatment list, progress shows in the profile', async ({ page }) => {
     await loadSample(page);
     await openProfile(page, 'Cow #14 (Rani)');
-    await expect(page.locator('[data-breeding-section]')).toContainText('No breeding protocols yet');
+    await expect(page.locator('[data-breeding-section]')).toContainText('No breeding protocols yet.');
     await page.locator('#profileSheet [data-protocol-start]').click();
     await expect(page.locator('#protocolStartSheet')).toBeVisible();
     await expect(page.locator('#protocolAnimals input:checked')).toHaveValue('Cow #14 (Rani)');   // preselected

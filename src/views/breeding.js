@@ -52,7 +52,6 @@ export function renderBreeding() {
             : progress.left === 0 ? 'Due today' : `${-progress.left} ${progress.left === -1 ? 'day' : 'days'} overdue`}</span>
         </div>
         <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full goal-fill rounded-full" style="width: ${progress.percent}%"></div></div>
-        ${confirmed ? '' : '<p class="text-[11px] text-slate-400">Not confirmed pregnant yet</p>'}
       </div>` : '';
 
     const card = document.createElement('div');
