@@ -11,8 +11,8 @@ describe('todayStr', () => {
 describe('pregnancyProgress', () => {
   const now = new Date(2026, 10, 7, 15, 30);
   it('counts whole days since AI and days left of the 283-day gestation', () => {
-    expect(pregnancyProgress('2026-11-07', now)).toEqual({ day: 0, left: 283, percent: 0 });
-    expect(pregnancyProgress('2026-08-15', now)).toEqual({ day: 84, left: 199, percent: 30 });
+    expect(pregnancyProgress('2026-11-07', now)).toMatchObject({ day: 0, left: 283, percent: 0 });
+    expect(pregnancyProgress('2026-08-15', now)).toMatchObject({ day: 84, left: 199, percent: 30 });
   });
   it('goes negative on days left once overdue and caps the percent at 100', () => {
     const p = pregnancyProgress('2025-11-07', now);
@@ -30,27 +30,45 @@ describe('pregnancyProgress', () => {
   });
 });
 
-import { pregnancyMonths } from '../../src/lib/dates.js';
+import { calendarDiff, durationText, pregnancyTexts } from '../../src/lib/dates.js';
 
-describe('pregnancyMonths', () => {
-  const months = (aiDate, gestation, now) => pregnancyMonths(pregnancyProgress(aiDate, now, gestation), gestation);
-  const now = new Date(2026, 10, 12, 10, 0);
-  it('counts the month she is in and the months to go (cow 9 months, buffalo 10)', () => {
-    expect(months('2026-11-12', 283, now)).toMatchObject({ month: 1, total: 9, toCalving: '9 months to calving' });
-    expect(months('2026-08-04', 283, now)).toMatchObject({ month: 4, total: 9, toCalving: '6 months to calving' });   // day 100
-    expect(months('2026-08-04', 310, now)).toMatchObject({ month: 4, total: 10, toCalving: '7 months to calving' });
+describe('months and days', () => {
+  const d = (y, m, day) => new Date(y, m - 1, day);
+  it('calendarDiff counts whole calendar months and the days left over', () => {
+    expect(calendarDiff(d(2026, 1, 10), d(2026, 7, 22))).toEqual({ months: 6, days: 12 });
+    expect(calendarDiff(d(2026, 1, 10), d(2026, 1, 10))).toEqual({ months: 0, days: 0 });
+    expect(calendarDiff(d(2026, 1, 31), d(2026, 2, 28))).toEqual({ months: 1, days: 0 });     // short months clamp
+    expect(calendarDiff(d(2026, 11, 20), d(2027, 2, 5))).toEqual({ months: 2, days: 16 });
+    expect(calendarDiff(d(2026, 3, 15), d(2026, 4, 14))).toEqual({ months: 0, days: 30 });
   });
-  it('says "Due this month", "Due today", "Overdue" near and after the date', () => {
-    expect(months('2026-02-08', 283, now).toCalving).toBe('Due this month');     // 11 days left
-    expect(months('2026-02-01', 283, now).toCalving).toBe('Overdue');            // 7 days past
-    expect(months('2025-12-01', 283, now)).toMatchObject({ toCalving: '2 months overdue', overdue: true });
-    expect(pregnancyMonths({ day: 283, left: 0, percent: 100 }, 283).toCalving).toBe('Due today');
+  it('durationText says both, singular or plural, and drops a zero part', () => {
+    expect(durationText({ months: 6, days: 12 })).toBe('6 months 12 days');
+    expect(durationText({ months: 1, days: 1 })).toBe('1 month 1 day');
+    expect(durationText({ months: 2, days: 0 })).toBe('2 months');
+    expect(durationText({ months: 0, days: 9 })).toBe('9 days');
+    expect(durationText({ months: 0, days: 0 })).toBe('0 days');
   });
-  it('never shows a month beyond the last one and says "1 month" in the singular', () => {
-    expect(months('2025-01-01', 283, now).month).toBe(9);
-    expect(pregnancyMonths({ day: 250, left: 33, percent: 88 }, 283).toCalving).toBe('1 month to calving');
+  it('a pregnancy gets elapsed, remaining and overdue spans', () => {
+    const now = new Date(2026, 6, 22, 10, 0);
+    const p = pregnancyProgress('2026-01-10', now, 283);
+    expect(p).toMatchObject({ day: 193, left: 90, elapsed: { months: 6, days: 12 } });
+    expect(p.remaining).toEqual(calendarDiff(new Date(2026, 6, 22), new Date(2026, 9, 20)));   // 10 Jan + 283 days = 20 Oct
+    expect(p.overdueBy).toBeNull();
+    const late = pregnancyProgress('2025-12-01', new Date(2026, 10, 12), 283);                  // due 10 Sep 2026
+    expect(late.overdueBy).toEqual({ months: 2, days: 2 });
+    expect(late.remaining).toBeNull();
   });
-  it('has a short form for the AI form preview', () => {
-    expect(months('2026-08-04', 283, now).left).toBe('6 months left');
+  it('pregnancyTexts: "6 months 12 days", "3 months to calving", due today, overdue', () => {
+    const now = new Date(2026, 6, 22, 10, 0);
+    expect(pregnancyTexts(pregnancyProgress('2026-01-10', now, 283))).toEqual({
+      elapsed: '6 months 12 days', toCalving: '2 months 28 days to calving', left: '2 months 28 days left', overdue: false
+    });
+    expect(pregnancyTexts(pregnancyProgress('2026-01-10', new Date(2026, 9, 20), 283)).toCalving).toBe('Due today');
+    const late = pregnancyTexts(pregnancyProgress('2026-01-10', new Date(2026, 9, 27), 283));
+    expect(late).toMatchObject({ toCalving: 'Overdue by 7 days', left: 'overdue by 7 days', overdue: true });
+  });
+  it('a buffalo is due later than a cow for the same AI date', () => {
+    const now = new Date(2026, 9, 1);
+    expect(pregnancyTexts(pregnancyProgress('2026-01-10', now, 283)).toCalving).not.toBe(pregnancyTexts(pregnancyProgress('2026-01-10', now, 310)).toCalving);
   });
 });

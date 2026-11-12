@@ -1,6 +1,6 @@
 import { buildProfile, listAnimals, speciesOfRecord } from '../lib/animals.js';
 import { herdCounts } from '../lib/herd.js';
-import { pregnancyMonths, pregnancyProgress } from '../lib/dates.js';
+import { pregnancyProgress, pregnancyTexts } from '../lib/dates.js';
 import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
@@ -33,9 +33,9 @@ function statusChip(p) {
   if (p.sold) return chip(p.soldAsCalf ? 'Sold with mother' : 'Sold', 'bg-rose-50 text-rose-700 border-rose-200');
   if ((p.protocols || []).some((x) => x.status === 'Active')) return chip('In breeding protocol', 'bg-amber-50 text-amber-900 border-amber-200');
   const prog = p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' ? pregnancyProgress(p.pregnancy.aiDate, undefined, gestationDays(speciesOfRecord(state, p.pregnancy))) : null;
-  if (prog) return chip(`Pregnant · month ${pregnancyMonths(prog, gestationDays(speciesOfRecord(state, p.pregnancy))).month}`, 'bg-emerald-50 text-emerald-800 border-emerald-200');
+  if (prog) return chip(`Pregnant · ${pregnancyTexts(prog).elapsed}`, 'bg-emerald-50 text-emerald-800 border-emerald-200');
   const bred = p.pregnancy && p.pregnancy.pregStatus === 'Awaiting PD Check' ? pregnancyProgress(p.pregnancy.aiDate, undefined, gestationDays(speciesOfRecord(state, p.pregnancy))) : null;
-  if (bred && p.pregnancy.protocolId) return chip(`Inseminated · month ${pregnancyMonths(bred, gestationDays(speciesOfRecord(state, p.pregnancy))).month}`, 'bg-amber-50 text-amber-900 border-amber-200');
+  if (bred && p.pregnancy.protocolId) return chip(`Inseminated · ${pregnancyTexts(bred).elapsed}`, 'bg-amber-50 text-amber-900 border-amber-200');
   if (p.goat || p.horse) return chip(escapeHtml(p.record.status || (p.horse ? 'Active' : 'In flock')), p.inHerd ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-rose-50 text-rose-700 border-rose-200');
   return p.inHerd ? chip('In herd') : chip('Not in herd list');
 }
@@ -148,7 +148,7 @@ function pregnancyPanel(p) {
         <p class="font-bold text-sm text-emerald-900">${escapeHtml(r.pregStatus)}</p>
         <span class="text-emerald-800">Calving ${addDays(r.aiDate, gestation)}</span>
       </div>
-      ${prog ? `<p class="text-emerald-900">${confirmed ? 'Pregnant' : 'Since AI'}: month ${pregnancyMonths(prog, gestation).month} of ${pregnancyMonths(prog, gestation).total} · ${pregnancyMonths(prog, gestation).toCalving}</p>
+      ${prog ? `<p class="text-emerald-900">${confirmed ? 'Pregnant' : 'Since AI'}: ${pregnancyTexts(prog).elapsed} · ${pregnancyTexts(prog).toCalving}</p>
       <div class="w-full h-1.5 bg-white rounded-full overflow-hidden"><div class="h-full goal-fill rounded-full" style="width: ${prog.percent}%"></div></div>` : ''}
     </div>`;
 }

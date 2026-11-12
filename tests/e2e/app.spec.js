@@ -669,22 +669,22 @@ test.describe('pregnancy days in the AI section', () => {
     await page.locator('#tabBreedingBtn').evaluate((el) => el.click());
     await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
     await fill(page, 'aiDate', daysAgo(100));
-    await expect(page.locator('#previewPregDays')).toHaveText('Month 4 of 9 (6 months left)');
+    await expect(page.locator('#previewPregDays')).toHaveText(/^3 months \d+ days \(\d+ months \d+ days left\)$/);
   });
 
-  test('a confirmed pregnancy shows its month, months to calving and a progress bar', async ({ page }) => {
+  test('a confirmed pregnancy shows months and days, the time to calving and a progress bar', async ({ page }) => {
     await addCow(page, daysAgo(100), 'Confirmed Pregnant');
     const box = page.locator('[data-pregnancy-days]');
-    await expect(box).toContainText('Pregnant: month 4 of 9');
-    await expect(box).toContainText('6 months to calving');
+    await expect(box).toContainText(/Pregnant: 3 months \d+ days/);
+    await expect(box).toContainText(/\d+ months \d+ days to calving/);
     await expect(box.locator('.goal-fill')).toHaveCSS('width', /.+/);
   });
 
-  test('an unconfirmed AI counts months since AI; overdue is flagged', async ({ page }) => {
+  test('an unconfirmed AI counts days since AI; overdue is flagged', async ({ page }) => {
     await addCow(page, daysAgo(10), 'Awaiting PD Check');
-    await expect(page.locator('[data-pregnancy-days]')).toContainText('Since AI: month 1 of 9');
+    await expect(page.locator('[data-pregnancy-days]')).toContainText('Since AI: 10 days');
     await addCow(page, daysAgo(290), 'Confirmed Pregnant');
-    await expect(page.locator('[data-pregnancy-days]').first()).toContainText('Overdue');
+    await expect(page.locator('[data-pregnancy-days]').first()).toContainText('Overdue by 7 days');
   });
 
   test('no pregnancy days for repeat or calved cows', async ({ page }) => {
@@ -2095,7 +2095,7 @@ test.describe('buffaloes and herd counts', () => {
     await submit(page, 'breedingForm');
     const card = page.locator('#breedingListContainer > div').first();
     await expect(card).toContainText('16 Nov 2026');
-    await expect(card).toContainText('of 10');
+    await expect(card).toContainText(/Pregnant: \d+ months/);
     // the same date for a cow is 283 days
     await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
     await fill(page, 'cowTag', 'Cow #99');
@@ -2105,7 +2105,7 @@ test.describe('buffaloes and herd counts', () => {
     await page.keyboard.press('Escape');
     await tab(page, 'tabAnimalsBtn');
     await page.locator('#animalsListContainer [data-open-profile="Buffalo #03 (Kali)"]').click();
-    await expect(page.locator('#profileBody')).toContainText('of 10');
+    await expect(page.locator('#profileBody')).toContainText(/Pregnant: \d+ months/);
     await expect(page.locator('#profileBody')).toContainText('16 Nov 2026');
   });
 

@@ -96,15 +96,17 @@ export const PATTERNS = [
   [/^Feed & care Rs\. (.+)\/month$/, 'خوراک اور دیکھ بھال روپے $1/ماہ'],
   [/^e\.g\. (.+)$/, 'مثلاً $1'],
   [/^Hi, (.+)$/, 'السلام علیکم، $1'],
-  // pregnancy counted in months
-  [/^(Pregnant): month (\d+) of (\d+)$/, 'حاملہ: مہینہ $2 از $3'],
-  [/^(Since AI): month (\d+) of (\d+)$/, 'اے آئی کے بعد: مہینہ $2 از $3'],
-  [/^Month (\d+) of (\d+) \((.+)\)$/, 'مہینہ $1 از $2 ($3)'],
-  [/^(\d+) months? to calving$/, 'بچھڑے میں $1 مہینے باقی'],
-  [/^(\d+) months? left$/, '$1 مہینے باقی'],
-  [/^(\d+) months? overdue$/, '$1 مہینے تاخیر'],
-  [/^Pregnant · month (\d+)$/, 'حاملہ · مہینہ $1'],
-  [/^Inseminated · month (\d+)$/, 'اے آئی شدہ · مہینہ $1'],
+  // pregnancy in months and days
+  [/^(\d+) months? (\d+) days?$/, '$1 مہینے $2 دن'],
+  [/^(\d+) months?$/, '$1 مہینے'],
+  [/^(\d+) days?$/, '$1 دن'],
+  [/^(Pregnant|Since AI): (.+)$/, '$1: $2'],
+  [/^(.+) to calving$/, 'بچھڑے میں $1 باقی'],
+  [/^Overdue by (.+)$/, 'تاخیر: $1'],
+  [/^overdue by (\d+) months?( \d+ days?)?$/, 'تاخیر: $1 مہینے$2'],
+  [/^(\d+ months?(?: \d+ days?)?|\d+ days?) left$/, '$1 باقی'],
+  [/^(.+) \((.+ left|due today|overdue by .+)\)$/, '$1 ($2)'],
+  [/^(Pregnant|Inseminated) · (.+)$/, '$1 · $2'],
 
   // breeding protocols
   [/^Step (\d+) of (\d+): (.+) — (due .+|overdue .+)$/, 'مرحلہ $1 از $2: $3 — $4'],

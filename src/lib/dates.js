@@ -24,10 +24,33 @@ export function addDaysDate(str, days) {
 
 export const GESTATION_DAYS = 283;
 
+const addMonthsClamped = (date, months) => {
+  const target = new Date(date.getFullYear(), date.getMonth() + months, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  return new Date(target.getFullYear(), target.getMonth(), Math.min(date.getDate(), lastDay));
+};
+
+/** Whole calendar months and the days left over between two dates (from <= to). */
+export function calendarDiff(from, to) {
+  let months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+  if (addMonthsClamped(from, months) > to) months -= 1;
+  const days = Math.round((to - addMonthsClamped(from, months)) / 86400000);
+  return { months: Math.max(0, months), days };
+}
+
+/** "3 months 12 days", "2 months", "12 days": both, the way farmers say it. */
+export function durationText({ months, days }) {
+  const parts = [];
+  if (months) parts.push(`${months} ${months === 1 ? 'month' : 'months'}`);
+  if (days || !months) parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
+  return parts.join(' ');
+}
+
 /**
  * How far along a pregnancy is, counted from the AI date.
  * `day` is the number of days since AI (0 on the AI day); null if the date is missing/invalid or in the future.
  * `left` is days until the expected calving date (negative once overdue).
+ * `elapsed`, `remaining` (while she is not yet due) and `overdueBy` are the same spans as months and days.
  */
 export function pregnancyProgress(aiDate, now = new Date(), gestation = GESTATION_DAYS) {
   const start = parseLocalDate(aiDate);
@@ -35,30 +58,25 @@ export function pregnancyProgress(aiDate, now = new Date(), gestation = GESTATIO
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const day = Math.round((today - start) / 86400000);
   if (day < 0) return null;
+  const due = new Date(start.getFullYear(), start.getMonth(), start.getDate() + gestation);
+  const left = gestation - day;
   return {
     day,
-    left: gestation - day,
-    percent: Math.max(0, Math.min(100, Math.round((day / gestation) * 100)))
+    left,
+    percent: Math.max(0, Math.min(100, Math.round((day / gestation) * 100))),
+    elapsed: calendarDiff(start, today),
+    remaining: left > 0 ? calendarDiff(today, due) : null,
+    overdueBy: left < 0 ? calendarDiff(due, today) : null
   };
 }
 
-export const DAYS_PER_MONTH = 30.4375;
-
-/**
- * The same pregnancy progress in months, the way farmers count it ("month 4 of 9", "6 months to calving").
- * `progress` is the result of pregnancyProgress(); `gestation` is the species' days (283 cow, 310 buffalo).
- */
-export function pregnancyMonths(progress, gestation = GESTATION_DAYS) {
-  const total = Math.round(gestation / DAYS_PER_MONTH);
-  const month = Math.min(total, Math.floor(progress.day / DAYS_PER_MONTH) + 1);
-  const n = (days) => Math.max(1, Math.round(days / DAYS_PER_MONTH));
-  const plural = (count) => `${count} ${count === 1 ? 'month' : 'months'}`;
+/** The words for a progress: how long she has been pregnant, and how long to go (months and days). */
+export function pregnancyTexts(progress) {
+  const elapsed = durationText(progress.elapsed);
   let toCalving;
   let left;
-  if (progress.left > 30) { toCalving = `${plural(n(progress.left))} to calving`; left = `${plural(n(progress.left))} left`; }
-  else if (progress.left > 0) { toCalving = 'Due this month'; left = 'due this month'; }
+  if (progress.left > 0) { toCalving = `${durationText(progress.remaining)} to calving`; left = `${durationText(progress.remaining)} left`; }
   else if (progress.left === 0) { toCalving = 'Due today'; left = 'due today'; }
-  else if (-progress.left > 30) { toCalving = `${plural(n(-progress.left))} overdue`; left = `${plural(n(-progress.left))} overdue`; }
-  else { toCalving = 'Overdue'; left = 'overdue'; }
-  return { month, total, toCalving, left, overdue: progress.left < 0 };
+  else { toCalving = `Overdue by ${durationText(progress.overdueBy)}`; left = `overdue by ${durationText(progress.overdueBy)}`; }
+  return { elapsed, toCalving, left, overdue: progress.left < 0 };
 }

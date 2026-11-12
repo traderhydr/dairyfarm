@@ -11,10 +11,12 @@ describe('translate', () => {
   it('translates strings that contain numbers', () => {
     expect(translate('12 Months')).toBe('12 مہینے');
     expect(translate('3 entries')).toBe('3 اندراجات');
-    expect(translate('Pregnant: month 3 of 9')).toBe('حاملہ: مہینہ 3 از 9');
-    expect(translate('7 months to calving')).toBe('بچھڑے میں 7 مہینے باقی');
-    expect(translate('Due this month')).toBe('اس مہینے واجب');
-    expect(translate('Month 4 of 10 (6 months left)')).toBe('مہینہ 4 از 10 (6 مہینے باقی)');
+    expect(translate('Pregnant: 6 months 12 days')).toBe('حاملہ: 6 مہینے 12 دن');
+    expect(translate('3 months 18 days to calving')).toBe('بچھڑے میں 3 مہینے 18 دن باقی');
+    expect(translate('12 days to calving')).toBe('بچھڑے میں 12 دن باقی');
+    expect(translate('Since AI: 9 days')).toBe('اے آئی کے بعد: 9 دن');
+    expect(translate('Overdue by 2 months 5 days')).toBe('تاخیر: 2 مہینے 5 دن');
+    expect(translate('6 months 12 days (3 months 18 days left)')).toBe('6 مہینے 12 دن (3 مہینے 18 دن باقی)');
     expect(translate('12.5 L/day')).toBe('12.5 لیٹر روزانہ');
     expect(translate('+ Rs. 12,000 Profit')).toBeNull;   // amounts keep Rs.
   });
@@ -56,7 +58,7 @@ describe('breeding protocol texts', () => {
   it('translates date-times and result lines', () => {
     expect(translate('13 Nov, 8:00 AM')).toBe('13 Nov، 8:00 صبح');
     expect(translate('Done 13 Nov, 8:05 AM')).toBe('مکمل: 13 Nov، 8:05 صبح');
-    expect(translate('Inseminated · month 2')).toBe('اے آئی شدہ · مہینہ 2');
+    expect(translate('Inseminated · 1 month 3 days')).toBe('اے آئی شدہ · 1 مہینے 3 دن');
     expect(translate('Cancel the Ovsynch protocol?')).toBe('Ovsynch پروٹوکول منسوخ کریں؟');
   });
 });

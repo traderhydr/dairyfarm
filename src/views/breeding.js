@@ -1,5 +1,5 @@
 import { speciesOfRecord, speciesOfTag } from '../lib/animals.js';
-import { pregnancyMonths, pregnancyProgress, todayStr } from '../lib/dates.js';
+import { pregnancyProgress, pregnancyTexts, todayStr } from '../lib/dates.js';
 import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { addDays, escapeHtml, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
@@ -47,12 +47,12 @@ export function renderBreeding() {
       ? null
       : pregnancyProgress(record.aiDate, undefined, gestation);
     const confirmed = record.pregStatus === 'Confirmed Pregnant';
-    const months = progress ? pregnancyMonths(progress, gestation) : null;
+    const texts = progress ? pregnancyTexts(progress) : null;
     const progressHtml = progress ? `
       <div class="bg-white p-2.5 rounded-lg border border-slate-200/80 space-y-1.5" data-pregnancy-days>
         <div class="flex items-baseline justify-between gap-2">
-          <span class="text-xs font-bold text-slate-800">${confirmed ? 'Pregnant' : 'Since AI'}: month ${months.month} of ${months.total}</span>
-          <span class="text-xs font-semibold ${months.overdue ? 'text-rose-600' : 'text-emerald-700'}">${months.toCalving}</span>
+          <span class="text-xs font-bold text-slate-800">${confirmed ? 'Pregnant' : 'Since AI'}: ${texts.elapsed}</span>
+          <span class="text-xs font-semibold ${texts.overdue ? 'text-rose-600' : 'text-emerald-700'}">${texts.toCalving}</span>
         </div>
         <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full goal-fill rounded-full" style="width: ${progress.percent}%"></div></div>
       </div>` : '';
@@ -121,7 +121,7 @@ export function updateBreedingPreview() {
   document.getElementById('previewCalvingDate').textContent = addDays(dateVal, gestation);
   const progress = pregnancyProgress(dateVal, undefined, gestation);
   document.getElementById('previewPregDays').textContent = progress
-    ? (() => { const m = pregnancyMonths(progress, gestation); return `Month ${m.month} of ${m.total} (${m.left})`; })()
+    ? (() => { const t = pregnancyTexts(progress); return `${t.elapsed} (${t.left})`; })()
     : '—';
 }
 
