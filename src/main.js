@@ -22,6 +22,9 @@ import { initLedgers, renderLedgers } from './views/ledgers.js';
 import { initFarm, renderFarm } from './views/farm.js';
 import { initCrops, renderCrops } from './views/crops.js';
 import { initLands, renderLands } from './views/lands.js';
+import { initTextSize } from './ui/textsize.js';
+import { initConfirmDelete } from './ui/confirm-delete.js';
+import { initQuick } from './views/quick.js';
 import { initI18n } from './i18n/index.js';
 import { initMode } from './ui/mode.js';
 import { initGoats, renderGoats } from './views/goats.js';
@@ -107,6 +110,9 @@ function boot() {
   initDataManagement();
   initModal();
   initMode();
+  initTextSize();
+  initConfirmDelete();
+  initQuick();
   initI18n();
   document.addEventListener('langchange', renderAll);
   // Accounts + cloud sync are only bundled when the build has a Supabase project configured.

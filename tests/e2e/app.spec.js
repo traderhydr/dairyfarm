@@ -169,7 +169,7 @@ test.describe('layout', () => {
   });
 
   test('bottom navigation has short labels and More opens the menu', async ({ page }) => {
-    const labels = await page.locator('nav[aria-label="Farm Modules"] .nav-item span:not(.nav-badge)').allTextContents();
+    const labels = await page.locator('nav[aria-label="Farm Modules"] .nav-item span:not(.nav-badge):not(.nav-ico)').allTextContents();
     expect(labels).toEqual(['Cashbook', 'Animals', 'Cow AI', 'Wanda', 'More']);
     await page.locator('#openMoreBtn').click();
     await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
@@ -313,8 +313,10 @@ test.describe('savings goals', () => {
     await addGoal(page, { name: 'Temp', target: 1000 });
     await contribute(page, 400);
     await page.locator('[data-delete-contribution]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await expect(page.locator('[data-goal-saved]')).toHaveText('Rs. 0');
     await page.locator('[data-delete-goal]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await expect(page.locator('[data-goal]')).toHaveCount(0);
     await expect(page.locator('#savingsEmptyState')).toBeVisible();
   });
@@ -981,6 +983,7 @@ test.describe('goats, sheep and horses', () => {
     await expect(page.locator('#goatsListContainer')).toContainText('No matches');
     await fill(page, 'goatsSearch', '');
     await page.locator('[data-delete-goat]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await expect(page.locator('#goatsEmptyState')).toBeVisible();
   });
 
@@ -1009,6 +1012,7 @@ test.describe('goats, sheep and horses', () => {
     await submit(page, 'horseForm');
     expect((await read(page, 'dairy_farm_v1_horses'))[0].name).toBe('Raja Jr');
     await page.locator('[data-delete-horse]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await expect(page.locator('#horsesEmptyState')).toBeVisible();
   });
 
@@ -1243,7 +1247,9 @@ test.describe('crops and land record', () => {
     expect((await read(page, 'dairy_farm_v1_crops'))[0].status).toBe('Harvested');
 
     await body.locator('[data-del-harvest]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await body.locator('[data-del-line]').first().click();
+    await page.locator('#modalConfirmBtn').click();
     await expect(body.locator('#cropDetailHero')).toContainText('Rs. 0');
     await body.locator('[data-crop-action="status"]').click();
     expect((await read(page, 'dairy_farm_v1_crops'))[0].status).toBe('Growing');
@@ -1293,6 +1299,7 @@ test.describe('crops and land record', () => {
     await crops(page);
     await page.locator('#cropNav #tabLandsBtn').click();
     await page.locator('[data-delete-land="land-1"]').click();
+    await page.locator('#modalConfirmBtn').click();
     const wheat = (await read(page, 'dairy_farm_v1_crops')).find((c) => c.id === 'crop-1');
     expect(wheat.landId).toBeUndefined();
     expect(wheat.landName).toBe('Canal-side field');
@@ -1323,12 +1330,12 @@ test.describe('Urdu and English', () => {
     await expect(page.locator('#languageGate')).toBeHidden();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
-    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('کیش بک');
+    await expect(page.locator('#tabFinanceBtn span:not(.nav-ico):not(.nav-badge)').first()).toHaveText('کیش بک');
     await expect(page.locator('#langToggleBtn')).toHaveText('English');
     await page.reload();
     await expect(page.locator('#languageGate')).toBeHidden();
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('کیش بک');
+    await expect(page.locator('#tabFinanceBtn span:not(.nav-ico):not(.nav-badge)').first()).toHaveText('کیش بک');
   });
 
   test('choosing English keeps the app in English and the screen does not come back', async ({ page }) => {
@@ -1336,7 +1343,7 @@ test.describe('Urdu and English', () => {
     await page.locator('[data-choose-lang="en"]').click();
     await expect(page.locator('#languageGate')).toBeHidden();
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
-    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('Cashbook');
+    await expect(page.locator('#tabFinanceBtn span:not(.nav-ico):not(.nav-badge)').first()).toHaveText('Cashbook');
     await page.reload();
     await expect(page.locator('#languageGate')).toBeHidden();
   });
@@ -1353,7 +1360,7 @@ test.describe('Urdu and English', () => {
     await page.locator('#langToggleBtn').click();
     await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
     await expect(page.locator('#txListBody')).toContainText('Milk Sale');
-    await expect(page.locator('#tabFinanceBtn span').first()).toHaveText('Cashbook');
+    await expect(page.locator('#tabFinanceBtn span:not(.nav-ico):not(.nav-badge)').first()).toHaveText('Cashbook');
   });
 
   test('everything keeps working in Urdu: add an entry, a toast in Urdu, new rows are translated', async ({ page }) => {
@@ -1818,5 +1825,103 @@ test.describe('breeding protocols in Urdu', () => {
     await tab(page, 'tabHealthBtn');
     await page.locator('#healthFilter [data-hfilter="protocol"]').click();
     await expect(page.locator('[data-protocol-task-card]').first()).toContainText('بریڈنگ پروٹوکول');
+  });
+});
+
+
+test.describe('easy to use for every farmer', () => {
+  test('big picture buttons on the home screen open the right form in one tap', async ({ page }) => {
+    await expect(page.locator('#quickActions .quick-tile')).toHaveCount(6);
+    await page.locator('[data-quick="expense"]').click();
+    await expect(page.locator('#financeSheet')).toBeVisible();
+    await expect(page.locator('#txType')).toHaveValue('expense');
+    await expect(page.locator('#txAmount')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await page.locator('[data-quick="income"]').click();
+    await expect(page.locator('#txType')).toHaveValue('income');
+    await expect(page.locator('#txCategory')).toHaveValue('Milk Sale');
+    await page.keyboard.press('Escape');
+    await page.locator('[data-quick="ai"]').click();
+    await expect(page.locator('#breedingSheet')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('[data-quick="medicine"]').click();
+    await expect(page.locator('#healthSheet')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('[data-quick="milk"]').click();
+    await expect(page.locator('#milkersSection')).toBeVisible();
+    await expect(page.locator('#quickActions')).toBeHidden();                              // only on the home screen
+  });
+
+  test('a quick income entry really saves', async ({ page }) => {
+    await page.locator('[data-quick="income"]').click();
+    await fill(page, 'txAmount', '2500');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#totalIncomeDisplay')).toHaveText('Rs. 2,500');
+  });
+
+  test('every menu item and nav button has a picture', async ({ page }) => {
+    await expect(page.locator('#farmNav .nav-ico')).toHaveCount(4);
+    await expect(page.locator('#sideMenuDrawer .drawer-ico')).toHaveCount(8);
+    await expect(page.locator('#overviewSection .kpi-ico')).toHaveCount(6);
+    await tab(page, 'tabWandaBtn');
+    await expect(page.locator('#wandaSection .h-ico').first()).toBeVisible();
+  });
+
+  test('the Aa button makes the text bigger, twice, then back, and remembers it', async ({ page }) => {
+    const size = () => page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
+    expect(await size()).toBe(16);
+    await page.locator('#textSizeBtn').click();
+    expect(await size()).toBe(18);
+    await page.locator('#textSizeBtn').click();
+    expect(await size()).toBe(20);
+    await page.reload();
+    expect(await size()).toBe(20);
+    await page.locator('#textSizeBtn').click();
+    expect(await size()).toBe(16);
+    await expect(page.locator('html')).not.toHaveAttribute('data-textsize', /.+/);
+  });
+
+  test('no horizontal scrolling at the biggest text size', async ({ page }) => {
+    await loadSample(page);
+    await page.locator('#textSizeBtn').click();
+    await page.locator('#textSizeBtn').click();
+    for (const id of ['tabFinanceBtn', 'tabAnimalsBtn', 'tabBreedingBtn', 'tabWandaBtn', 'tabMilkersBtn']) {
+      await tab(page, id);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth), id).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test('every Delete asks first; "No" keeps the record, "Yes" removes it', async ({ page }) => {
+    await fill(page, 'txAmount', '900');
+    await submit(page, 'financeForm');
+    await expect(page.locator('#txListBody tr')).toHaveCount(1);
+    await page.locator('[data-delete-tx]').first().click();
+    await expect(page.locator('#confirmModal')).toBeVisible();
+    await expect(page.locator('#modalTitle')).toHaveText('Delete this?');
+    await page.locator('#modalCancelBtn').click();
+    await expect(page.locator('#txListBody tr')).toHaveCount(1);
+    await page.locator('[data-delete-tx]').first().click();
+    await page.locator('#modalConfirmBtn').click();
+    await expect(page.locator('#txListBody tr')).toHaveCount(0);
+  });
+
+  test('removing a payment or an installment also asks first', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabWandaBtn');
+    const before = (await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_wanda'))[0].installments.length));
+    await page.locator('[data-delete-inst]').first().click();
+    await expect(page.locator('#confirmModal')).toBeVisible();
+    await page.locator('#modalCancelBtn').click();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_wanda'))[0].installments.length)).toBe(before);
+  });
+
+  test('the pictures and big buttons work in Urdu', async ({ page }) => {
+    await page.locator('#langToggleBtn').click();
+    await expect(page.locator('[data-quick="expense"]')).toContainText('خرچ');
+    await expect(page.locator('[data-quick="milk"]')).toContainText('دودھ');
+    await page.locator('[data-quick="medicine"]').click();
+    await expect(page.locator('#healthSheet')).toBeVisible();
   });
 });

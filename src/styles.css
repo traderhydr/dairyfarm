@@ -363,10 +363,12 @@ details.insights > summary::-webkit-details-marker { display: none; }
 details.insights[open] > summary { border-bottom: 1px solid var(--border); }
 
 /* overview + reminders belong on the Cashbook (home) tab only */
+body:not([data-tab="finance"]) #quickActions,
 body:not([data-tab="finance"]) #farmCard,
 body:not([data-tab="finance"]) #overviewSection,
 body:not([data-tab="finance"]) #farmAlertsSection { display: none; }
 /* an open ledger replaces the all-ledgers overview and reminders */
+body.ledger-open #quickActions,
 body.ledger-open #farmCard,
 body.ledger-open #overviewSection,
 body.ledger-open #farmAlertsSection { display: none; }
@@ -871,3 +873,36 @@ body.dark-mode [class~="text-rose-900"] { color: #fda4af; }
 /* less text: small explanatory sub-lines under the home numbers and lists are not needed */
 #incomeCountDisplay, #expenseCountDisplay, #wandaPaidSubDisplay, #totalCowsCountDisplay, #herdWachiSubDisplay,
 #txListSub { display: none; }
+
+/* ------------------------------------------------------------------ farmer-friendly: pictograms, big buttons, text size */
+.nav-ico, .drawer-ico, .h-ico, .kpi-ico, .quick-ico {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-style: normal; line-height: 1;
+}
+.nav-ico { display: block; font-size: 1.5rem; padding: 0.15rem 0.9rem; border-radius: 999px; }
+.nav-item.is-active .nav-ico { background: var(--surface-2); }
+.drawer-ico { font-size: 1.25rem; width: 1.6rem; text-align: center; }
+.h-ico { font-size: 1.25rem; margin-inline-end: 0.45rem; vertical-align: -0.1em; }
+.kpi-ico { font-size: 1.25rem; }
+.quick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.quick-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem;
+  min-height: 5.25rem; padding: 0.7rem 0.3rem; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  font-weight: 600; font-size: 0.95rem; text-align: center; line-height: 1.2;
+}
+.quick-tile:hover { background: var(--surface-2); }
+.quick-ico { font-size: 2rem; }
+.sheet-panel button.text-xs, .list-card button.text-xs { min-height: 2.25rem; }
+.sheet-panel select, .sheet-panel input:not([type="checkbox"]):not([type="radio"]) { min-height: 2.75rem; }
+
+/* bigger text: the whole app scales (sizes are in rem) */
+html[data-textsize="large"] { font-size: 18px; }
+html[data-textsize="xlarge"] { font-size: 20px; }
+html.lang-ur[data-textsize="large"] { font-size: 19px; }
+html.lang-ur[data-textsize="xlarge"] { font-size: 21px; }
+#textSizeBtn { min-width: 2.5rem; }
+html[data-textsize="large"] #textSizeBtn, html[data-textsize="xlarge"] #textSizeBtn { background: var(--primary); color: var(--primary-text); }
+
+.kpi-card p.font-extrabold { white-space: nowrap; }
+html[data-textsize="large"] .kpi-card p.font-extrabold, html[data-textsize="xlarge"] .kpi-card p.font-extrabold { font-size: 1.1rem; }
