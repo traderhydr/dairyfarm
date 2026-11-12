@@ -1,4 +1,5 @@
 import { escapeHtml } from '../lib/format.js';
+import { normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
@@ -42,7 +43,7 @@ export function renderWachi() {
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(wachi.tag)}</h3>
+            <h3 class="font-bold text-slate-900 text-sm"><span aria-hidden="true">${speciesEmoji(wachi.species)}</span> ${escapeHtml(wachi.tag)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeStyle}">${escapeHtml(wachi.stage)}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">Breed / Mother: <span class="font-medium text-slate-700">${escapeHtml(wachi.breed)}</span></p>
@@ -90,7 +91,7 @@ export function initWachi() {
   initListSearch('wachiSearch', renderWachi);
   const editor = createEditor({ sheetId: 'wachiSheet', formId: 'wachiForm', editTitle: 'Edit Wachi (Heifer)' });
   const startEdit = (w) => editor.begin(w.id, () => {
-    setField('wachiTag', w.tag); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
+    setField('wachiTag', w.tag); setField('wachiSpecies', normalizeSpecies(w.species)); setField('wachiBreed', w.breed); setField('wachiAge', w.ageMonths);
     setField('wachiWeight', w.weightKg); setField('wachiStage', w.stage); setField('wachiNotes', w.notes); setField('wachiDam', w.damTag);
   });
   document.addEventListener('animal-edit', (e) => {
@@ -108,12 +109,13 @@ export function initWachi() {
     const stage = document.getElementById('wachiStage').value;
     const notes = document.getElementById('wachiNotes').value.trim();
     const damTag = document.getElementById('wachiDam').value.trim();
+    const species = normalizeSpecies(document.getElementById('wachiSpecies').value);
 
     if (!tag || !breed || ageMonths <= 0 || weightKg <= 0) return;
 
     const existing = editor.find(state.wachiList);
     if (existing) {
-      Object.assign(existing, { tag, breed, ageMonths, weightKg, stage, notes, damTag });
+      Object.assign(existing, { tag, species, breed, ageMonths, weightKg, stage, notes, damTag });
       if (!damTag) delete existing.damTag;
       commit();
       showToast('Wachi updated!');
@@ -123,6 +125,7 @@ export function initWachi() {
     state.wachiList.unshift({
       id: 'wachi-' + Date.now(),
       tag,
+      species,
       breed,
       ageMonths,
       weightKg,

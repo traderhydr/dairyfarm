@@ -363,11 +363,13 @@ details.insights > summary::-webkit-details-marker { display: none; }
 details.insights[open] > summary { border-bottom: 1px solid var(--border); }
 
 /* overview + reminders belong on the Cashbook (home) tab only */
+body:not([data-tab="finance"]) #herdCard,
 body:not([data-tab="finance"]) #quickActions,
 body:not([data-tab="finance"]) #farmCard,
 body:not([data-tab="finance"]) #overviewSection,
 body:not([data-tab="finance"]) #farmAlertsSection { display: none; }
 /* an open ledger replaces the all-ledgers overview and reminders */
+body.ledger-open #herdCard,
 body.ledger-open #quickActions,
 body.ledger-open #farmCard,
 body.ledger-open #overviewSection,
@@ -908,3 +910,16 @@ html[data-textsize="large"] #textSizeBtn, html[data-textsize="xlarge"] #textSize
 html[data-textsize="large"] .kpi-card p.font-extrabold, html[data-textsize="xlarge"] .kpi-card p.font-extrabold { font-size: 1.1rem; }
 .profile-delete { color: #b42318; }
 body.dark-mode .profile-delete { color: #fda4af; }
+
+/* herd counts: total, cows, buffaloes, heifers */
+.herd-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem 0.6rem; }
+#herdCard { cursor: pointer; }
+.herd-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.25rem; }
+.herd-stat { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; text-align: center; min-width: 0; }
+.herd-ico { font-size: 1.35rem; line-height: 1; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+.herd-stat b { font-size: 1.35rem; font-weight: 700; color: var(--text); line-height: 1.15; }
+.herd-total b { color: var(--accent); }
+.herd-label { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+.herd-more { margin-top: 0.55rem; padding-top: 0.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.8125rem; color: var(--text-2); }
+.herd-more b { color: var(--text); }
+html.lang-ur .herd-label { line-height: 1.9; font-size: 0.8rem; }

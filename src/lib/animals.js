@@ -1,4 +1,5 @@
 import { BREEDING_CATEGORY } from './protocols.js';
+import { normalizeSpecies } from './species.js';
 
 // Animal profiles are built from the records that already exist (Milkers, Wachi, Cow AI, Health, Sold Cows),
 // joined by the animal's tag. Tags are free text, so two tags are "the same animal" when all the words of the
@@ -13,6 +14,17 @@ export function sameAnimal(a, b) {
   const [small, big] = ta.size <= tb.size ? [ta, tb] : [tb, ta];
   if (small.size < 2 && small.size !== big.size) return false;
   return [...small].every((w) => big.has(w));
+}
+
+/** Cow or Buffalo for a tag, from the herd list (milkers first, then heifers); null when she is not in the herd. */
+export function speciesOfTag(state, tag) {
+  const rec = (state.milkersList || []).find((m) => sameAnimal(m.tag, tag)) || (state.wachiList || []).find((w) => sameAnimal(w.tag, tag));
+  return rec ? normalizeSpecies(rec.species) : null;
+}
+
+/** Species of an AI record: what was saved with it, else what the herd says about her, else Cow. */
+export function speciesOfRecord(state, rec) {
+  return rec && rec.species ? normalizeSpecies(rec.species) : speciesOfTag(state, rec && rec.cowTag) || 'Cow';
 }
 
 /** The mother named in a calf's breed text, e.g. "HF Cross (Dam: Cow #07 Chandi)"; '' if none. */

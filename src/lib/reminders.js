@@ -1,5 +1,7 @@
 // Works out which farm events deserve a phone notification. Pure: no device APIs here.
+import { speciesOfRecord } from './animals.js';
 import { addDaysDate } from './dates.js';
+import { dryOffDay, gestationDays } from './species.js';
 import { BREEDING_CATEGORY, FTAI_STEP, clockText, parseLocal } from './protocols.js';
 
 const REMINDER_HOUR = 8;
@@ -35,9 +37,11 @@ export function buildReminders(state, now = new Date()) {
       add(`${r.id}:heat`, at(r.aiDate, 21), 'Heat check due', `${r.cowTag}: 21 days since AI - watch for repeat heat.`);
       add(`${r.id}:pd`, at(r.aiDate, 60), 'Pregnancy (PD) check due', `${r.cowTag}: 60 days since AI - book the PD check.`);
     } else if (r.pregStatus === 'Confirmed Pregnant') {
-      add(`${r.id}:dry`, at(r.aiDate, 223), 'Dry-off due', `${r.cowTag}: time to dry off before calving.`);
-      add(`${r.id}:calf7`, at(r.aiDate, 276), 'Calving in 7 days', `${r.cowTag} is due to calve in a week. Prepare the calving pen.`);
-      add(`${r.id}:calf`, at(r.aiDate, 283), 'Calving expected today', `${r.cowTag} is due to calve today.`);
+      const species = speciesOfRecord(state, r);
+      const gestation = gestationDays(species);
+      add(`${r.id}:dry`, at(r.aiDate, dryOffDay(species)), 'Dry-off due', `${r.cowTag}: time to dry off before calving.`);
+      add(`${r.id}:calf7`, at(r.aiDate, gestation - 7), 'Calving in 7 days', `${r.cowTag} is due to calve in a week. Prepare the calving pen.`);
+      add(`${r.id}:calf`, at(r.aiDate, gestation), 'Calving expected today', `${r.cowTag} is due to calve today.`);
     }
   }
 

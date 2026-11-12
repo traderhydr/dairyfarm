@@ -1,5 +1,7 @@
-import { buildProfile, listAnimals } from '../lib/animals.js';
-import { GESTATION_DAYS, pregnancyProgress } from '../lib/dates.js';
+import { buildProfile, listAnimals, speciesOfRecord } from '../lib/animals.js';
+import { herdCounts } from '../lib/herd.js';
+import { pregnancyProgress } from '../lib/dates.js';
+import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { openConfirmModal } from '../ui/modal.js';
@@ -11,7 +13,11 @@ import { switchTab } from '../ui/tabs.js';
 
 const $ = (id) => document.getElementById(id);
 const KIND = { milker: 'Milker', wachi: 'Wachi', goat: 'Goat / Sheep', horse: 'Horse', other: 'Animal' };
-const kindLabel = (p) => (p.goat ? escapeHtml(p.goat.species) : KIND[p.kind] || 'Animal');
+const kindLabel = (p) => {
+  if (p.goat) return escapeHtml(p.goat.species);
+  const buffalo = p.record && (p.kind === 'milker' || p.kind === 'wachi') && normalizeSpecies(p.record.species) === 'Buffalo';
+  return buffalo ? (p.kind === 'milker' ? 'Buffalo milker' : 'Buffalo wachi') : KIND[p.kind] || 'Animal';
+};
 // where each kind is managed: [tab, add sheet, tag input]
 const HOME = {
   milker: ['milkers', 'milkersSheet', 'milkerTag'],
@@ -26,9 +32,9 @@ const chip = (text, cls = 'bg-slate-100 text-slate-700 border-slate-200') =>
 function statusChip(p) {
   if (p.sold) return chip(p.soldAsCalf ? 'Sold with mother' : 'Sold', 'bg-rose-50 text-rose-700 border-rose-200');
   if ((p.protocols || []).some((x) => x.status === 'Active')) return chip('In breeding protocol', 'bg-amber-50 text-amber-900 border-amber-200');
-  const prog = p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' ? pregnancyProgress(p.pregnancy.aiDate) : null;
+  const prog = p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' ? pregnancyProgress(p.pregnancy.aiDate, undefined, gestationDays(speciesOfRecord(state, p.pregnancy))) : null;
   if (prog) return chip(`Pregnant · day ${prog.day}`, 'bg-emerald-50 text-emerald-800 border-emerald-200');
-  const bred = p.pregnancy && p.pregnancy.pregStatus === 'Awaiting PD Check' ? pregnancyProgress(p.pregnancy.aiDate) : null;
+  const bred = p.pregnancy && p.pregnancy.pregStatus === 'Awaiting PD Check' ? pregnancyProgress(p.pregnancy.aiDate, undefined, gestationDays(speciesOfRecord(state, p.pregnancy))) : null;
   if (bred && p.pregnancy.protocolId) return chip(`Inseminated · day ${bred.day}`, 'bg-amber-50 text-amber-900 border-amber-200');
   if (p.goat || p.horse) return chip(escapeHtml(p.record.status || (p.horse ? 'Active' : 'In flock')), p.inHerd ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-rose-50 text-rose-700 border-rose-200');
   return p.inHerd ? chip('In herd') : chip('Not in herd list');
@@ -51,7 +57,26 @@ function animalCard(p) {
     </button>`;
 }
 
+/** Total animals, cows, buffaloes and heifers (and goats/sheep/horses on the Animals tab), wherever a counts block exists. */
+function renderHerd() {
+  const c = herdCounts(state);
+  const stat = (emoji, n, label, cls = '') => `
+    <div class="herd-stat ${cls}"><span class="herd-ico" aria-hidden="true">${emoji}</span><b>${n}</b><span class="herd-label">${label}</span></div>`;
+  document.querySelectorAll('[data-herd-counts]').forEach((el) => {
+    const extended = el.hasAttribute('data-extended');
+    el.innerHTML = `
+      <div class="herd-grid">
+        ${stat('\u{1F43E}', c.total, 'Animals', 'herd-total')}
+        ${stat('\u{1F404}', c.cows, 'Cows')}
+        ${stat('\u{1F403}', c.buffaloes, 'Buffaloes')}
+        ${stat('\u{1F42E}', c.heifers, 'Heifers')}
+      </div>
+      ${extended ? `<p class="herd-more"><span aria-hidden="true">\u{1F410}</span> Goats &amp; sheep <b>${c.goats + c.sheep}</b> &nbsp;&middot;&nbsp; <span aria-hidden="true">\u{1F434}</span> Horses <b>${c.horses}</b></p>` : ''}`;
+  });
+}
+
 export function renderAnimals() {
+  renderHerd();
   const all = listAnimals(state);
   $('animalsTabBadge').textContent = String(all.length);
   $('animalTagOptions').innerHTML = all.filter((p) => !p.sold).map((p) => `<option value="${escapeHtml(p.tag)}"></option>`).join('');
@@ -114,15 +139,16 @@ function salePanel(p) {
 function pregnancyPanel(p) {
   const r = p.pregnancy;
   if (!r || p.sold) return '';
-  const prog = pregnancyProgress(r.aiDate);
+  const gestation = gestationDays(speciesOfRecord(state, r));
+  const prog = pregnancyProgress(r.aiDate, undefined, gestation);
   const confirmed = r.pregStatus === 'Confirmed Pregnant';
   return `
     <div class="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3 text-xs space-y-1.5">
       <div class="flex items-center justify-between gap-2">
         <p class="font-bold text-sm text-emerald-900">${escapeHtml(r.pregStatus)}</p>
-        <span class="text-emerald-800">Calving ${addDays(r.aiDate, GESTATION_DAYS)}</span>
+        <span class="text-emerald-800">Calving ${addDays(r.aiDate, gestation)}</span>
       </div>
-      ${prog ? `<p class="text-emerald-900">${confirmed ? 'Pregnant' : 'Since AI'}: day ${prog.day} of ${GESTATION_DAYS} · ${prog.left > 0 ? prog.left + ' days to calving' : prog.left === 0 ? 'due today' : -prog.left + ' days overdue'}</p>
+      ${prog ? `<p class="text-emerald-900">${confirmed ? 'Pregnant' : 'Since AI'}: day ${prog.day} of ${gestation} · ${prog.left > 0 ? prog.left + ' days to calving' : prog.left === 0 ? 'due today' : -prog.left + ' days overdue'}</p>
       <div class="w-full h-1.5 bg-white rounded-full overflow-hidden"><div class="h-full goal-fill rounded-full" style="width: ${prog.percent}%"></div></div>` : ''}
     </div>`;
 }
@@ -132,9 +158,9 @@ function profileHtml(p) {
   if (p.milker) {
     const am = Number(p.milker.morningMilk) || 0;
     const pm = Number(p.milker.eveningMilk) || 0;
-    facts.push(['Milk per day', `${am + pm} L (${am} AM + ${pm} PM)`], ['Status', escapeHtml(p.milker.status)], ['Breed', escapeHtml(p.milker.breed)]);
+    facts.push(['Type', normalizeSpecies(p.milker.species)], ['Milk per day', `${am + pm} L (${am} AM + ${pm} PM)`], ['Status', escapeHtml(p.milker.status)], ['Breed', escapeHtml(p.milker.breed)]);
   } else if (p.wachi) {
-    facts.push(['Age', `${escapeHtml(String(p.wachi.ageMonths))} months`], ['Weight', `${escapeHtml(String(p.wachi.weightKg))} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
+    facts.push(['Type', normalizeSpecies(p.wachi.species)], ['Age', `${escapeHtml(String(p.wachi.ageMonths))} months`], ['Weight', `${escapeHtml(String(p.wachi.weightKg))} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
   } else if (p.goat) {
     const g = p.goat;
     facts.push(['Species', escapeHtml(g.species)], ['Gender', escapeHtml(g.sex)], ['Number', escapeHtml(String(g.count || 1))]);
@@ -165,7 +191,7 @@ function profileHtml(p) {
   const ai = p.ai.map((r) => row(
     `${formatDisplayDate(r.aiDate)} · ${escapeHtml(r.semenBull || 'Bull not noted')}`,
     escapeHtml(r.pregStatus),
-    [r.pregStatus === 'Calved' ? '' : `Expected calving ${addDays(r.aiDate, GESTATION_DAYS)}`, r.notes ? escapeHtml(r.notes) : ''].filter(Boolean).join(' · '),
+    [r.pregStatus === 'Calved' ? '' : `Expected calving ${addDays(r.aiDate, gestationDays(speciesOfRecord(state, r)))}`, r.notes ? escapeHtml(r.notes) : ''].filter(Boolean).join(' · '),
     delBtn('cow', r.id)
   )).join('');
 
@@ -283,6 +309,8 @@ export function startAdd(kind, tag = '') {
 
 export function initAnimals() {
   initListSearch('animalsSearch', renderAnimals);
+  $('herdCard').addEventListener('click', () => switchTab('animals'));
+  $('herdCard').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); switchTab('animals'); } });
   $('animalsFilter').addEventListener('change', renderAnimals);
 
   document.addEventListener('profile-refresh', refreshProfile);

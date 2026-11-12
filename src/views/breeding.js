@@ -1,4 +1,6 @@
-import { GESTATION_DAYS, pregnancyProgress, todayStr } from '../lib/dates.js';
+import { speciesOfRecord, speciesOfTag } from '../lib/animals.js';
+import { pregnancyProgress, todayStr } from '../lib/dates.js';
+import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { addDays, escapeHtml, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
@@ -28,7 +30,9 @@ export function renderBreeding() {
   shown.forEach(record => {
     const heatDate = addDays(record.aiDate, 21);
     const pdDate = addDays(record.aiDate, 60);
-    const calvingDate = addDays(record.aiDate, 283);
+    const species = speciesOfRecord(state, record);
+    const gestation = gestationDays(species);
+    const calvingDate = addDays(record.aiDate, gestation);
 
     let badgeStyle = 'bg-amber-100 text-amber-800 border-amber-200';
     if (record.pregStatus === 'Confirmed Pregnant') {
@@ -41,12 +45,12 @@ export function renderBreeding() {
 
     const progress = record.pregStatus === 'Repeat / Not Pregnant' || record.pregStatus === 'Calved'
       ? null
-      : pregnancyProgress(record.aiDate);
+      : pregnancyProgress(record.aiDate, undefined, gestation);
     const confirmed = record.pregStatus === 'Confirmed Pregnant';
     const progressHtml = progress ? `
       <div class="bg-white p-2.5 rounded-lg border border-slate-200/80 space-y-1.5" data-pregnancy-days>
         <div class="flex items-baseline justify-between gap-2">
-          <span class="text-xs font-bold text-slate-800">${confirmed ? 'Pregnant' : 'Since AI'}: day ${progress.day} of ${GESTATION_DAYS}</span>
+          <span class="text-xs font-bold text-slate-800">${confirmed ? 'Pregnant' : 'Since AI'}: day ${progress.day} of ${gestation}</span>
           <span class="text-xs font-semibold ${progress.left < 0 ? 'text-rose-600' : 'text-emerald-700'}">${progress.left > 0
             ? `${progress.left} ${progress.left === 1 ? 'day' : 'days'} to calving`
             : progress.left === 0 ? 'Due today' : `${-progress.left} ${progress.left === -1 ? 'day' : 'days'} overdue`}</span>
@@ -60,7 +64,7 @@ export function renderBreeding() {
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(record.cowTag)}</h3>
+            <h3 class="font-bold text-slate-900 text-sm"><span aria-hidden="true">${speciesEmoji(species)}</span> ${escapeHtml(record.cowTag)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeStyle}">${escapeHtml(record.pregStatus)}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">Bull / Semen: <span class="font-medium text-slate-700">${escapeHtml(record.semenBull || 'Not specified')}</span></p>
@@ -114,10 +118,11 @@ export function updateBreedingPreview() {
   const dateVal = document.getElementById('aiDate').value;
   document.getElementById('previewHeatDate').textContent = addDays(dateVal, 21);
   document.getElementById('previewPdDate').textContent = addDays(dateVal, 60);
-  document.getElementById('previewCalvingDate').textContent = addDays(dateVal, 283);
-  const progress = pregnancyProgress(dateVal);
+  const gestation = gestationDays(document.getElementById('aiSpecies').value);
+  document.getElementById('previewCalvingDate').textContent = addDays(dateVal, gestation);
+  const progress = pregnancyProgress(dateVal, undefined, gestation);
   document.getElementById('previewPregDays').textContent = progress
-    ? `Day ${progress.day} of ${GESTATION_DAYS} (${progress.left >= 0 ? progress.left + ' left' : -progress.left + ' overdue'})`
+    ? `Day ${progress.day} of ${gestation} (${progress.left >= 0 ? progress.left + ' left' : -progress.left + ' overdue'})`
     : '—';
 }
 
@@ -145,11 +150,18 @@ export function initBreeding() {
   });
   // Live AI Date Preview
   document.getElementById('aiDate').addEventListener('input', updateBreedingPreview);
+  document.getElementById('aiSpecies').addEventListener('change', updateBreedingPreview);
+  // typing a tag from the herd picks Cow or Buffalo for her
+  document.getElementById('cowTag').addEventListener('input', () => {
+    const species = speciesOfTag(state, document.getElementById('cowTag').value);
+    if (species) { document.getElementById('aiSpecies').value = species; updateBreedingPreview(); }
+  });
 
   // Add Cow AI Record
   document.getElementById('breedingForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const cowTag = document.getElementById('cowTag').value.trim();
+    const species = normalizeSpecies(document.getElementById('aiSpecies').value);
     const aiDate = document.getElementById('aiDate').value;
     const semenBull = document.getElementById('semenBull').value.trim();
     const pregStatus = document.getElementById('pregStatus').value;
@@ -159,7 +171,7 @@ export function initBreeding() {
 
     const existing = editor.find(state.breedingRecords);
     if (existing) {
-      Object.assign(existing, { cowTag, aiDate, semenBull, pregStatus, notes });
+      Object.assign(existing, { cowTag, species, aiDate, semenBull, pregStatus, notes });
       commit();
       showToast('AI record updated!');
       return;
@@ -168,6 +180,7 @@ export function initBreeding() {
     state.breedingRecords.unshift({
       id: 'cow-' + Date.now(),
       cowTag,
+      species,
       aiDate,
       semenBull,
       pregStatus,
@@ -204,7 +217,7 @@ export function initBreeding() {
       const rec = state.breedingRecords.find(r => r.id === editBtn.getAttribute('data-edit-cow'));
       if (rec) {
         editor.begin(rec.id, () => {
-          setField('cowTag', rec.cowTag); setField('aiDate', rec.aiDate); setField('semenBull', rec.semenBull);
+          setField('cowTag', rec.cowTag); setField('aiSpecies', speciesOfRecord(state, rec)); setField('aiDate', rec.aiDate); setField('semenBull', rec.semenBull);
           setField('pregStatus', rec.pregStatus); setField('cowNotes', rec.notes);
           updateBreedingPreview();
         });
@@ -277,6 +290,7 @@ export function initBreeding() {
         state.milkersList.unshift({
           id: 'milker-' + Date.now(),
           tag: rec.cowTag,
+          species: speciesOfRecord(state, rec),
           breed: `${rec.semenBull || 'Dairy Cow'} (Fresh Lactation)`,
           morningMilk: freshAM,
           eveningMilk: freshPM,
@@ -297,6 +311,7 @@ export function initBreeding() {
       state.wachiList.unshift({
         id: 'wachi-' + Date.now(),
         tag: calfTag,
+        species: speciesOfRecord(state, rec),
         damTag: rec.cowTag,
         breed: `${rec.semenBull || 'Dairy Cross'} (Dam: ${rec.cowTag})`,
         ageMonths: 1,

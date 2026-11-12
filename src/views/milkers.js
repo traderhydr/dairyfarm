@@ -1,5 +1,6 @@
 import { formatLiters } from '../lib/calc.js';
 import { escapeHtml, formatCurrency } from '../lib/format.js';
+import { normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
@@ -61,7 +62,7 @@ export function renderMilkers() {
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(cow.tag)}</h3>
+            <h3 class="font-bold text-slate-900 text-sm"><span aria-hidden="true">${speciesEmoji(cow.species)}</span> ${escapeHtml(cow.tag)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeStyle}">${escapeHtml(cow.status)}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(cow.breed)}</p>
@@ -123,7 +124,7 @@ export function initMilkers() {
     onReset: updateMilkerFormPreview
   });
   const startEdit = (cow) => editor.begin(cow.id, () => {
-    setField('milkerTag', cow.tag); setField('milkerBreed', cow.breed);
+    setField('milkerTag', cow.tag); setField('milkerSpecies', normalizeSpecies(cow.species)); setField('milkerBreed', cow.breed);
     setField('milkerMorning', cow.morningMilk); setField('milkerEvening', cow.eveningMilk);
     setField('milkerStatus', cow.status); setField('milkerNotes', cow.notes);
     updateMilkerFormPreview();
@@ -177,13 +178,14 @@ export function initMilkers() {
     const morningMilk = parseFloat(document.getElementById('milkerMorning').value) || 0;
     const eveningMilk = parseFloat(document.getElementById('milkerEvening').value) || 0;
     const status = document.getElementById('milkerStatus').value;
+    const species = normalizeSpecies(document.getElementById('milkerSpecies').value);
     const notes = document.getElementById('milkerNotes').value.trim();
 
     if (!tag || !breed) return;
 
     const existing = editor.find(state.milkersList);
     if (existing) {
-      Object.assign(existing, { tag, breed, morningMilk, eveningMilk, status, notes });
+      Object.assign(existing, { tag, species, breed, morningMilk, eveningMilk, status, notes });
       commit();
       showToast('Milking cow updated!');
       return;
@@ -192,6 +194,7 @@ export function initMilkers() {
     state.milkersList.unshift({
       id: 'milker-' + Date.now(),
       tag,
+      species,
       breed,
       morningMilk,
       eveningMilk,

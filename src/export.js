@@ -1,5 +1,7 @@
 import { sumAmounts } from './lib/calc.js';
+import { speciesOfRecord } from './lib/animals.js';
 import { cropDisplayName, cropTotals } from './lib/crops.js';
+import { gestationDays } from './lib/species.js';
 import { saveTextFile } from './lib/files.js';
 import { addDays } from './lib/format.js';
 import { goalProgress } from './lib/savings.js';
@@ -19,7 +21,7 @@ export function exportFarmCsv() {
   });
 
   state.breedingRecords.forEach(b => {
-    rows.push(['Cow AI & Pregnancy', b.aiDate, b.cowTag, b.pregStatus, 'Calving: ' + addDays(b.aiDate, 283), (b.semenBull || '') + ' | ' + (b.notes || '')]);
+    rows.push(['Cow AI & Pregnancy', b.aiDate, b.cowTag, b.pregStatus, 'Calving: ' + addDays(b.aiDate, gestationDays(speciesOfRecord(state, b))), (b.semenBull || '') + ' | ' + (b.notes || '')]);
   });
 
   state.wandaBatches.forEach(w => {

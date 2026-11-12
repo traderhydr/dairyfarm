@@ -42,7 +42,8 @@ Animal profiles, goats, sheep and horses
 - A profile for every animal: AI and pregnancy history with pregnancy day count, treatments, calves and sale
 - Sell a cow with or without her calf
 - Breeding protocols (Ovsynch, CIDR-Synch, Double-Ovsynch): a timed schedule for every injection and the AI, reminders to the hour, an Early Heat button, and an automatic pregnancy-check reminder
-- Goat, sheep and horse records
+- Cows and buffaloes (buffalo pregnancy dates are worked out for you), goat, sheep and horse records
+- Herd count: total animals, cows, buffaloes and heifers at a glance
 
 Crops and land record
 - Switch from Farm to Crops and keep land records, own or on Theeka

@@ -29,7 +29,7 @@ export const GESTATION_DAYS = 283;
  * `day` is the number of days since AI (0 on the AI day); null if the date is missing/invalid or in the future.
  * `left` is days until the expected calving date (negative once overdue).
  */
-export function pregnancyProgress(aiDate, now = new Date()) {
+export function pregnancyProgress(aiDate, now = new Date(), gestation = GESTATION_DAYS) {
   const start = parseLocalDate(aiDate);
   if (!start) return null;
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -37,7 +37,7 @@ export function pregnancyProgress(aiDate, now = new Date()) {
   if (day < 0) return null;
   return {
     day,
-    left: GESTATION_DAYS - day,
-    percent: Math.max(0, Math.min(100, Math.round((day / GESTATION_DAYS) * 100)))
+    left: gestation - day,
+    percent: Math.max(0, Math.min(100, Math.round((day / gestation) * 100)))
   };
 }

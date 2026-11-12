@@ -2004,3 +2004,120 @@ test.describe('delete everywhere', () => {
     expect(await read(page, 'dairy_farm_v1_horses')).toHaveLength(1);
   });
 });
+
+test.describe('buffaloes and herd counts', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  const stat = (page, name) => page.locator('#herdCard .herd-stat', { hasText: name }).locator('b');
+  const addMilker = async (page, tag, species) => {
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('.fab[data-open-sheet="milkersSheet"]').click();
+    await fill(page, 'milkerTag', tag);
+    await fill(page, 'milkerSpecies', species);
+    await fill(page, 'milkerBreed', species === 'Buffalo' ? 'Murrah' : 'Sahiwal');
+    await fill(page, 'milkerMorning', '8');
+    await fill(page, 'milkerEvening', '7');
+    await submit(page, 'milkerForm');
+  };
+
+  test('the home screen counts animals, cows, buffaloes and heifers', async ({ page }) => {
+    await expect(stat(page, 'Animals')).toHaveText('0');
+    await loadSample(page);
+    await tab(page, 'tabFinanceBtn');
+    await expect(stat(page, 'Animals')).toHaveText('18');         // 2 cows, 2 heifers, 1 goat + 12 sheep, 1 horse
+    await expect(stat(page, 'Cows')).toHaveText('2');
+    await expect(stat(page, 'Buffaloes')).toHaveText('0');
+    await expect(stat(page, 'Heifers')).toHaveText('2');
+    await addMilker(page, 'Buffalo #03 (Kali)', 'Buffalo');
+    await tab(page, 'tabWachiBtn');
+    await page.locator('.fab[data-open-sheet="wachiSheet"]').click();
+    await fill(page, 'wachiTag', 'Buffalo Wachi #01');
+    await fill(page, 'wachiSpecies', 'Buffalo');
+    await fill(page, 'wachiBreed', 'Murrah');
+    await fill(page, 'wachiAge', '10');
+    await fill(page, 'wachiWeight', '150');
+    await submit(page, 'wachiForm');
+    await tab(page, 'tabFinanceBtn');
+    await expect(stat(page, 'Animals')).toHaveText('20');
+    await expect(stat(page, 'Cows')).toHaveText('2');
+    await expect(stat(page, 'Buffaloes')).toHaveText('1');
+    await expect(stat(page, 'Heifers')).toHaveText('3');
+    expect((await read(page, 'dairy_farm_v1_milkers'))[0]).toMatchObject({ tag: 'Buffalo #03 (Kali)', species: 'Buffalo' });
+    expect((await read(page, 'dairy_farm_v1_wachi'))[0].species).toBe('Buffalo');
+  });
+
+  test('the Animals tab shows the same counts plus goats and sheep and horses; tapping the home card opens it', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('#herdCard').click();
+    await expect(page.locator('#animalsSection')).toBeVisible();
+    const box = page.locator('#animalsSection [data-herd-counts]');
+    await expect(box.locator('.herd-stat', { hasText: 'Animals' }).locator('b')).toHaveText('18');
+    await expect(box.locator('.herd-more')).toContainText('Goats & sheep 13');
+    await expect(box.locator('.herd-more')).toContainText('Horses 1');
+  });
+
+  test('a buffalo card, chip and profile say Buffalo; selling or deleting her updates the counts', async ({ page }) => {
+    await addMilker(page, 'Buffalo #03 (Kali)', 'Buffalo');
+    await expect(page.locator('#milkersListContainer')).toContainText('🐃');
+    await tab(page, 'tabAnimalsBtn');
+    await expect(page.locator('#animalsListContainer [data-open-profile="Buffalo #03 (Kali)"]')).toContainText('Buffalo milker');
+    await page.locator('#animalsListContainer [data-open-profile="Buffalo #03 (Kali)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('Buffalo');
+    await page.locator('[data-profile-action="delete"]').click();
+    await page.locator('#modalConfirmBtn').click();
+    await tab(page, 'tabFinanceBtn');
+    await expect(stat(page, 'Buffaloes')).toHaveText('0');
+  });
+
+  test('editing a buffalo keeps her species; old records without a species count as cows', async ({ page }) => {
+    await addMilker(page, 'Buffalo #03 (Kali)', 'Buffalo');
+    await page.locator('[data-edit-milker-form]').first().click();
+    await expect(page.locator('#milkerSpecies')).toHaveValue('Buffalo');
+    await fill(page, 'milkerBreed', 'Nili-Ravi');
+    await submit(page, 'milkerForm');
+    expect((await read(page, 'dairy_farm_v1_milkers'))[0]).toMatchObject({ species: 'Buffalo', breed: 'Nili-Ravi' });
+    await page.evaluate(() => localStorage.setItem('dairy_farm_v1_milkers', JSON.stringify([{ id: 'm-old', tag: 'Cow #1', breed: 'HF', morningMilk: 5, eveningMilk: 5, status: 'Steady Milking' }])));
+    await page.reload();
+    await tab(page, 'tabFinanceBtn');
+    await expect(stat(page, 'Cows')).toHaveText('1');
+    await expect(stat(page, 'Buffaloes')).toHaveText('0');
+  });
+
+  test('a buffalo is due to calve 310 days after AI, a cow 283: form preview, card and profile', async ({ page }) => {
+    await addMilker(page, 'Buffalo #03 (Kali)', 'Buffalo');
+    await tab(page, 'tabBreedingBtn');
+    await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
+    await fill(page, 'cowTag', 'Buffalo #03 (Kali)');                                       // typing a herd tag picks Buffalo
+    await expect(page.locator('#aiSpecies')).toHaveValue('Buffalo');
+    await fill(page, 'aiDate', '2026-01-10');
+    await expect(page.locator('#previewCalvingDate')).toHaveText('16 Nov 2026');            // +310 days
+    await fill(page, 'pregStatus', 'Confirmed Pregnant');
+    await submit(page, 'breedingForm');
+    const card = page.locator('#breedingListContainer > div').first();
+    await expect(card).toContainText('16 Nov 2026');
+    await expect(card).toContainText('of 310');
+    // the same date for a cow is 283 days
+    await page.locator('.fab[data-open-sheet="breedingSheet"]').click();
+    await fill(page, 'cowTag', 'Cow #99');
+    await fill(page, 'aiSpecies', 'Cow');
+    await fill(page, 'aiDate', '2026-01-10');
+    await expect(page.locator('#previewCalvingDate')).toHaveText('20 Oct 2026');            // +283 days
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Buffalo #03 (Kali)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('of 310');
+    await expect(page.locator('#profileBody')).toContainText('16 Nov 2026');
+  });
+
+  test('the counts and the new labels are in Urdu', async ({ page }) => {
+    await loadSample(page);
+    await page.locator('#langToggleBtn').click();
+    await tab(page, 'tabFinanceBtn');
+    await expect(page.locator('#herdCard')).toContainText('بھینسیں');
+    await expect(page.locator('#herdCard')).toContainText('گائیں');
+    await expect(page.locator('#herdCard')).toContainText('وچھیاں');
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('.fab[data-open-sheet="milkersSheet"]').click();
+    await expect(page.locator('#milkerSpecies option[value="Buffalo"]')).toHaveText('بھینس');
+  });
+});

@@ -1,5 +1,7 @@
 import { sumAmounts } from '../lib/calc.js';
+import { speciesOfRecord } from '../lib/animals.js';
 import { addDays, escapeHtml, formatCurrency } from '../lib/format.js';
+import { dryOffDay, gestationDays } from '../lib/species.js';
 import { BREEDING_CATEGORY, FTAI_STEP, clockText, describeDue, parseLocal } from '../lib/protocols.js';
 import { daysLeft, goalProgress } from '../lib/savings.js';
 import { state } from '../state.js';
@@ -40,7 +42,7 @@ export function renderAlerts() {
         tag: 'Dry-Off & Calving',
         color: 'bg-emerald-100 text-emerald-900 border-emerald-300',
         title: rec.cowTag,
-        detail: `Dry-Off (7th Mo): ${addDays(rec.aiDate, 223)} • Calving: ${addDays(rec.aiDate, 283)}`
+        detail: `Dry-Off (7th Mo): ${addDays(rec.aiDate, dryOffDay(speciesOfRecord(state, rec)))} • Calving: ${addDays(rec.aiDate, gestationDays(speciesOfRecord(state, rec)))}`
       });
     }
   });
