@@ -1,7 +1,9 @@
 import { buildProfile, listAnimals } from '../lib/animals.js';
 import { GESTATION_DAYS, pregnancyProgress } from '../lib/dates.js';
 import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
-import { state } from '../state.js';
+import { commit, state } from '../state.js';
+import { openConfirmModal } from '../ui/modal.js';
+import { showToast } from '../ui/toast.js';
 import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { closeSheets, openSheet } from '../ui/sheets.js';
 import { breedingSectionHtml } from './protocols.js';
@@ -73,10 +75,13 @@ export function renderAnimals() {
 
 // ---------------------------------------------------------------- profile
 
-const row = (left, right, extra = '') => `
+// a Delete button inside a profile list (the click is handled below; it asks "Delete this?" first)
+const delBtn = (kind, id) => `<button type="button" data-del-profile="${kind}:${escapeHtml(id)}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>`;
+
+const row = (left, right, extra = '', action = '') => `
   <div class="flex items-start justify-between gap-3 py-2 text-xs">
     <div class="min-w-0"><p class="font-semibold text-slate-800">${left}</p>${extra ? `<p class="text-slate-500 mt-0.5">${extra}</p>` : ''}</div>
-    <div class="text-right shrink-0 text-slate-600">${right}</div>
+    <div class="text-right shrink-0 text-slate-600">${right}${action ? `<div class="mt-0.5">${action}</div>` : ''}</div>
   </div>`;
 
 const section = (title, count, body, empty) => `
@@ -160,13 +165,15 @@ function profileHtml(p) {
   const ai = p.ai.map((r) => row(
     `${formatDisplayDate(r.aiDate)} · ${escapeHtml(r.semenBull || 'Bull not noted')}`,
     escapeHtml(r.pregStatus),
-    [r.pregStatus === 'Calved' ? '' : `Expected calving ${addDays(r.aiDate, GESTATION_DAYS)}`, r.notes ? escapeHtml(r.notes) : ''].filter(Boolean).join(' · ')
+    [r.pregStatus === 'Calved' ? '' : `Expected calving ${addDays(r.aiDate, GESTATION_DAYS)}`, r.notes ? escapeHtml(r.notes) : ''].filter(Boolean).join(' · '),
+    delBtn('cow', r.id)
   )).join('');
 
   const health = p.health.map((h) => row(
     `${formatDate(h.dateGiven)} · ${escapeHtml(h.type)}`,
     h.cost ? formatCurrency(h.cost) : '',
-    [h.disease ? `Disease: ${escapeHtml(h.disease)}` : '', h.medicine ? escapeHtml(h.medicine) : ''].filter(Boolean).join(' · ')
+    [h.disease ? `Disease: ${escapeHtml(h.disease)}` : '', h.medicine ? escapeHtml(h.medicine) : ''].filter(Boolean).join(' · '),
+    delBtn('health', h.id)
   )).join('');
 
   const calves = p.calves.map((c) => {
@@ -182,7 +189,8 @@ function profileHtml(p) {
 
   const cattle = p.kind === 'milker' || p.kind === 'wachi' || p.kind === 'other';
   const editBtn = p.record
-    ? `<button type="button" data-profile-action="edit" class="btn-secondary text-xs py-2.5">Edit</button>`
+    ? `<button type="button" data-profile-action="edit" class="btn-secondary text-xs py-2.5">Edit</button>
+       <button type="button" data-profile-action="delete" class="btn-secondary text-xs py-2.5 profile-delete">Delete</button>`
     : '';
   const actions = `
     <div class="grid grid-cols-2 gap-2 pt-1">
@@ -297,7 +305,35 @@ export function initAnimals() {
       startAdd(addFromProfile.getAttribute('data-profile-add'), tag);
       return;
     }
+    const del = e.target.closest('[data-del-profile]');
+    if (del) {
+      const [kind, id] = del.getAttribute('data-del-profile').split(':');
+      if (kind === 'cow') state.breedingRecords = state.breedingRecords.filter((r) => r.id !== id);
+      else if (kind === 'health') state.healthRecords = state.healthRecords.filter((h) => h.id !== id);
+      else if (kind === 'protocol') {
+        // the protocol and its steps go; an AI record it created stays (it is a breeding record in its own right)
+        state.protocols = state.protocols.filter((x) => x.id !== id);
+        state.healthRecords = state.healthRecords.filter((h) => h.protocolId !== id);
+      }
+      commit('local-keep');
+      refreshProfile();
+      showToast('Deleted.');
+      return;
+    }
     const action = e.target.closest('[data-profile-action]');
+    if (action && action.getAttribute('data-profile-action') === 'delete') {
+      const tag = $('profileBody').querySelector('[data-profile-tag]').getAttribute('data-profile-tag');
+      const p = buildProfile(tag, state);
+      if (!p.record) return;
+      openConfirmModal(`Delete ${p.tag}?`, 'Her AI and treatment records are kept.', () => {
+        const lists = { milker: 'milkersList', wachi: 'wachiList', goat: 'goats', horse: 'horses' };
+        const key = lists[p.kind];
+        if (key) state[key] = state[key].filter((r) => r.id !== p.record.id);
+        commit();
+        showToast('Deleted.');
+      });
+      return;
+    }
     if (action) {
       const tag = $('profileBody').querySelector('[data-profile-tag]').getAttribute('data-profile-tag');
       startAction(action.getAttribute('data-profile-action'), buildProfile(tag, state));

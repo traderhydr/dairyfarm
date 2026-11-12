@@ -127,6 +127,7 @@ function historyRow(view) {
         <p class="text-slate-600 shrink-0">${escapeHtml(outcome)}</p>
       </div>
       ${bits ? `<p class="text-slate-500 mt-0.5">${escapeHtml(bits)}</p>` : ''}
+      <div class="text-right"><button type="button" data-del-profile="protocol:${escapeHtml(p.id)}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button></div>
     </div>`;
 }
 

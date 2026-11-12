@@ -906,3 +906,5 @@ html[data-textsize="large"] #textSizeBtn, html[data-textsize="xlarge"] #textSize
 
 .kpi-card p.font-extrabold { white-space: nowrap; }
 html[data-textsize="large"] .kpi-card p.font-extrabold, html[data-textsize="xlarge"] .kpi-card p.font-extrabold { font-size: 1.1rem; }
+.profile-delete { color: #b42318; }
+body.dark-mode .profile-delete { color: #fda4af; }

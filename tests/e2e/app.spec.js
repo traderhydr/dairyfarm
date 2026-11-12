@@ -1925,3 +1925,82 @@ test.describe('easy to use for every farmer', () => {
     await expect(page.locator('#healthSheet')).toBeVisible();
   });
 });
+
+test.describe('delete everywhere', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+
+  test('every entry in every list has a Delete button', async ({ page }) => {
+    await loadSample(page);
+    const lists = [
+      ['tabFinanceBtn', '#txListBody tr'], ['tabBreedingBtn', '#breedingListContainer > div'], ['tabWandaBtn', '#wandaListContainer > div'],
+      ['tabMilkersBtn', '#milkersListContainer > div'], ['tabWachiBtn', '#wachiListContainer > div'], ['tabGoatsBtn', '#goatsListContainer > div'],
+      ['tabHorsesBtn', '#horsesListContainer > div'], ['tabHealthBtn', '#healthListContainer > div'], ['tabSalesBtn', '#salesListContainer > div'],
+      ['tabDoodhiBtn', '#doodhiListContainer > div'], ['tabSavingsBtn', '#savingsListContainer > div']
+    ];
+    for (const [tabId, sel] of lists) {
+      await tab(page, tabId);
+      const cards = await page.locator(sel).count();
+      expect(cards, sel).toBeGreaterThan(0);
+      const missing = await page.locator(sel).evaluateAll((els) => els.filter((el) => ![...el.querySelectorAll('button')].some((b) => b.getAttributeNames().some((n) => n.startsWith('data-delete-')))).length);
+      expect(missing, `${sel}: cards without a Delete button`).toBe(0);
+    }
+    // crops mode: crops and land
+    await page.locator('#modeToggle [data-mode="crops"]').click();
+    for (const [tabId, sel] of [['tabCropsBtn', '#cropsListContainer > div'], ['tabLandsBtn', '#landsListContainer > div']]) {
+      await tab(page, tabId);
+      expect(await page.locator(sel).count(), sel).toBeGreaterThan(0);
+      const missing = await page.locator(sel).evaluateAll((els) => els.filter((el) => ![...el.querySelectorAll('button')].some((b) => b.getAttributeNames().some((n) => n.startsWith('data-delete-')))).length);
+      expect(missing, sel).toBe(0);
+    }
+  });
+
+  test('the profile can delete an animal (her records stay), an AI row, a treatment row and a protocol', async ({ page }) => {
+    await loadSample(page);
+    // protocol with an AI record
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Cow #14 (Rani)"]').click();
+    await page.locator('#profileSheet [data-protocol-start]').click();
+    await fill(page, 'protocolDay0', '2026-11-12T08:00');
+    await submit(page, 'protocolStartForm');
+    await page.locator('[data-active-protocol] [data-protocol-early]').click();
+    await submit(page, 'protocolActionForm');
+    expect(await read(page, 'dairy_farm_v1_protocols')).toHaveLength(1);
+
+    // delete the finished protocol from her history
+    await page.locator('[data-breeding-section] [data-del-profile^="protocol:"]').click();
+    await page.locator('#modalConfirmBtn').click();
+    expect(await read(page, 'dairy_farm_v1_protocols')).toHaveLength(0);
+    expect((await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol')).toHaveLength(0);
+    expect((await read(page, 'dairy_farm_v1_breeding')).filter((r) => r.cowTag === 'Cow #14 (Rani)').length).toBeGreaterThan(0);   // the AI record stays
+    await expect(page.locator('#profileSheet')).toBeVisible();                                                                   // still on her profile
+
+    // delete an AI row
+    const aiBefore = (await read(page, 'dairy_farm_v1_breeding')).length;
+    await page.locator('#profileBody [data-del-profile^="cow:"]').first().click();
+    await page.locator('#modalConfirmBtn').click();
+    expect((await read(page, 'dairy_farm_v1_breeding')).length).toBe(aiBefore - 1);
+
+    // delete the animal herself: gone from the herd, treatments stay
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Cow #07 (Chandi)"]').click();
+    await expect(page.locator('#profileBody')).toContainText('Mastitis');
+    await page.locator('#profileBody [data-del-profile^="health:"]').first().click();           // a treatment row
+    await page.locator('#modalConfirmBtn').click();
+    await expect(page.locator('#profileBody')).not.toContainText('Mastitis (rear left quarter)');
+    await page.locator('[data-profile-action="delete"]').click();
+    await expect(page.locator('#modalTitle')).toHaveText('Delete Cow #07 (Chandi)?');
+    await page.locator('#modalConfirmBtn').click();
+    expect((await read(page, 'dairy_farm_v1_milkers')).some((m) => m.tag.includes('Chandi'))).toBe(false);
+    expect((await read(page, 'dairy_farm_v1_breeding')).some((r) => r.cowTag.includes('Chandi'))).toBe(true);
+  });
+
+  test('"No" keeps everything', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Raja"]').click();
+    await page.locator('[data-profile-action="delete"]').click();
+    await page.locator('#modalCancelBtn').click();
+    expect(await read(page, 'dairy_farm_v1_horses')).toHaveLength(1);
+  });
+});
