@@ -96,6 +96,16 @@ export const PATTERNS = [
   [/^Feed & care Rs\. (.+)\/month$/, 'خوراک اور دیکھ بھال روپے $1/ماہ'],
   [/^e\.g\. (.+)$/, 'مثلاً $1'],
   [/^Hi, (.+)$/, 'السلام علیکم، $1'],
+  // pregnancy counted in months
+  [/^(Pregnant): month (\d+) of (\d+)$/, 'حاملہ: مہینہ $2 از $3'],
+  [/^(Since AI): month (\d+) of (\d+)$/, 'اے آئی کے بعد: مہینہ $2 از $3'],
+  [/^Month (\d+) of (\d+) \((.+)\)$/, 'مہینہ $1 از $2 ($3)'],
+  [/^(\d+) months? to calving$/, 'بچھڑے میں $1 مہینے باقی'],
+  [/^(\d+) months? left$/, '$1 مہینے باقی'],
+  [/^(\d+) months? overdue$/, '$1 مہینے تاخیر'],
+  [/^Pregnant · month (\d+)$/, 'حاملہ · مہینہ $1'],
+  [/^Inseminated · month (\d+)$/, 'اے آئی شدہ · مہینہ $1'],
+
   // breeding protocols
   [/^Step (\d+) of (\d+): (.+) — (due .+|overdue .+)$/, 'مرحلہ $1 از $2: $3 — $4'],
   [/^Step (\d+) of (\d+)$/, 'مرحلہ $1 از $2'],

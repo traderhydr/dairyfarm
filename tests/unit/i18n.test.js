@@ -11,8 +11,10 @@ describe('translate', () => {
   it('translates strings that contain numbers', () => {
     expect(translate('12 Months')).toBe('12 مہینے');
     expect(translate('3 entries')).toBe('3 اندراجات');
-    expect(translate('Pregnant: day 84 of 283')).toBe('حاملہ: دن 84 از 283');
-    expect(translate('199 days to calving')).toBe('بچھڑے میں 199 دن باقی');
+    expect(translate('Pregnant: month 3 of 9')).toBe('حاملہ: مہینہ 3 از 9');
+    expect(translate('7 months to calving')).toBe('بچھڑے میں 7 مہینے باقی');
+    expect(translate('Due this month')).toBe('اس مہینے واجب');
+    expect(translate('Month 4 of 10 (6 months left)')).toBe('مہینہ 4 از 10 (6 مہینے باقی)');
     expect(translate('12.5 L/day')).toBe('12.5 لیٹر روزانہ');
     expect(translate('+ Rs. 12,000 Profit')).toBeNull;   // amounts keep Rs.
   });
@@ -54,7 +56,7 @@ describe('breeding protocol texts', () => {
   it('translates date-times and result lines', () => {
     expect(translate('13 Nov, 8:00 AM')).toBe('13 Nov، 8:00 صبح');
     expect(translate('Done 13 Nov, 8:05 AM')).toBe('مکمل: 13 Nov، 8:05 صبح');
-    expect(translate('Inseminated · day 12')).toBe('اے آئی شدہ · دن 12');
+    expect(translate('Inseminated · month 2')).toBe('اے آئی شدہ · مہینہ 2');
     expect(translate('Cancel the Ovsynch protocol?')).toBe('Ovsynch پروٹوکول منسوخ کریں؟');
   });
 });

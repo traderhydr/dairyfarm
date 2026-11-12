@@ -41,3 +41,24 @@ export function pregnancyProgress(aiDate, now = new Date(), gestation = GESTATIO
     percent: Math.max(0, Math.min(100, Math.round((day / gestation) * 100)))
   };
 }
+
+export const DAYS_PER_MONTH = 30.4375;
+
+/**
+ * The same pregnancy progress in months, the way farmers count it ("month 4 of 9", "6 months to calving").
+ * `progress` is the result of pregnancyProgress(); `gestation` is the species' days (283 cow, 310 buffalo).
+ */
+export function pregnancyMonths(progress, gestation = GESTATION_DAYS) {
+  const total = Math.round(gestation / DAYS_PER_MONTH);
+  const month = Math.min(total, Math.floor(progress.day / DAYS_PER_MONTH) + 1);
+  const n = (days) => Math.max(1, Math.round(days / DAYS_PER_MONTH));
+  const plural = (count) => `${count} ${count === 1 ? 'month' : 'months'}`;
+  let toCalving;
+  let left;
+  if (progress.left > 30) { toCalving = `${plural(n(progress.left))} to calving`; left = `${plural(n(progress.left))} left`; }
+  else if (progress.left > 0) { toCalving = 'Due this month'; left = 'due this month'; }
+  else if (progress.left === 0) { toCalving = 'Due today'; left = 'due today'; }
+  else if (-progress.left > 30) { toCalving = `${plural(n(-progress.left))} overdue`; left = `${plural(n(-progress.left))} overdue`; }
+  else { toCalving = 'Overdue'; left = 'overdue'; }
+  return { month, total, toCalving, left, overdue: progress.left < 0 };
+}
