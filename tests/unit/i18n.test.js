@@ -41,3 +41,20 @@ describe('translate', () => {
     }
   });
 });
+
+describe('breeding protocol texts', () => {
+  it('translates the due-time sentences and the step line', () => {
+    expect(translate('due tomorrow at 8:00 AM')).toBe('کل 8:00 صبح بجے واجب');
+    expect(translate('due in 25 min')).toBe('25 منٹ میں واجب');
+    expect(translate('overdue by 4 h')).toBe('4 گھنٹے تاخیر');
+    expect(translate('AI window 8:00 AM to 12:00 PM')).toBe('اے آئی کا وقت 8:00 صبح سے 12:00 شام تک');
+    expect(translate('Step 2 of 4: PGF2α — due tomorrow at 8:00 AM')).toBe('مرحلہ 2 از 4: PGF2α — کل 8:00 صبح بجے واجب');
+    expect(translate('Step 1 of 4: GnRH (1st injection) — due now')).toBe(`مرحلہ 1 از 4: ${ur['GnRH (1st injection)']} — ابھی واجب`);
+  });
+  it('translates date-times and result lines', () => {
+    expect(translate('13 Nov, 8:00 AM')).toBe('13 Nov، 8:00 صبح');
+    expect(translate('Done 13 Nov, 8:05 AM')).toBe('مکمل: 13 Nov، 8:05 صبح');
+    expect(translate('Inseminated · day 12')).toBe('اے آئی شدہ · دن 12');
+    expect(translate('Cancel the Ovsynch protocol?')).toBe('Ovsynch پروٹوکول منسوخ کریں؟');
+  });
+});

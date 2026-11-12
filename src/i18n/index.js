@@ -36,7 +36,7 @@ export function translate(text) {
       if (m && !multi) {
         out = tpl.replace(/\$(\d)/g, (_, i) => {
           const part = m[Number(i)] || '';
-          return ur[part] ?? part;
+          return ur[part] ?? (part.length < 90 ? translate(part) : null) ?? part;
         });
         break;
       }

@@ -4,6 +4,7 @@ import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/f
 import { state } from '../state.js';
 import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
 import { closeSheets, openSheet } from '../ui/sheets.js';
+import { breedingSectionHtml } from './protocols.js';
 import { switchTab } from '../ui/tabs.js';
 
 const $ = (id) => document.getElementById(id);
@@ -22,8 +23,11 @@ const chip = (text, cls = 'bg-slate-100 text-slate-700 border-slate-200') =>
 
 function statusChip(p) {
   if (p.sold) return chip(p.soldAsCalf ? 'Sold with mother' : 'Sold', 'bg-rose-50 text-rose-700 border-rose-200');
+  if ((p.protocols || []).some((x) => x.status === 'Active')) return chip('In breeding protocol', 'bg-amber-50 text-amber-900 border-amber-200');
   const prog = p.pregnancy && p.pregnancy.pregStatus === 'Confirmed Pregnant' ? pregnancyProgress(p.pregnancy.aiDate) : null;
   if (prog) return chip(`Pregnant · day ${prog.day}`, 'bg-emerald-50 text-emerald-800 border-emerald-200');
+  const bred = p.pregnancy && p.pregnancy.pregStatus === 'Awaiting PD Check' ? pregnancyProgress(p.pregnancy.aiDate) : null;
+  if (bred && p.pregnancy.protocolId) return chip(`Inseminated · day ${bred.day}`, 'bg-amber-50 text-amber-900 border-amber-200');
   if (p.goat || p.horse) return chip(escapeHtml(p.record.status || (p.horse ? 'Active' : 'In flock')), p.inHerd ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-rose-50 text-rose-700 border-rose-200');
   return p.inHerd ? chip('In herd') : chip('Not in herd list');
 }
@@ -203,6 +207,7 @@ function profileHtml(p) {
     </div>
     ${salePanel(p)}
     ${pregnancyPanel(p)}
+    ${breedingSectionHtml(p)}
     ${facts.length ? `<dl class="grid grid-cols-2 gap-2">${facts.map(([k, v]) => `
       <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5"><dt class="text-[10px] uppercase font-semibold text-slate-400">${k}</dt><dd class="text-xs font-bold text-slate-800 mt-0.5">${v}</dd></div>`).join('')}</dl>` : ''}
     ${notes ? `<p class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ''}
@@ -213,6 +218,16 @@ function profileHtml(p) {
 }
 
 const formatDate = formatDisplayDate;
+
+/** Redraw the open profile in place (after a protocol step changed). */
+function refreshProfile() {
+  const box = $('profileBody').querySelector('[data-profile-tag]');
+  if (!box || $('profileSheet').classList.contains('hidden')) return;
+  const panel = $('profileSheet').querySelector('.sheet-panel');
+  const top = panel.scrollTop;
+  $('profileBody').innerHTML = profileHtml(buildProfile(box.getAttribute('data-profile-tag'), state));
+  panel.scrollTop = top;
+}
 
 export function openProfile(tag) {
   $('profileBody').innerHTML = profileHtml(buildProfile(tag, state));
@@ -261,6 +276,9 @@ export function startAdd(kind, tag = '') {
 export function initAnimals() {
   initListSearch('animalsSearch', renderAnimals);
   $('animalsFilter').addEventListener('change', renderAnimals);
+
+  document.addEventListener('profile-refresh', refreshProfile);
+  document.addEventListener('open-profile', (e) => openProfile(e.detail.tag));
 
   document.addEventListener('click', (e) => {
     const open = e.target.closest('[data-open-profile]');

@@ -103,3 +103,32 @@ describe('reminder scheduler', () => {
     expect(plugin.cancel).toHaveBeenCalledWith({ notifications: [{ id: 1 }, { id: 2 }] });
   });
 });
+
+describe('breeding protocol reminders (to the hour)', () => {
+  const task = (over = {}) => ({
+    id: 't1', category: 'Breeding Protocol', protocolId: 'p1', stepKey: 'pgf', type: 'PGF2α', target: 'Rani',
+    dueAt: '2026-11-05T08:00', status: 'Scheduled', dateGiven: '2026-11-05', intervalDays: 0, ...over
+  });
+  it('gives a heads-up 30 minutes before and a reminder at the exact time', () => {
+    const r = buildReminders({ healthRecords: [task()] }, now);
+    expect(r.map((x) => [x.title, x.at.getTime()])).toEqual([
+      ['PGF2α in 30 minutes', new Date(2026, 10, 5, 7, 30).getTime()],
+      ['PGF2α due now', new Date(2026, 10, 5, 8, 0).getTime()]
+    ]);
+    expect(r[0].body).toContain('Rani');
+  });
+  it('keeps the minutes (not 08:00 like vaccine reminders) and mentions the AI window', () => {
+    const r = buildReminders({ healthRecords: [task({ stepKey: 'ftai', type: 'FTAI (timed AI)', dueAt: '2026-11-06T10:20', windowStart: '2026-11-06T08:20', windowEnd: '2026-11-06T12:20' })] }, now);
+    expect(r[1].at.getTime()).toBe(new Date(2026, 10, 6, 10, 20).getTime());
+    expect(r[1].body).toContain('AI window 8:20 AM to 12:20 PM');
+  });
+  it('skips done or cancelled steps and times that already passed', () => {
+    expect(buildReminders({ healthRecords: [task({ status: 'Done' }), task({ id: 't2', status: 'Cancelled' })] }, now)).toEqual([]);
+    expect(buildReminders({ healthRecords: [task({ dueAt: '2026-10-29T08:00' })] }, now)).toEqual([]);
+    expect(buildReminders({ healthRecords: [task({ dueAt: 'garbage' })] }, now)).toEqual([]);
+  });
+  it('never treats a protocol step like a vaccine booster', () => {
+    const r = buildReminders({ healthRecords: [task({ dueAt: '2026-11-05T08:00', intervalDays: 0 })] }, now);
+    expect(r.some((x) => /due in 3 days|due today/.test(x.title))).toBe(false);
+  });
+});

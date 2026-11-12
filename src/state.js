@@ -17,7 +17,8 @@ const STORAGE_KEYS = {
   horses: 'dairy_farm_v1_horses',
   lands: 'dairy_farm_v1_lands',
   crops: 'dairy_farm_v1_crops',
-  farmProfile: 'dairy_farm_v1_farm'
+  farmProfile: 'dairy_farm_v1_farm',
+  protocols: 'dairy_farm_v1_protocols'
 };
 
 export const COLLECTIONS = Object.keys(STORAGE_KEYS);

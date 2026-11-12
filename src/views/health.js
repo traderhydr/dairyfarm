@@ -3,7 +3,11 @@ import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { todayStr } from '../lib/dates.js';
 import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
+import { isProtocolTask } from '../lib/protocols.js';
 import { showToast } from '../ui/toast.js';
+import { protocolTaskCard } from './protocols.js';
+
+let healthFilter = 'all'; // all | protocol | vaccine
 
 function updateHealthPreview() {
   const select = document.getElementById('healthType');
@@ -29,13 +33,26 @@ export function renderHealth() {
   emptyState.classList.add('hidden');
 
   const query = searchQuery('healthSearch');
-  const shown = state.healthRecords.filter((r) => matchesSearch(r, query));
+  document.querySelectorAll('#healthFilter [data-hfilter]').forEach((b) => {
+    b.setAttribute('aria-selected', String(b.getAttribute('data-hfilter') === healthFilter));
+  });
+  let shown = state.healthRecords.filter((r) => matchesSearch(r, query)
+    && (healthFilter === 'all' || (healthFilter === 'protocol') === isProtocolTask(r)));
+  if (healthFilter === 'protocol') {
+    // open steps first, soonest first; finished ones after
+    shown = shown.slice().sort((a, b) => (a.status === 'Scheduled' ? 0 : 1) - (b.status === 'Scheduled' ? 0 : 1)
+      || String(a.dueAt).localeCompare(String(b.dueAt)));
+  }
   if (shown.length === 0) {
     container.innerHTML = noMatchHtml('healthSearch');
     return;
   }
 
   shown.forEach(rec => {
+    if (isProtocolTask(rec)) {
+      container.appendChild(protocolTaskCard(rec));
+      return;
+    }
     const nextDue = addDays(rec.dateGiven, Number(rec.intervalDays) || 90);
     const isDone = rec.status === 'Booster Completed';
     const badgeClass = isDone
@@ -86,6 +103,12 @@ export function renderHealth() {
 
 export function initHealth() {
   initListSearch('healthSearch', renderHealth);
+  document.getElementById('healthFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-hfilter]');
+    if (!btn) return;
+    healthFilter = btn.getAttribute('data-hfilter');
+    renderHealth();
+  });
   const editor = createEditor({
     sheetId: 'healthSheet', formId: 'healthForm', editTitle: 'Edit Health Record', addOnly: ['healthSyncExpense'],
     onReset: () => { document.getElementById('healthDateGiven').value = todayStr(); updateHealthPreview(); }

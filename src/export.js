@@ -50,6 +50,10 @@ export function exportFarmCsv() {
     rows.push(['Crops', c.season + ' ' + c.year, cropDisplayName(c), c.status || 'Growing', 'Cost: Rs. ' + t.cost + ' | Income: Rs. ' + t.income + ' | ' + (t.net >= 0 ? 'Profit' : 'Loss') + ': Rs. ' + Math.abs(t.net), c.area + ' ' + c.areaUnit + ' | ' + (c.ownership === 'Theeka' ? 'Theeka' : 'Own') + ' | ' + (c.notes || '')]);
   });
 
+  state.protocols.forEach(p => {
+    rows.push(['Breeding Protocols', (p.day0 || '').replace('T', ' '), p.animalTag, p.status, p.templateName + (p.aiAt ? ' | AI ' + p.aiAt.replace('T', ' ') : ''), (p.sire || '') + (p.pdResult ? ' | PD: ' + p.pdResult : '')]);
+  });
+
   state.wachiList.forEach(w => {
     rows.push(['Wachi (Heifers)', w.ageMonths + ' Months', w.tag, w.stage, w.weightKg + ' kg', w.breed + ' | ' + (w.notes || '')]);
   });

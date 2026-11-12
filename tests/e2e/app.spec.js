@@ -1458,6 +1458,13 @@ test.describe('hostile data (a restored backup or the cloud could contain anythi
   test('no field of any record can run script or inject markup, anywhere in the app', async ({ page }) => {
     const PAYLOAD = '<img src=x onerror="window.__pwned=1"><b>pwn</b>';
     await loadSample(page);
+    await page.evaluate(() => {
+      const h = JSON.parse(localStorage.getItem('dairy_farm_v1_health'));
+      h.unshift({ id: 'ptask-x', category: 'Breeding Protocol', protocolId: 'proto-x', stepIndex: 0, stepKey: 'gnrh1', target: 'Cow #14 (Rani)', type: 'GnRH', dueAt: '2026-11-12T08:00', windowStart: '2026-11-12T08:00', windowEnd: '2026-11-12T10:00', status: 'Scheduled' });
+      localStorage.setItem('dairy_farm_v1_health', JSON.stringify(h));
+      localStorage.setItem('dairy_farm_v1_protocols', JSON.stringify([{ id: 'proto-x', animalTag: 'Cow #14 (Rani)', template: 'ovsynch', templateName: 'Ovsynch', day0: '2026-11-12T08:00', status: 'Active', steps: 4 },
+        { id: 'proto-y', animalTag: 'Cow #14 (Rani)', template: 'ovsynch', templateName: 'Ovsynch', day0: '2026-10-01T08:00', status: 'Bred', bredVia: 'FTAI', aiAt: '2026-10-11T10:00', sire: 'x', pdResult: 'Pregnant', steps: 4 }]));
+    });
     // replace every text and number in every collection with the payload (record ids stay, so the app can still find them)
     await page.evaluate((payload) => {
       const poison = (v, key) => {
@@ -1613,5 +1620,204 @@ test.describe('farm profile on the home screen', () => {
     await expect(page.locator('#farmCard img')).toHaveCount(0);
     expect(await page.evaluate(() => window.__p)).toBeUndefined();
     await expect(page.locator('#farmName')).toHaveText('<b>Farm</b>');
+  });
+});
+
+test.describe('breeding protocols', () => {
+  const read = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
+  const openProfile = async (page, tag) => {
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator(`#animalsListContainer [data-open-profile="${tag}"]`).click();
+  };
+  const startFromProfile = async (page, tag, { template = 'ovsynch', day0 = '2026-11-12T08:00' } = {}) => {
+    await openProfile(page, tag);
+    await page.locator('#profileSheet [data-protocol-start]').click();
+    await fill(page, 'protocolTemplate', template);
+    await fill(page, 'protocolDay0', day0);
+    await submit(page, 'protocolStartForm');
+  };
+
+  test('start Ovsynch from the profile: timed tasks appear in the Treatment list, progress shows in the profile', async ({ page }) => {
+    await loadSample(page);
+    await openProfile(page, 'Cow #14 (Rani)');
+    await expect(page.locator('[data-breeding-section]')).toContainText('No breeding protocols yet');
+    await page.locator('#profileSheet [data-protocol-start]').click();
+    await expect(page.locator('#protocolStartSheet')).toBeVisible();
+    await expect(page.locator('#protocolAnimals input:checked')).toHaveValue('Cow #14 (Rani)');   // preselected
+    await fill(page, 'protocolDay0', '2026-11-12T08:00');
+    await expect(page.locator('#protocolPreview')).toContainText('GnRH (1st injection)');
+    await expect(page.locator('#protocolPreview')).toContainText('12 Nov, 8:00 AM');
+    await expect(page.locator('#protocolPreview')).toContainText('19 Nov, 8:00 AM');           // +168 h
+    await expect(page.locator('#protocolPreview')).toContainText('21 Nov, 4:00 PM');           // +224 h
+    await expect(page.locator('#protocolPreview')).toContainText('22 Nov, 10:00 AM');          // +242 h
+    await expect(page.locator('#protocolPreview')).toContainText('AI window 8:00 AM to 12:00 PM');
+    await submit(page, 'protocolStartForm');
+
+    await expect(page.locator('#profileSheet')).toBeVisible();                                   // back to her profile
+    const card = page.locator('[data-active-protocol]');
+    await expect(card).toContainText('Ovsynch');
+    await expect(card).toContainText('Step 1 of 4: GnRH (1st injection)');
+    await expect(card).toContainText('overdue');                                                 // Day 0 was in the past
+    await expect(page.locator('#profileBody')).toContainText('In breeding protocol');
+
+    const tasks = (await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol');
+    expect(tasks.map((t) => [t.type, t.dueAt]).sort((a, b) => a[1].localeCompare(b[1]))).toEqual([
+      ['GnRH (1st injection)', '2026-11-12T08:00'], ['PGF2α', '2026-11-19T08:00'], ['GnRH (2nd injection)', '2026-11-21T16:00'], ['FTAI (timed AI)', '2026-11-22T10:00']
+    ]);
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabHealthBtn');
+    await page.locator('#healthFilter [data-hfilter="protocol"]').click();
+    await expect(page.locator('[data-protocol-task-card]')).toHaveCount(4);
+    await expect(page.locator('[data-protocol-task-card]').first()).toContainText('GnRH (1st injection)');
+    await expect(page.locator('[data-protocol-task-card]').first()).toContainText('Breeding Protocol');
+    await page.locator('#healthFilter [data-hfilter="vaccine"]').click();
+    await expect(page.locator('[data-protocol-task-card]')).toHaveCount(0);
+  });
+
+  test('start a batch from the Treatment section; a cow already in a protocol is not offered again', async ({ page }) => {
+    await loadSample(page);
+    await tab(page, 'tabHealthBtn');
+    await page.locator('#healthSection [data-protocol-start]').click();
+    await fill(page, 'protocolTemplate', 'cidr-synch');
+    await fill(page, 'protocolDay0', '2026-11-12T08:00');
+    await page.locator('#protocolAnimals input[value="Cow #07 (Chandi)"]').check();
+    await page.locator('#protocolAnimals input[value="Cow #14 (Rani)"]').check();
+    await submit(page, 'protocolStartForm');
+    const stored = await read(page, 'dairy_farm_v1_protocols');
+    expect(stored).toHaveLength(2);
+    expect((await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol')).toHaveLength(10);   // 5 steps each
+
+    await page.locator('#healthSection [data-protocol-start]').click();
+    await expect(page.locator('#protocolAnimals input[value="Cow #07 (Chandi)"]')).toBeDisabled();
+    await expect(page.locator('#protocolAnimals')).toContainText('already in a protocol');
+  });
+
+  test('mark steps done, then the final AI: status, countdown and the PD reminder follow', async ({ page }) => {
+    await loadSample(page);
+    await startFromProfile(page, 'Wachi #01 (Noori)');
+    for (let i = 0; i < 3; i++) await page.locator('[data-active-protocol] [data-protocol-done]').first().click();
+    await expect(page.locator('[data-active-protocol]')).toContainText('Step 4 of 4: FTAI (timed AI)');
+    await expect(page.locator('[data-active-protocol] [role="progressbar"]')).toHaveAttribute('aria-valuenow', '75');
+    await page.locator('[data-active-protocol] [data-protocol-done]').click();                  // "Mark FTAI done"
+    await expect(page.locator('#protocolActionSheet')).toBeVisible();
+    await fill(page, 'protocolActionSire', 'Holstein Friesian #402');
+    await fill(page, 'protocolActionWhen', '2026-11-22T10:15');
+    await submit(page, 'protocolActionForm');
+
+    await expect(page.locator('#profileSheet')).toBeVisible();
+    await expect(page.locator('#profileBody')).toContainText('Inseminated');
+    await expect(page.locator('#profileBody')).toContainText('Bred (FTAI)');
+    await expect(page.locator('#profileBody')).toContainText('Holstein Friesian #402');
+    await expect(page.locator('#profileBody')).toContainText('Pregnancy Check (PD)');
+    const ai = (await read(page, 'dairy_farm_v1_breeding')).find((r) => r.protocolId);
+    expect(ai).toMatchObject({ cowTag: 'Wachi #01 (Noori)', aiDate: '2026-11-22', semenBull: 'Holstein Friesian #402', pregStatus: 'Awaiting PD Check' });
+    expect((await read(page, 'dairy_farm_v1_wachi')).find((w) => w.id === 'wachi-1').stage).toBe('Inseminated (1st AI Done)');
+    const pd = (await read(page, 'dairy_farm_v1_health')).find((h) => h.stepKey === 'pd');
+    expect(pd.dueAt).toBe('2026-12-24T08:00');
+    // she now has an expected calving date (283 days) like any AI record
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabBreedingBtn');
+    await expect(page.locator('#breedingListContainer')).toContainText('FTAI after Ovsynch');
+  });
+
+  test('Early heat / Breed now logs the AI at once and cancels the remaining injections', async ({ page }) => {
+    await loadSample(page);
+    await startFromProfile(page, 'Cow #14 (Rani)', { template: 'double-ovsynch' });
+    await page.locator('[data-active-protocol] [data-protocol-done]').first().click();          // first injection done
+    await page.locator('[data-active-protocol] [data-protocol-early]').click();
+    await expect(page.locator('#protocolActionTitle')).toHaveText('Early Heat / Breed Now');
+    await fill(page, 'protocolActionSire', 'Sahiwal #9');
+    await fill(page, 'protocolActionWhen', '2026-11-17T07:30');
+    await submit(page, 'protocolActionForm');
+    const tasks = (await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol');
+    expect(tasks.filter((t) => t.status === 'Cancelled' && t.cancelReason === 'Early heat')).toHaveLength(6);
+    expect(tasks.filter((t) => t.status === 'Done')).toHaveLength(1);
+    expect(tasks.find((t) => t.stepKey === 'pd').dueAt).toBe('2026-12-19T08:00');
+    const protocol = (await read(page, 'dairy_farm_v1_protocols'))[0];
+    expect(protocol).toMatchObject({ status: 'Bred', bredVia: 'Early heat', sire: 'Sahiwal #9' });
+    await expect(page.locator('#profileBody')).toContainText('Bred (early heat)');
+    await expect(page.locator('[data-active-protocol]')).toHaveCount(0);
+  });
+
+  test('record the PD result from the profile', async ({ page }) => {
+    await loadSample(page);
+    await startFromProfile(page, 'Wachi #01 (Noori)');
+    await page.locator('[data-active-protocol] [data-protocol-early]').click();
+    await submit(page, 'protocolActionForm');
+    await page.locator('[data-breeding-section] [data-protocol-done]').click();                  // Record PD result
+    await expect(page.locator('#protocolActionTitle')).toHaveText('Pregnancy Check (PD) Result');
+    await submit(page, 'protocolActionForm');                                                    // "Pregnant" is preselected
+    expect((await read(page, 'dairy_farm_v1_breeding')).find((r) => r.protocolId).pregStatus).toBe('Confirmed Pregnant');
+    await expect(page.locator('#profileBody')).toContainText('PD: Pregnant');
+  });
+
+  test('cancel a protocol: open steps are cancelled and it moves to the history', async ({ page }) => {
+    await loadSample(page);
+    await startFromProfile(page, 'Cow #14 (Rani)');
+    await page.locator('[data-active-protocol] [data-protocol-cancel]').click();
+    await page.locator('#modalConfirmBtn').click();
+    const tasks = (await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol');
+    expect(tasks.every((t) => t.status === 'Cancelled')).toBe(true);
+    await openProfile(page, 'Cow #14 (Rani)').catch(() => {});
+    await expect(page.locator('[data-breeding-section]')).toContainText('Cancelled');
+    await expect(page.locator('[data-active-protocol]')).toHaveCount(0);
+    await expect(page.locator('#profileSheet [data-protocol-start]')).toBeVisible();                           // she can start a new one
+  });
+
+  test('steps due soon show on the home screen with the exact time', async ({ page }) => {
+    await loadSample(page);
+    const soon = await page.evaluate(() => {
+      const d = new Date(Date.now() + 45 * 60000); const p = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+    });
+    await startFromProfile(page, 'Cow #14 (Rani)', { day0: soon });
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabFinanceBtn');
+    await page.locator('#toggleAlertsBtn').click();
+    const alert = page.locator('#alertsListContainer', { hasText: 'Breeding Protocol' });
+    await expect(alert).toContainText('GnRH (1st injection)');
+    await expect(alert).toContainText('due in');
+  });
+
+  test('Skip step keeps the protocol going', async ({ page }) => {
+    await loadSample(page);
+    await startFromProfile(page, 'Cow #14 (Rani)');
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabHealthBtn');
+    await page.locator('#healthFilter [data-hfilter="protocol"]').click();
+    await page.locator('[data-protocol-skip]').first().click();
+    const tasks = (await read(page, 'dairy_farm_v1_health')).filter((h) => h.category === 'Breeding Protocol');
+    expect(tasks.filter((t) => t.status === 'Cancelled')).toHaveLength(1);
+    expect((await read(page, 'dairy_farm_v1_protocols'))[0].status).toBe('Active');
+  });
+
+  test('goats, horses and sold animals do not get the breeding section', async ({ page }) => {
+    await loadSample(page);
+    await openProfile(page, 'Raja');
+    await expect(page.locator('[data-breeding-section]')).toHaveCount(0);
+  });
+});
+
+
+test.describe('breeding protocols in Urdu', () => {
+  test('the protocol card, the schedule and the Treatment task are translated', async ({ page }) => {
+    await loadSample(page);
+    await page.locator('#langToggleBtn').click();
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Cow #14 (Rani)"]').click();
+    await page.locator('#profileSheet [data-protocol-start]').click();
+    await expect(page.locator('#protocolStartTitle')).toHaveText('بریڈنگ پروٹوکول شروع کریں');
+    await fill(page, 'protocolDay0', '2099-01-10T08:00');
+    await expect(page.locator('#protocolPreview')).toContainText('GnRH (پہلا ٹیکہ)');
+    await expect(page.locator('#protocolPreview')).toContainText('اے آئی کا وقت');
+    await submit(page, 'protocolStartForm');
+    const card = page.locator('[data-active-protocol]');
+    await expect(card).toContainText('مرحلہ 1 از 4');
+    await expect(card).toContainText('مرحلہ مکمل نشان زد کریں');
+    await expect(card).toContainText('جلدی ہیٹ / ابھی بریڈ کریں');
+    await page.keyboard.press('Escape');
+    await tab(page, 'tabHealthBtn');
+    await page.locator('#healthFilter [data-hfilter="protocol"]').click();
+    await expect(page.locator('[data-protocol-task-card]').first()).toContainText('بریڈنگ پروٹوکول');
   });
 });

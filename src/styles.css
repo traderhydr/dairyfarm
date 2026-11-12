@@ -864,3 +864,6 @@ body.dark-mode [class~="text-rose-900"] { color: #fda4af; }
 .farm-edit { flex: none; width: 2.25rem; height: 2.25rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
 .farm-edit:hover { background: var(--surface-2); color: var(--text); }
 .farm-card.farm-empty .farm-sub { white-space: normal; overflow: visible; text-overflow: clip; }
+
+/* confirmations asked from inside a sheet (cancel a protocol) must sit above it */
+#confirmModal { z-index: 90; }

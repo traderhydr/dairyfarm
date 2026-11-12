@@ -26,6 +26,7 @@ import { initI18n } from './i18n/index.js';
 import { initMode } from './ui/mode.js';
 import { initGoats, renderGoats } from './views/goats.js';
 import { initHorses, renderHorses } from './views/horses.js';
+import { initProtocols } from './views/protocols.js';
 import { initHealth, renderHealth } from './views/health.js';
 import { initMilkers, renderMilkers } from './views/milkers.js';
 import { initSales, renderSales } from './views/sales.js';
@@ -97,6 +98,7 @@ function boot() {
   initFarm();
   initHorses();
   initHealth();
+  initProtocols();
   initMenu();
   initExport();
   initSales();

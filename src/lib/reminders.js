@@ -1,5 +1,6 @@
 // Works out which farm events deserve a phone notification. Pure: no device APIs here.
 import { addDaysDate } from './dates.js';
+import { BREEDING_CATEGORY, FTAI_STEP, clockText, parseLocal } from './protocols.js';
 
 const REMINDER_HOUR = 8;
 const MAX_REMINDERS = 60; // Android caps scheduled alarms; the nearest ones matter most
@@ -41,6 +42,16 @@ export function buildReminders(state, now = new Date()) {
   }
 
   for (const h of state.healthRecords || []) {
+    // breeding-protocol steps are timed to the hour: a heads-up 30 minutes before and another at the time itself
+    if (h.category === BREEDING_CATEGORY) {
+      const due = h.status === 'Scheduled' ? parseLocal(h.dueAt) : null;
+      if (!due) continue;
+      const windowNote = h.stepKey === FTAI_STEP && parseLocal(h.windowStart) && parseLocal(h.windowEnd)
+        ? ` AI window ${clockText(parseLocal(h.windowStart))} to ${clockText(parseLocal(h.windowEnd))}.` : '';
+      add(`${h.id}:p30`, new Date(due.getTime() - 30 * 60000), `${h.type} in 30 minutes`, `${h.target}: breeding protocol step at ${clockText(due)}.${windowNote}`);
+      add(`${h.id}:p0`, due, `${h.type} due now`, `${h.target}: breeding protocol step is due now.${windowNote}`);
+      continue;
+    }
     if (h.status === 'Booster Completed' || !h.dateGiven) continue;
     const interval = Number(h.intervalDays) || 90;
     add(`${h.id}:soon`, at(h.dateGiven, interval - 3), `${h.type} due in 3 days`, `${h.target}: next dose is coming up.`);

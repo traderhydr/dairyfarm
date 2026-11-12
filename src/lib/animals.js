@@ -1,3 +1,5 @@
+import { BREEDING_CATEGORY } from './protocols.js';
+
 // Animal profiles are built from the records that already exist (Milkers, Wachi, Cow AI, Health, Sold Cows),
 // joined by the animal's tag. Tags are free text, so two tags are "the same animal" when all the words of the
 // shorter one appear in the longer one ("Cow #07" matches "Cow #07 (Chandi)", but not "Cow #14 (Rani)").
@@ -41,9 +43,14 @@ export function buildProfile(tag, state) {
     .filter((r) => sameAnimal(r.cowTag, displayTag))
     .sort((a, b) => String(b.aiDate).localeCompare(String(a.aiDate)));
 
+  // breeding-protocol steps are shown in the Breeding section, not in the treatment list
   const health = (state.healthRecords || [])
-    .filter((h) => sameAnimal(h.target, displayTag))
+    .filter((h) => h.category !== BREEDING_CATEGORY && sameAnimal(h.target, displayTag))
     .sort((a, b) => String(b.dateGiven).localeCompare(String(a.dateGiven)));
+
+  const protocols = (state.protocols || [])
+    .filter((p) => sameAnimal(p.animalTag, displayTag))
+    .sort((a, b) => String(b.day0).localeCompare(String(a.day0)));
 
   const sales = salesOf(displayTag, state.cattleSales);
   const soldAsCalf = (sales[0]?.withCalves || []).some((c) => sameAnimal(c.tag, displayTag)) && !sameAnimal(sales[0].cowTag, displayTag);
@@ -73,7 +80,7 @@ export function buildProfile(tag, state) {
   const sold = sales.length > 0 || ((goat || horse) && (goat || horse).status === 'Sold') || false;
 
   return {
-    tag: displayTag, kind, milker, wachi, goat, horse, record, dam, ai, health, calves, sales, sold, soldAsCalf,
+    tag: displayTag, kind, milker, wachi, goat, horse, record, dam, ai, health, protocols, calves, sales, sold, soldAsCalf,
     pregnancy: open || null,
     inHerd: Boolean(record) && !sold && !['Sold', 'Died'].includes(record.status)
   };

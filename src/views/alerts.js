@@ -1,5 +1,6 @@
 import { sumAmounts } from '../lib/calc.js';
 import { addDays, escapeHtml, formatCurrency } from '../lib/format.js';
+import { BREEDING_CATEGORY, FTAI_STEP, clockText, describeDue, parseLocal } from '../lib/protocols.js';
 import { daysLeft, goalProgress } from '../lib/savings.js';
 import { state } from '../state.js';
 
@@ -7,6 +8,23 @@ export function renderAlerts() {
   const container = document.getElementById('alertsListContainer');
   const badge = document.getElementById('alertsCountBadge');
   const alerts = [];
+
+  // 0. Breeding-protocol steps: exact times, so the nearest first. Shown from 3 days ahead; overdue ones stay until done.
+  const soon = Date.now() + 72 * 3600000;
+  state.healthRecords
+    .filter((h) => h.category === BREEDING_CATEGORY && h.status === 'Scheduled' && parseLocal(h.dueAt) && parseLocal(h.dueAt).getTime() <= soon)
+    .sort((a, b) => String(a.dueAt).localeCompare(String(b.dueAt)))
+    .forEach((h) => {
+      const due = describeDue(h.dueAt);
+      const win = h.stepKey === FTAI_STEP && parseLocal(h.windowStart) && parseLocal(h.windowEnd)
+        ? ` • AI window ${clockText(parseLocal(h.windowStart))} to ${clockText(parseLocal(h.windowEnd))}` : '';
+      alerts.push({
+        tag: 'Breeding Protocol',
+        color: due.state === 'overdue' ? 'bg-rose-100 text-rose-900 border-rose-200' : 'bg-amber-100 text-amber-900 border-amber-300',
+        title: h.target,
+        detail: `${h.type} — ${due.text}${win}`
+      });
+    });
 
   // 1. Cow AI & Pregnancy Checks (21-day heat, 60-day PD, 223-day dry-off / 283-day calving)
   state.breedingRecords.forEach(rec => {
@@ -55,7 +73,7 @@ export function renderAlerts() {
 
   // 4. Upcoming Vaccination & Deworming Boosters
   state.healthRecords.forEach(h => {
-    if (h.status !== 'Booster Completed') {
+    if (h.category !== BREEDING_CATEGORY && h.status !== 'Booster Completed') {
       alerts.push({
         tag: 'Health / Vaccine Due',
         color: 'bg-teal-100 text-teal-900 border-teal-300',
