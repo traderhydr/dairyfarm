@@ -14,7 +14,7 @@ const TRANSACTIONS = [
     date: '2026-10-20',
     category: 'Concentrate / Wanda',
     amount: 30000,
-    note: '2nd Wanda installment (October 2026 Stock)'
+    note: '2nd Feed installment (October 2026 Stock)'
   },
   {
     id: 'tx-3',
@@ -50,7 +50,7 @@ const WANDA = [
     id: 'wanda-1',
     monthLabel: 'October 2026 Stock',
     purchaseDate: '2026-10-01',
-    supplier: 'Punjab Feeds Dealer (20% CP Dairy Wanda)',
+    supplier: 'Punjab Feeds Dealer (20% CP Dairy Feed)',
     bags: 30,
     ratePerBag: 4000,
     totalBill: 120000,
@@ -70,7 +70,7 @@ const MILKERS = [
     morningMilk: 12.5,
     eveningMilk: 11.5,
     status: 'Peak / High Yield',
-    notes: '8 kg high-protein Wanda + green barseem daily'
+    notes: '8 kg high-protein feed + green barseem daily'
   },
   {
     id: 'milker-2',
@@ -79,7 +79,7 @@ const MILKERS = [
     morningMilk: 8.0,
     eveningMilk: 7.5,
     status: 'Steady Milking',
-    notes: '5 kg Wanda daily; recently inseminated'
+    notes: '5 kg feed daily; recently inseminated'
   }
 ];
 
@@ -100,7 +100,7 @@ const WACHI = [
     ageMonths: 9,
     weightKg: 155,
     stage: 'Growing Wachi (6–15 Months)',
-    notes: 'Dewormed 15 Oct; 2 kg growth Wanda + green fodder'
+    notes: 'Dewormed 15 Oct; 2 kg growth feed + green fodder'
   }
 ];
 

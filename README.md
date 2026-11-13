@@ -1,7 +1,7 @@
 # Dairy Farm Manager
 
 Offline-first farm record keeping for dairy farmers: cashbook, cow AI & pregnancy tracking, monthly
-Wanda (feed) stock and installments, milkers, Wachi (heifers), vaccination/deworming, sold-cow log and
+Feed stock and installments, milkers, Wachi (heifers), vaccination/deworming, sold-cow log and
 Doodhi milk-buyer khata. Runs as an installable web app (PWA) and as an Android app (Capacitor).
 
 - Works fully **offline**; records are stored on the phone first.

@@ -145,7 +145,7 @@ export function renderWanda() {
       </form>
       ` : `
       <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 text-xs text-emerald-800 font-medium">
-        All installments for this monthly Wanda stock are settled!
+        All installments for this monthly Feed stock are settled!
       </div>
       `}
     `;
@@ -156,16 +156,16 @@ export function renderWanda() {
 export function initWanda() {
   initListSearch('wandaSearch', renderWanda);
   const editor = createEditor({
-    sheetId: 'wandaSheet', formId: 'wandaForm', editTitle: 'Edit Wanda Stock',
+    sheetId: 'wandaSheet', formId: 'wandaForm', editTitle: 'Edit Feed Stock',
     addOnly: ['wandaInitialPaid', 'wandaSyncAdvance'],
     onReset: () => { document.getElementById('wandaPurchaseDate').value = todayStr(); updateWandaFormPreview(); }
   });
-  // Live Wanda Bill Preview
+  // Live Feed Bill Preview
   ['wandaBags', 'wandaRatePerBag', 'wandaInitialPaid'].forEach(id => {
     document.getElementById(id).addEventListener('input', updateWandaFormPreview);
   });
 
-  // Add New Monthly Wanda Stock
+  // Add New Monthly Feed Stock
   document.getElementById('wandaForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const monthLabel = document.getElementById('wandaMonth').value.trim();
@@ -184,7 +184,7 @@ export function initWanda() {
     if (existing) {
       Object.assign(existing, { monthLabel, purchaseDate, supplier, bags, ratePerBag, totalBill });
       commit();
-      showToast('Wanda stock updated. Payments and Cashbook entries are unchanged.');
+      showToast('Feed stock updated. Payments and Cashbook entries are unchanged.');
       return;
     }
 
@@ -205,7 +205,7 @@ export function initWanda() {
           date: purchaseDate,
           category: 'Concentrate / Wanda',
           amount: initialPaid,
-          note: `Wanda advance (${monthLabel} - ${bags} bags)`
+          note: `Feed advance (${monthLabel} - ${bags} bags)`
         });
       }
     }
@@ -228,10 +228,10 @@ export function initWanda() {
     document.getElementById('wandaRatePerBag').value = '';
     document.getElementById('wandaInitialPaid').value = '0';
     updateWandaFormPreview();
-    showToast('Monthly Wanda stock added!');
+    showToast('Monthly Feed stock added!');
   });
 
-  // Pay Wanda Installment (Event Delegation)
+  // Pay Feed Installment (Event Delegation)
   document.getElementById('wandaListContainer').addEventListener('submit', (e) => {
     const form = e.target.closest('[data-installment-form]');
     if (!form) return;
@@ -243,7 +243,7 @@ export function initWanda() {
 
     const instDate = form.elements.instDate.value;
     const instAmount = parseFloat(form.elements.instAmount.value);
-    const instNote = form.elements.instNote.value.trim() || 'Monthly Wanda installment';
+    const instNote = form.elements.instNote.value.trim() || 'Monthly Feed installment';
     const syncCashbook = form.elements.syncCashbook.checked;
 
     if (!instDate || isNaN(instAmount) || instAmount <= 0) return;
@@ -268,10 +268,10 @@ export function initWanda() {
     }
 
     commit();
-    showToast('Wanda installment recorded!');
+    showToast('Feed installment recorded!');
   });
 
-  // Delete Wanda Installment or Entire Wanda Batch
+  // Delete Feed Installment or Entire Feed Batch
   document.getElementById('wandaListContainer').addEventListener('click', (e) => {
     const editBtn = e.target.closest('[data-edit-wanda]');
     if (editBtn) {
@@ -298,12 +298,12 @@ export function initWanda() {
       return;
     }
 
-    const delWandaBtn = e.target.closest('[data-delete-wanda]');
-    if (delWandaBtn) {
-      const batchId = delWandaBtn.getAttribute('data-delete-wanda');
+    const delFeedBtn = e.target.closest('[data-delete-wanda]');
+    if (delFeedBtn) {
+      const batchId = delFeedBtn.getAttribute('data-delete-wanda');
       state.wandaBatches = state.wandaBatches.filter(b => b.id !== batchId);
       commit();
-      showToast('Wanda stock record deleted.');
+      showToast('Feed stock record deleted.');
     }
   });
 

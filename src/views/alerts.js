@@ -59,13 +59,13 @@ export function renderAlerts() {
     }
   });
 
-  // 3. Monthly Wanda Pending Installments
+  // 3. Monthly Feed Pending Installments
   state.wandaBatches.forEach(b => {
     const paid = sumAmounts(b.installments);
     const due = Math.max(0, (Number(b.totalBill) || 0) - paid);
     if (due > 0) {
       alerts.push({
-        tag: 'Wanda Installment Due',
+        tag: 'Feed Installment Due',
         color: 'bg-indigo-100 text-indigo-900 border-indigo-300',
         title: b.monthLabel,
         detail: `${formatCurrency(due)} remaining due to ${b.supplier}`

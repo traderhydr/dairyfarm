@@ -30,7 +30,7 @@ Cows and breeding
 - Wachi (heifers): age, weight and when they are ready for first AI
 
 Feed, health and milk buyers
-- Monthly Wanda (feed) stock with installments and the balance still due
+- Monthly feed stock with installments and the balance still due
 - Vaccination and deworming records with the next due date
 - Doodhi (milk buyer) khata with advances and payments
 - Sold cows log with cost, sale price and profit
@@ -79,7 +79,7 @@ Your records stay on your phone unless you create an account. With an account, e
 | --- | --- |
 | App icon (512x512) | `app-icon-512.png` |
 | Feature graphic (1024x500) | `feature-graphic-1024x500.png` |
-| Phone screenshots (upload 2 to 8, in this order) | `screenshots/1-cashbook.png` to `screenshots/8-urdu.png` (1080x1920: cashbook, ledgers, a ledger, Cow AI, animal profile, crops, Wanda, Urdu) |
+| Phone screenshots (upload 2 to 8, in this order) | `screenshots/1-cashbook.png` to `screenshots/8-urdu.png` (1080x1920: cashbook, ledgers, a ledger, Cow AI, animal profile, crops, Feed, Urdu) |
 
 The screenshots use the app's sample data. Regenerate them after big UI changes with `scripts/make-store-assets.mjs`.
 

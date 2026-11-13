@@ -1,5 +1,5 @@
 // Ledgers split the cashbook into separate books. Entries without a ledger (older data, entries
-// created by Wanda or Savings) belong to the built-in "General" ledger, which cannot be removed.
+// created by Feed or Savings) belong to the built-in "General" ledger, which cannot be removed.
 export const GENERAL_ID = 'general';
 export const GENERAL_NAME = 'General';
 

@@ -30,17 +30,17 @@ export function renderSummary() {
   animateNumber(netEl, net, (v) => (v < 0 ? '- ' : '') + formatCurrency(Math.abs(v)));
   netEl.className = 'text-lg sm:text-xl font-extrabold mt-1.5 ' + (net >= 0 ? 'text-emerald-700' : 'text-rose-600');
 
-  let totalWandaBill = 0;
-  let totalWandaPaid = 0;
+  let totalFeedBill = 0;
+  let totalFeedPaid = 0;
   state.wandaBatches.forEach(batch => {
-    totalWandaBill += Number(batch.totalBill) || 0;
+    totalFeedBill += Number(batch.totalBill) || 0;
     (batch.installments || []).forEach(inst => {
-      totalWandaPaid += Number(inst.amount) || 0;
+      totalFeedPaid += Number(inst.amount) || 0;
     });
   });
-  const wandaRemaining = Math.max(0, totalWandaBill - totalWandaPaid);
+  const wandaRemaining = Math.max(0, totalFeedBill - totalFeedPaid);
   animateNumber(document.getElementById('wandaDueDisplay'), wandaRemaining, formatCurrency);
-  document.getElementById('wandaPaidSubDisplay').textContent = formatCurrency(totalWandaPaid) + ' paid so far';
+  document.getElementById('wandaPaidSubDisplay').textContent = formatCurrency(totalFeedPaid) + ' paid so far';
 
   const pregnantCount = state.breedingRecords.filter(r => r.pregStatus === 'Confirmed Pregnant').length;
   document.getElementById('pregnantCountDisplay').textContent = pregnantCount + ' Pregnant';

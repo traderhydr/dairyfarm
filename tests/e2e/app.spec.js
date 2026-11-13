@@ -170,7 +170,7 @@ test.describe('layout', () => {
 
   test('bottom navigation has short labels and More opens the menu', async ({ page }) => {
     const labels = await page.locator('nav[aria-label="Farm Modules"] .nav-item span:not(.nav-badge):not(.nav-ico)').allTextContents();
-    expect(labels).toEqual(['Cashbook', 'Animals', 'Cow AI', 'Wanda', 'More']);
+    expect(labels).toEqual(['Cashbook', 'Animals', 'Cow AI', 'Feed', 'More']);
     await page.locator('#openMoreBtn').click();
     await expect(page.locator('#sideMenuDrawer')).not.toHaveClass(/-translate-x-full/);
     await page.locator('#tabWachiBtn').click();
@@ -1454,7 +1454,7 @@ test.describe('Wanda totals', () => {
     await loadSample(page);
     await page.locator('#langToggleBtn').click();
     await tab(page, 'tabWandaBtn');
-    await expect(page.locator('#wandaSummary')).toContainText('ونڈا کا کل خرچ');
+    await expect(page.locator('#wandaSummary')).toContainText('فیڈ کا کل خرچ');
     await expect(page.locator('#wandaSummary')).toContainText('کل ادا شدہ');
     await expect(page.locator('#wandaSummaryBags')).toContainText('30 بوریاں');
   });

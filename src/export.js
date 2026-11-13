@@ -27,7 +27,7 @@ export function exportFarmCsv() {
   state.wandaBatches.forEach(w => {
     const paid = sumAmounts(w.installments);
     const due = Math.max(0, (Number(w.totalBill) || 0) - paid);
-    rows.push(['Monthly Wanda Stock', w.purchaseDate, w.monthLabel, 'Due: Rs. ' + due, 'Total: Rs. ' + w.totalBill + ' (' + w.bags + ' bags)', w.supplier]);
+    rows.push(['Monthly Feed Stock', w.purchaseDate, w.monthLabel, 'Due: Rs. ' + due, 'Total: Rs. ' + w.totalBill + ' (' + w.bags + ' bags)', w.supplier]);
   });
 
   state.milkersList.forEach(m => {

@@ -285,7 +285,7 @@
       <button type="button" data-quick="milk" class="quick-tile"><span class="quick-ico" aria-hidden="true">🥛</span><span>Milk</span></button>
       <button type="button" data-quick="ai" class="quick-tile"><span class="quick-ico" aria-hidden="true">🐂</span><span>Cow AI</span></button>
       <button type="button" data-quick="medicine" class="quick-tile"><span class="quick-ico" aria-hidden="true">💉</span><span>Medicine</span></button>
-      <button type="button" data-quick="wanda" class="quick-tile"><span class="quick-ico" aria-hidden="true">🌽</span><span>Wanda</span></button>
+      <button type="button" data-quick="wanda" class="quick-tile"><span class="quick-ico" aria-hidden="true">🌽</span><span>Feed</span></button>
     </section>
 
     <!-- How many animals: total, cows, buffaloes, heifers -->
@@ -320,7 +320,7 @@
 
       <div class="kpi-card bg-white p-3.5 rounded-2xl border border-slate-200/90">
         <div class="flex items-center justify-between">
-          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Wanda Due</p>
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Feed Due</p>
           <span class="kpi-ico" aria-hidden="true">🌽</span>
         </div>
         <p id="wandaDueDisplay" class="text-lg sm:text-xl font-extrabold text-indigo-600 mt-1.5">Rs. 0</p>
@@ -506,7 +506,7 @@
       </button>
       <button id="tabWandaBtn" type="button" class="nav-item">
         <span class="nav-ico" aria-hidden="true">🌽</span>
-        <span>Wanda</span>
+        <span>Feed</span>
         <span id="wandaTabBadge" class="nav-badge">0</span>
       </button>
       <button id="openMoreBtn" type="button" class="nav-item">
@@ -572,7 +572,7 @@
                 <option value="Milk Sale">Milk Sale</option>
                 <option value="Calf / Cattle Sale">Calf / Cattle Sale</option>
                 <option value="Green Fodder & Silage">Green Fodder &amp; Silage</option>
-                <option value="Concentrate / Wanda">Concentrate / Wanda</option>
+                <option value="Concentrate / Wanda">Concentrate / Feed</option>
                 <option value="Vet & Medicine">Vet &amp; Medicine</option>
                 <option value="AI & Breeding Fee">AI &amp; Breeding Fee</option>
                 <option value="Farm Labor & Bills">Farm Labor &amp; Bills</option>
@@ -853,13 +853,13 @@
 
     <!-- TAB 3: MONTHLY WANDA & INSTALLMENTS -->
     <section id="wandaSection" class="hidden grid-cols-1 gap-4">
-      <!-- Form Card: Add Monthly Wanda Stock -->
+      <!-- Form Card: Add Monthly Feed Stock -->
       <!-- Add form (slide-up sheet) -->
       <div id="wandaSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="wandaSheetTitle">
         <div class="sheet-backdrop" data-close-sheet></div>
         <div class="sheet-panel">
           <button type="button" class="sheet-close" data-close-sheet aria-label="Close">Close &times;</button>
-        <h2 id="wandaSheetTitle" class="text-base font-bold text-slate-900 pr-16">Purchase Monthly Wanda Stock</h2>
+        <h2 id="wandaSheetTitle" class="text-base font-bold text-slate-900 pr-16">Purchase Monthly Feed Stock</h2>
         <form id="wandaForm" class="mt-4 space-y-3.5">
           <div class="grid grid-cols-2 gap-3">
             <div>
@@ -874,7 +874,7 @@
 
           <div>
             <label for="wandaSupplier" class="block text-xs font-semibold text-slate-700 mb-1">Dealer / Brand Name</label>
-            <input id="wandaSupplier" type="text" placeholder="e.g. Al-flah Feed Dealer (High-Milk Wanda)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <input id="wandaSupplier" type="text" placeholder="e.g. Al-flah Feed Dealer (High-Milk Feed)" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -911,32 +911,32 @@
           </label>
 
           <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-xs transition">
-            Save Monthly Wanda Stock
+            Save Monthly Feed Stock
           </button>
         </form>
       
         </div>
       </div>
 
-      <!-- List Card: Active & Past Monthly Wanda Batches + Installment Recorder -->
+      <!-- List Card: Active & Past Monthly Feed Batches + Installment Recorder -->
       <div class="list-card space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
-            <h2 class="text-base font-bold text-slate-900"><span class="h-ico" aria-hidden="true">🌽</span>Wanda Stock</h2>
+            <h2 class="text-base font-bold text-slate-900"><span class="h-ico" aria-hidden="true">🌽</span>Feed Stock</h2>
           </div>
         </div>
 
         <div id="wandaSummary" class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-3">
           <div class="flex items-center justify-between gap-2">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Wanda Summary</p>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Feed Summary</p>
             <p id="wandaSummaryBags" class="text-xs text-slate-500"></p>
           </div>
           <div class="grid grid-cols-3 gap-2">
-            <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Wanda Cost</p><p id="wandaTotalCost" class="text-[13px] whitespace-nowrap font-extrabold text-slate-900 mt-1">Rs. 0</p></div>
+            <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Feed Cost</p><p id="wandaTotalCost" class="text-[13px] whitespace-nowrap font-extrabold text-slate-900 mt-1">Rs. 0</p></div>
             <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Paid</p><p id="wandaTotalPaid" class="text-[13px] whitespace-nowrap font-extrabold text-emerald-600 mt-1">Rs. 0</p></div>
             <div class="ledger-stat"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Balance Due</p><p id="wandaTotalDue" class="text-[13px] whitespace-nowrap font-extrabold text-rose-600 mt-1">Rs. 0</p></div>
           </div>
-          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Wanda paid"><div id="wandaTotalBar" class="goal-fill h-full rounded-full" style="width: 0%"></div></div>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Feed paid"><div id="wandaTotalBar" class="goal-fill h-full rounded-full" style="width: 0%"></div></div>
         </div>
 
         <input id="wandaSearch" type="search" placeholder="Search stock, dealer, month..." aria-label="Search stock, dealer, month..." class="list-search w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
@@ -1009,7 +1009,7 @@
 
             <div>
               <label for="milkerNotes" class="block text-xs font-semibold text-slate-700 mb-1">Feed / Ration Note</label>
-              <input id="milkerNotes" type="text" placeholder="e.g. 6 kg Wanda + silage" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <input id="milkerNotes" type="text" placeholder="e.g. 6 kg Feed + silage" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
           </div>
 

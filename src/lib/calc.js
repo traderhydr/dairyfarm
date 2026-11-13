@@ -83,7 +83,7 @@ export function dailyTotals(transactions, from, to) {
   return [...days.values()].sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Total cost, total paid, balance due and bags over all Wanda stock batches. */
+/** Total cost, total paid, balance due and bags over all Feed stock batches. */
 export function wandaTotals(batches) {
   let cost = 0;
   let paid = 0;
