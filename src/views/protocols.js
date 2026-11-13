@@ -153,7 +153,7 @@ export function breedingSectionHtml(profile) {
       ${pd}
       ${startBtn}
       ${views.length ? `<div class="rounded-xl border border-slate-200 bg-white px-3 divide-y divide-slate-100"><p class="py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Past protocols (${views.length})</p>${views.map(historyRow).join('')}</div>`
-        : !active && !pd ? '<p class="text-xs text-slate-400 italic">No breeding protocols yet.</p>' : ''}
+        : ''}
     </section>`;
 }
 

@@ -157,12 +157,13 @@ function pregnancyPanel(p) {
 
 function profileHtml(p) {
   const facts = [];
+  const hero = [];
   if (p.milker) {
     const am = Number(p.milker.morningMilk) || 0;
     const pm = Number(p.milker.eveningMilk) || 0;
-    facts.push(['Type', normalizeSpecies(p.milker.species)], ['Milk per day', `${am + pm} L (${am} AM + ${pm} PM)`], ['Status', escapeHtml(p.milker.status)], ['Breed', escapeHtml(p.milker.breed)]);
+    hero.push(['\u{1F95B}', 'Milk per day', `${am + pm} L`], ['\u{1F404}', 'Breed', escapeHtml(p.milker.breed)], ['\u{1F4C8}', 'Stage', escapeHtml(p.milker.status)]);
   } else if (p.wachi) {
-    facts.push(['Type', normalizeSpecies(p.wachi.species)], ['Age', `${escapeHtml(String(p.wachi.ageMonths))} months`], ['Weight', `${escapeHtml(String(p.wachi.weightKg))} kg`], ['Stage', escapeHtml(p.wachi.stage)], ['Breed', escapeHtml(p.wachi.breed)]);
+    hero.push(['\u{1F382}', 'Age', `${escapeHtml(String(p.wachi.ageMonths))} months`], ['\u2696\uFE0F', 'Weight', `${escapeHtml(String(p.wachi.weightKg))} kg`], ['\u{1F404}', 'Breed', escapeHtml(p.wachi.breed)]);
   } else if (p.goat) {
     const g = p.goat;
     facts.push(['Species', escapeHtml(g.species)], ['Gender', escapeHtml(g.sex)], ['Number', escapeHtml(String(g.count || 1))]);
@@ -187,7 +188,7 @@ function profileHtml(p) {
     if (a.morningMilk || a.eveningMilk) facts.push(['Milk when sold', `${(Number(a.morningMilk) || 0) + (Number(a.eveningMilk) || 0)} L/day`]);
   }
   const mother = p.dam ? ['Mother', profileLink(p.dam)] : null;
-  if (mother) facts.push(mother);
+  if (mother && !hero.length) facts.push(mother);
   const notes = (p.record && p.record.notes) || '';
 
   const ai = p.ai.map((r) => row(
@@ -217,19 +218,19 @@ function profileHtml(p) {
 
   const cattle = p.kind === 'milker' || p.kind === 'wachi' || p.kind === 'other';
   const editBtn = p.record
-    ? `<button type="button" data-profile-action="edit" class="btn-secondary text-xs py-2.5">Edit</button>
-       <button type="button" data-profile-action="delete" class="btn-secondary text-xs py-2.5 profile-delete">Delete</button>`
+    ? `<button type="button" data-profile-action="edit" class="pa-btn"><span aria-hidden="true">\u270F\uFE0F</span>Edit</button>
+       <button type="button" data-profile-action="delete" class="pa-btn profile-delete"><span aria-hidden="true">\u{1F5D1}\uFE0F</span>Delete</button>`
     : '';
   const actions = `
-    <div class="grid grid-cols-2 gap-2 pt-1">
+    <div class="profile-actions">
+      ${p.sold || !cattle ? '' : '<button type="button" data-profile-action="ai" class="pa-btn pa-main"><span aria-hidden="true">\u{1F489}</span>+ AI</button>'}
+      ${p.sold ? '' : '<button type="button" data-profile-action="treat" class="pa-btn pa-main"><span aria-hidden="true">\u{1F48A}</span>+ Treatment</button>'}
+      ${p.sold ? '' : '<button type="button" data-profile-action="sell" class="pa-btn pa-main"><span aria-hidden="true">\u{1F4B0}</span>Sell</button>'}
       ${editBtn}
-      ${p.sold ? '' : '<button type="button" data-profile-action="treat" class="btn-secondary text-xs py-2.5">+ Treatment</button>'}
-      ${p.sold || !cattle ? '' : '<button type="button" data-profile-action="ai" class="btn-secondary text-xs py-2.5">+ AI record</button>'}
-      ${p.sold ? '' : '<button type="button" data-profile-action="sell" class="btn-primary text-xs py-2.5">Mark sold</button>'}
     </div>
     ${!p.record && !p.sold ? `
     <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-xs text-amber-900 space-y-2">
-      <p>${escapeHtml(p.tag)} is not in your herd list yet. Add her so her details are kept:</p>
+      <p>Not in herd yet:</p>
       <div class="flex flex-wrap gap-2">
         <button type="button" data-profile-add="milker" class="btn-secondary text-xs py-2 px-3">As Milker</button>
         <button type="button" data-profile-add="wachi" class="btn-secondary text-xs py-2 px-3">As Wachi</button>
@@ -237,20 +238,21 @@ function profileHtml(p) {
     </div>` : ''}`;
 
   return `
-    <div class="pr-16 space-y-1.5" data-profile-tag="${escapeHtml(p.tag)}">
-      <div class="flex items-center gap-2">${p.milker || p.wachi ? markHtml(markOfTag(state, p.tag), true) : ''}<h2 id="profileTitle" class="animal-title animal-title-lg">${escapeHtml(p.tag)}</h2></div>
-      <div class="flex flex-wrap gap-1.5">${chip(kindLabel(p))} ${statusChip(p)}</div>
+    <div class="profile-hero" data-profile-tag="${escapeHtml(p.tag)}">
+      <div class="profile-hero-top">${p.milker || p.wachi ? markHtml(markOfTag(state, p.tag), true) : ''}<h2 id="profileTitle" class="animal-title animal-title-xl">${escapeHtml(p.tag)}</h2></div>
+      <div class="flex flex-wrap gap-1.5">${chip(kindLabel(p))} ${statusChip(p)}${p.wachi ? ' ' + chip(escapeHtml(p.wachi.stage)) : ''}${mother && hero.length ? ` <span class="chip-mother">Mother ${profileLink(p.dam)}</span>` : ''}</div>
+      ${hero.length ? `<div class="profile-stats">${hero.map(([ico, k, v]) => `<div class="profile-stat"><span aria-hidden="true">${ico}</span><b>${v}</b><i>${k}</i></div>`).join('')}</div>` : ''}
     </div>
     ${salePanel(p)}
     ${pregnancyPanel(p)}
     ${breedingSectionHtml(p)}
     ${facts.length ? `<dl class="grid grid-cols-2 gap-2">${facts.map(([k, v]) => `
       <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5"><dt class="text-[10px] uppercase font-semibold text-slate-400">${k}</dt><dd class="text-xs font-bold text-slate-800 mt-0.5">${v}</dd></div>`).join('')}</dl>` : ''}
-    ${notes ? `<p class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><strong>Notes:</strong> ${escapeHtml(notes)}</p>` : ''}
+    ${notes ? `<p class="text-sm text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200/60"><span aria-hidden="true">\u{1F4DD}</span> ${escapeHtml(notes)}</p>` : ''}
     ${actions}
-    ${cattle ? section('AI &amp; pregnancy history', p.ai.length, ai, 'No AI records.') : ''}
-    ${cattle ? section('Calves (baby record)', p.calves.length, calves, 'No calves yet.') : ''}
-    ${section('Treatments &amp; vaccinations', p.health.length, health, 'No treatments yet.')}`;
+    ${cattle ? section('<span aria-hidden="true">\u{1F489}</span> AI &amp; pregnancy', p.ai.length, ai, '\u2014') : ''}
+    ${cattle ? section('<span aria-hidden="true">\u{1F42E}</span> Calves', p.calves.length, calves, '\u2014') : ''}
+    ${section('<span aria-hidden="true">\u{1F48A}</span> Treatments', p.health.length, health, '\u2014')}`;
 }
 
 const formatDate = formatDisplayDate;

@@ -949,3 +949,24 @@ body.dark-mode .animal-title { color: #f1f5f9; }
 body.dark-mode .mark-picker { background: #1e293b; border-color: #334155; }
 body.dark-mode .mark-head { color: #e2e8f0; }
 body.dark-mode .mark-sym { background: #0f172a; border-color: #475569; }
+
+/* Animal profile: a big, clear card for one animal */
+h2.animal-title.animal-title-xl { font-size: 2rem; line-height: 1.15; font-weight: 800; }
+.profile-hero { padding: 1rem; padding-right: 4.5rem; border-radius: 1rem; border: 1px solid #bbf7d0; background: linear-gradient(135deg, #f0fdf4, #ecfeff); display: grid; gap: 0.75rem; }
+.profile-hero-top { display: flex; align-items: center; gap: 0.75rem; }
+.profile-hero .mark-lg { width: 4rem; height: 4rem; font-size: 2.25rem; border-width: 4px; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.profile-stat { background: #fff; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.55rem 0.4rem; text-align: center; display: grid; gap: 0.1rem; }
+.profile-stat span { font-size: 1.4rem; line-height: 1; }
+.profile-stat b { font-size: 0.95rem; font-weight: 800; color: #0f172a; overflow-wrap: anywhere; }
+.profile-stat i { font-style: normal; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: #64748b; }
+.chip-mother { font-size: 0.75rem; font-weight: 600; color: #334155; }
+.profile-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.pa-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; min-height: 4rem; border-radius: 0.9rem; border: 2px solid #cbd5e1; background: #fff; font-weight: 700; font-size: 0.85rem; color: #0f172a; }
+.pa-btn span { font-size: 1.5rem; line-height: 1; }
+.pa-main { border-color: #10b981; background: #ecfdf5; color: #064e3b; }
+body.dark-mode .profile-hero { background: #0f2a22; border-color: #14532d; }
+body.dark-mode .profile-stat, body.dark-mode .pa-btn { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+body.dark-mode .profile-stat b { color: #f1f5f9; }
+body.dark-mode .pa-main { background: #064e3b; border-color: #10b981; color: #d1fae5; }
+body.dark-mode .chip-mother { color: #cbd5e1; }

@@ -760,7 +760,7 @@ test.describe('animal profiles', () => {
     await profile(page, 'Cow #07 (Chandi)');
     const body = page.locator('#profileBody');
     await expect(body.locator('#profileTitle')).toHaveText('Cow #07 (Chandi)');
-    await expect(body).toContainText('AI & pregnancy history');
+    await expect(body).toContainText('AI & pregnancy');
     await expect(body).toContainText('Mastitis (rear left quarter)');
     await expect(body).toContainText('Wachi #01 (Noori)');          // calf found from "Dam: Cow #07 Chandi"
     await expect(body).not.toContainText('Cow #14');
@@ -1025,7 +1025,7 @@ test.describe('goats, sheep and horses', () => {
     await expect(page.locator('#animalsListContainer')).toContainText('Goat #01 (Bholi)');
     await page.locator('#animalsListContainer [data-open-profile="Raja"]').click();
     await expect(page.locator('#profileBody')).toContainText('Nukra');
-    await expect(page.locator('#profileBody')).not.toContainText('AI & pregnancy history');
+    await expect(page.locator('#profileBody')).not.toContainText('AI & pregnancy');
     await expect(page.locator('[data-profile-action="ai"]')).toHaveCount(0);
   });
 
@@ -1101,7 +1101,7 @@ test.describe('add and edit animals from Animal Profiles', () => {
     await submit(page, 'breedingForm');
     await tab(page, 'tabAnimalsBtn');
     await page.locator('#animalsListContainer [data-open-profile="Cow #77 (Zeenat)"]').click();
-    await expect(page.locator('#profileBody')).toContainText('not in your herd list');
+    await expect(page.locator('#profileBody')).toContainText('Not in herd yet');
     await page.locator('[data-profile-add="milker"]').click();
     await expect(page.locator('#milkerTag')).toHaveValue('Cow #77 (Zeenat)');
   });
@@ -1406,7 +1406,7 @@ test.describe('Urdu and English', () => {
     await page.locator('#modeToggle [data-mode="farm"]').click();
     await tab(page, 'tabAnimalsBtn');
     await page.locator('#animalsListContainer [data-open-profile="Cow #07 (Chandi)"]').click();
-    await expect(page.locator('#profileBody')).toContainText('اے آئی اور حمل کی تاریخ');
+    await expect(page.locator('#profileBody')).toContainText('اے آئی اور حمل');
   });
 
   test('the side menu opens from the right in Urdu', async ({ page }) => {
@@ -1646,7 +1646,7 @@ test.describe('breeding protocols', () => {
   test('start Ovsynch from the profile: timed tasks appear in the Treatment list, progress shows in the profile', async ({ page }) => {
     await loadSample(page);
     await openProfile(page, 'Cow #14 (Rani)');
-    await expect(page.locator('[data-breeding-section]')).toContainText('No breeding protocols yet.');
+    await expect(page.locator('[data-breeding-section]')).toContainText('Start Breeding Protocol');
     await page.locator('#profileSheet [data-protocol-start]').click();
     await expect(page.locator('#protocolStartSheet')).toBeVisible();
     await expect(page.locator('#protocolAnimals input:checked')).toHaveValue('Cow #14 (Rani)');   // preselected
@@ -2165,5 +2165,32 @@ test.describe('moving an animal between lists', () => {
     await page.locator('[data-to-wachi]').first().evaluate((el) => el.click());
     expect((await read('dairy_farm_v1_milkers')).length).toBe(0);
     expect((await read('dairy_farm_v1_wachi'))[0].tag).toBe('Lali');
+  });
+});
+
+test.describe('profile and AI stay in step', () => {
+  test('AI added from a profile shows in the AI section and back in her profile', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_lang', 'en'));
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('.fab[data-open-sheet="milkersSheet"]').click();
+    await fill(page, 'milkerTag', 'Lali');
+    await fill(page, 'milkerBreed', 'Sahiwal');
+    await fill(page, 'milkerMorning', '6');
+    await fill(page, 'milkerEvening', '5');
+    await submit(page, 'milkerForm');
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Lali"]').click();
+    await expect(page.locator('#profileBody .profile-stat').first()).toContainText('11 L');
+    await page.locator('#profileBody [data-profile-action="ai"]').click();
+    await expect(page.locator('#cowTag')).toHaveValue('Lali');
+    await fill(page, 'aiDate', '2026-09-01');
+    await fill(page, 'pregStatus', 'Confirmed Pregnant');
+    await submit(page, 'breedingForm');
+    await expect(page.locator('#breedingListContainer')).toContainText('Lali');
+    await tab(page, 'tabAnimalsBtn');
+    await page.locator('#animalsListContainer [data-open-profile="Lali"]').click();
+    await expect(page.locator('#profileBody')).toContainText('Confirmed Pregnant');
+    await expect(page.locator('#profileBody')).toContainText('1 Sept 2026');
   });
 });
