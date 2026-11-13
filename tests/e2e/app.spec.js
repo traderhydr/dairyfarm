@@ -2194,3 +2194,17 @@ test.describe('profile and AI stay in step', () => {
     await expect(page.locator('#profileBody')).toContainText('1 Sept 2026');
   });
 });
+
+test.describe('dark mode animal names', () => {
+  test('animal names are light on the dark background', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.setItem('dairy_theme', 'dark');
+      localStorage.setItem('dairy_farm_v1_milkers', JSON.stringify([{ id: '1', tag: 'Lali', species: 'Cow', breed: 'Sahiwal', morningMilk: 6, eveningMilk: 5, status: 'Steady Milking', notes: '' }]));
+    });
+    await page.reload();
+    await tab(page, 'tabMilkersBtn');
+    const rgb = await page.locator('#milkersListContainer .animal-title').first().evaluate((e) => getComputedStyle(e).color.match(/\d+/g).map(Number));
+    expect(Math.min(...rgb.slice(0, 3))).toBeGreaterThan(150);
+  });
+});

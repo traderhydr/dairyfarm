@@ -925,7 +925,7 @@ body.dark-mode .profile-delete { color: #fda4af; }
 html.lang-ur .herd-label { line-height: 1.9; font-size: 0.8rem; }
 
 /* Animal names: big, so they read at a glance; and the "mark" — a picture in a coloured ring a farmer can remember. */
-h3.animal-title, h2.animal-title, .list-card [id$="ListContainer"] h3.animal-title { font-size: 1.25rem; line-height: 1.3; font-weight: 800; letter-spacing: -0.01em; color: #0f172a; }
+h3.animal-title, h2.animal-title, .list-card [id$="ListContainer"] h3.animal-title { font-size: 1.25rem; line-height: 1.3; font-weight: 800; letter-spacing: -0.01em; color: var(--text); }
 h2.animal-title.animal-title-lg { font-size: 1.6rem; }
 .mark { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 3px solid #94a3b8; background: #fff; font-size: 1.15rem; line-height: 1; flex: none; }
 .mark-lg { width: 3rem; height: 3rem; font-size: 1.6rem; }
@@ -945,7 +945,6 @@ h2.animal-title.animal-title-lg { font-size: 1.6rem; }
 .mark-dot[aria-pressed="true"] { outline: 3px solid #0f172a; outline-offset: 2px; }
 .mark-sym { width: 2.75rem; height: 2.75rem; font-size: 1.5rem; border-radius: 0.75rem; border: 2px solid #cbd5e1; background: #fff; }
 .mark-sym[aria-pressed="true"] { border-color: #0f172a; background: #e2e8f0; }
-body.dark-mode .animal-title { color: #f1f5f9; }
 body.dark-mode .mark-picker { background: #1e293b; border-color: #334155; }
 body.dark-mode .mark-head { color: #e2e8f0; }
 body.dark-mode .mark-sym { background: #0f172a; border-color: #475569; }
@@ -970,3 +969,4 @@ body.dark-mode .profile-stat, body.dark-mode .pa-btn { background: #1e293b; bord
 body.dark-mode .profile-stat b { color: #f1f5f9; }
 body.dark-mode .pa-main { background: #064e3b; border-color: #10b981; color: #d1fae5; }
 body.dark-mode .chip-mother { color: #cbd5e1; }
+body.dark-mode .mark-empty { color: #cbd5e1; background: #1e293b; }
