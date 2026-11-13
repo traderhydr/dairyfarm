@@ -2208,3 +2208,30 @@ test.describe('dark mode animal names', () => {
     expect(Math.min(...rgb.slice(0, 3))).toBeGreaterThan(150);
   });
 });
+
+test.describe('farm profile picture', () => {
+  test('a chosen photo is saved with the farm profile and shown in the home card', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_lang', 'en'));
+    await page.locator('#editFarmBtn').evaluate((el) => el.click());
+    await fill(page, 'farmOwnerInput', 'Muneer');
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await page.locator('#farmPhotoInput').setInputFiles({ name: 'me.png', mimeType: 'image/png', buffer: png });
+    await expect(page.locator('#farmPhotoPreview img')).toBeVisible();
+    await expect(page.locator('#farmPhotoRemove')).toBeVisible();
+    await submit(page, 'farmForm');
+    await expect(page.locator('#farmAvatar img')).toBeVisible();
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_farm'))[0].photo);
+    expect(saved.startsWith('data:image/jpeg;base64,')).toBe(true);
+    await page.locator('#editFarmBtn').evaluate((el) => el.click());
+    await page.locator('#farmPhotoRemove').click();
+    await submit(page, 'farmForm');
+    await expect(page.locator('#farmAvatar img')).toHaveCount(0);
+  });
+  test('a hostile photo value in saved data is not shown', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_v1_farm', JSON.stringify([{ id: 'farm', ownerName: 'A', photo: 'javascript:alert(1)' }])));
+    await page.reload();
+    await expect(page.locator('#farmAvatar img')).toHaveCount(0);
+  });
+});

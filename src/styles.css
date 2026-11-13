@@ -970,3 +970,10 @@ body.dark-mode .profile-stat b { color: #f1f5f9; }
 body.dark-mode .pa-main { background: #064e3b; border-color: #10b981; color: #d1fae5; }
 body.dark-mode .chip-mother { color: #cbd5e1; }
 body.dark-mode .mark-empty { color: #cbd5e1; background: #1e293b; }
+
+/* Farm profile picture */
+.farm-avatar { overflow: hidden; }
+.farm-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.farm-avatar-lg { width: 5rem; height: 5rem; font-size: 1.6rem; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 9999px; }
+.farm-photo-row { display: flex; align-items: center; gap: 1rem; }
+.farm-photo-btns { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }

@@ -1,3 +1,4 @@
+import { validPhoto, photoFromFile } from '../lib/photo.js';
 import { commit, state } from '../state.js';
 import { openSheet } from '../ui/sheets.js';
 import { showToast } from '../ui/toast.js';
@@ -13,10 +14,25 @@ export function initials(profile) {
   return words.slice(0, 2).map((w) => Array.from(w)[0].toUpperCase()).join('');
 }
 
+/** Fill a round avatar with the photo when there is one, else with initials (set through the DOM, never as HTML). */
+function paintAvatar(el, profile, photo) {
+  el.textContent = '';
+  if (validPhoto(photo)) {
+    const img = document.createElement('img');
+    img.src = photo;
+    img.alt = '';
+    el.appendChild(img);
+    el.classList.add('has-photo');
+  } else {
+    el.textContent = initials(profile);
+    el.classList.remove('has-photo');
+  }
+}
+
 export function renderFarm() {
   const p = farmProfile();
   const hasAny = Boolean(p.ownerName || p.farmName);
-  $('farmAvatar').textContent = initials(p);
+  paintAvatar($('farmAvatar'), p, p.photo);
   $('farmCard').classList.toggle('farm-empty', !hasAny);
   if (!hasAny) {
     $('farmGreeting').textContent = 'Set up your farm';
@@ -38,12 +54,32 @@ export function renderFarm() {
 }
 
 export function initFarm() {
+  let photo = '';           // the picture shown in the form; saved with the profile
+  const showPhoto = () => {
+    paintAvatar($('farmPhotoPreview'), { ownerName: $('farmOwnerInput').value, farmName: $('farmNameInput').value }, photo);
+    $('farmPhotoRemove').classList.toggle('hidden', !validPhoto(photo));
+    $('farmPhotoLabel').textContent = validPhoto(photo) ? 'Change photo' : 'Choose photo';
+  };
+  $('farmPhotoInput').addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      photo = await photoFromFile(file);
+      showPhoto();
+    } catch (err) {
+      showToast('Could not use that photo.');
+    }
+  });
+  $('farmPhotoRemove').addEventListener('click', () => { photo = ''; showPhoto(); });
   const open = () => {
     const p = farmProfile();
+    photo = validPhoto(p.photo) ? p.photo : '';
     $('farmOwnerInput').value = p.ownerName || '';
     $('farmNameInput').value = p.farmName || '';
     $('farmLocationInput').value = p.location || '';
     $('farmPhoneInput').value = p.phone || '';
+    showPhoto();
     openSheet('farmSheet');
   };
   $('editFarmBtn').addEventListener('click', open);
@@ -55,7 +91,8 @@ export function initFarm() {
       ownerName: $('farmOwnerInput').value.trim().replace(/\s+/g, ' '),
       farmName: $('farmNameInput').value.trim().replace(/\s+/g, ' '),
       location: $('farmLocationInput').value.trim(),
-      phone: $('farmPhoneInput').value.trim()
+      phone: $('farmPhoneInput').value.trim(),
+      photo: validPhoto(photo) ? photo : ''
     };
     const existing = state.farmProfile[0];
     if (existing) Object.assign(existing, rec);
