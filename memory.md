@@ -165,5 +165,6 @@ Open items / owner actions:
   would need a different data model.
 
 ## Animal marks & big names
-- Cows/buffaloes (milkers) and Wachi have `mark: {symbol, color}` chosen from fixed lists in `src/lib/marks.js` (validated; unknown values ignored). Default is derived from the tag, so every animal always has one. Picker: `src/ui/mark-picker.js`. Shown on cards, Animals list, profile header, AI cards.
+- Mark pictures are cow/buffalo only (🐄🐮🐃🦬🐂) x 8 colours. Cows/buffaloes (milkers) and Wachi have `mark: {symbol, color}` chosen from fixed lists in `src/lib/marks.js` (validated; unknown values ignored). Default is derived from the tag, so every animal always has one. Picker: `src/ui/mark-picker.js`. Shown on cards, Animals list, profile header, AI cards.
 - Animal names use `.animal-title` (1.25rem, 800) everywhere; profile title `.animal-title-lg`. No photos (avoids camera permission / Play Data-safety changes).
+- "Move to Milkers" / "Move to Wachi" buttons on the cards (`src/lib/convert.js`) fix an animal put in the wrong list; details kept, then the edit form opens for milk / age+weight.

@@ -2,6 +2,7 @@ import { escapeHtml } from '../lib/format.js';
 import { normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { markHtml, markOf, defaultMark } from '../lib/marks.js';
 import { createMarkPicker } from '../ui/mark-picker.js';
+import { wachiToMilker } from '../lib/convert.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { openSheet } from '../ui/sheets.js';
@@ -63,6 +64,7 @@ export function renderWachi() {
           </button>
           <button type="button" data-open-profile="${escapeHtml(wachi.tag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-wachi="${wachi.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-to-milker="${wachi.id}" class="${EDIT_BTN_CLASS}">Move to Milkers</button>
           <button type="button" data-delete-wachi="${wachi.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">
             Delete
           </button>
@@ -195,6 +197,17 @@ export function initWachi() {
         }
         showToast(`Pre-filled ${wachi.tag} in Cow AI Log!`);
       }
+      return;
+    }
+
+    const moveBtn = e.target.closest('[data-to-milker]');
+    if (moveBtn) {
+      const w = state.wachiList.find((x) => x.id === moveBtn.getAttribute('data-to-milker'));
+      if (!w) return;
+      const m = wachiToMilker(state, w.id);
+      commit();
+      showToast('Moved to Milkers!');
+      if (m) { switchTab('milkers'); document.dispatchEvent(new CustomEvent('animal-edit', { detail: { kind: 'milker', id: m.id } })); }
       return;
     }
 

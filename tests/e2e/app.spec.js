@@ -2132,14 +2132,38 @@ test.describe('animal marks', () => {
     await fill(page, 'milkerBreed', 'Sahiwal');
     await fill(page, 'milkerMorning', '6');
     await fill(page, 'milkerEvening', '5');
-    await page.locator('#milkerMarkPicker [data-pick-symbol="🌙"]').click();
+    await page.locator('#milkerMarkPicker [data-pick-symbol="🐃"]').click();
     await page.locator('#milkerMarkPicker [data-pick-color="red"]').click();
     await submit(page, 'milkerForm');
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_milkers')));
-    expect(stored.find((m) => m.tag === 'Lali').mark).toEqual({ symbol: '🌙', color: 'red' });
+    expect(stored.find((m) => m.tag === 'Lali').mark).toEqual({ symbol: '🐃', color: 'red' });
     const badge = page.locator('#milkersListContainer .mark[data-color="red"]').first();
-    await expect(badge).toHaveText('🌙');
+    await expect(badge).toHaveText('🐃');
     const size = await page.locator('#milkersListContainer .animal-title').first().evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
     expect(size).toBeGreaterThanOrEqual(19);
+  });
+});
+
+test.describe('moving an animal between lists', () => {
+  test('a heifer added by mistake can be moved to Milkers', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_lang', 'en'));
+    await tab(page, 'tabWachiBtn');
+    await page.locator('.fab[data-open-sheet="wachiSheet"]').click();
+    await fill(page, 'wachiTag', 'Lali');
+    await fill(page, 'wachiBreed', 'Sahiwal');
+    await fill(page, 'wachiAge', '30');
+    await fill(page, 'wachiWeight', '300');
+    await submit(page, 'wachiForm');
+    await page.locator('[data-to-milker]').first().evaluate((el) => el.click());
+    const read = (k) => page.evaluate((key) => JSON.parse(localStorage.getItem(key)), k);
+    expect((await read('dairy_farm_v1_wachi')).length).toBe(0);
+    expect((await read('dairy_farm_v1_milkers'))[0].tag).toBe('Lali');
+    await expect(page.locator('#milkersSheet')).toBeVisible();
+    await submit(page, 'milkerForm');
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('[data-to-wachi]').first().evaluate((el) => el.click());
+    expect((await read('dairy_farm_v1_milkers')).length).toBe(0);
+    expect((await read('dairy_farm_v1_wachi'))[0].tag).toBe('Lali');
   });
 });

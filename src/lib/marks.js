@@ -2,7 +2,7 @@
 // "the cow with the red star". Every animal has one: the farmer's choice, or a steady default made from her tag.
 import { sameAnimal } from './animals.js';
 
-export const MARK_SYMBOLS = ['⭐', '❤️', '🌙', '☀️', '🔥', '⚡', '🌸', '🍀', '🦋', '🔔', '👑', '🌈', '💎', '🎈', '🍎', '🌴'];
+export const MARK_SYMBOLS = ['🐄', '🐮', '🐃', '🦬', '🐂'];
 export const MARK_COLORS = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'black'];
 
 /** The record's own mark if it is one of the allowed pictures and colours (anything else is ignored), else null. */

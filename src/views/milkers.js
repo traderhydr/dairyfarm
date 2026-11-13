@@ -3,9 +3,11 @@ import { escapeHtml, formatCurrency } from '../lib/format.js';
 import { normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { markHtml, markOf, defaultMark } from '../lib/marks.js';
 import { createMarkPicker } from '../ui/mark-picker.js';
+import { milkerToWachi } from '../lib/convert.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
 import { initListSearch, matchesSearch, noMatchHtml, searchQuery } from '../ui/list-search.js';
+import { switchTab } from '../ui/tabs.js';
 import { showToast } from '../ui/toast.js';
 
 function updateMilkerFormPreview() {
@@ -73,6 +75,7 @@ export function renderMilkers() {
         <div class="flex items-center gap-1 shrink-0">
           <button type="button" data-open-profile="${escapeHtml(cow.tag)}" class="${EDIT_BTN_CLASS}">Profile</button>
           <button type="button" data-edit-milker-form="${cow.id}" class="${EDIT_BTN_CLASS}">Edit</button>
+          <button type="button" data-to-wachi="${cow.id}" class="${EDIT_BTN_CLASS}">Move to Wachi</button>
           <button type="button" data-delete-milker="${cow.id}" class="text-xs text-slate-400 hover:text-rose-600 font-medium px-2 py-1 rounded-lg hover:bg-rose-50 transition">Delete</button>
         </div>
       </div>
@@ -240,6 +243,17 @@ export function initMilkers() {
       if (cow) startEdit(cow);
       return;
     }
+    const moveBtn = e.target.closest('[data-to-wachi]');
+    if (moveBtn) {
+      const cow = state.milkersList.find((x) => x.id === moveBtn.getAttribute('data-to-wachi'));
+      if (!cow) return;
+      const w = milkerToWachi(state, cow.id);
+      commit();
+      showToast('Moved to Wachi!');
+      if (w) { switchTab('wachi'); document.dispatchEvent(new CustomEvent('animal-edit', { detail: { kind: 'wachi', id: w.id } })); }
+      return;
+    }
+
     const delBtn = e.target.closest('[data-delete-milker]');
     if (!delBtn) return;
     const id = delBtn.getAttribute('data-delete-milker');
