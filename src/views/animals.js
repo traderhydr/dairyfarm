@@ -1,5 +1,6 @@
 import { buildProfile, listAnimals, speciesOfRecord } from '../lib/animals.js';
 import { herdCounts } from '../lib/herd.js';
+import { markHtml, markOfTag } from '../lib/marks.js';
 import { pregnancyProgress, pregnancyTexts } from '../lib/dates.js';
 import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
 import { addDays, escapeHtml, formatCurrency, formatDisplayDate } from '../lib/format.js';
@@ -50,7 +51,8 @@ function animalCard(p) {
   return `
     <button type="button" data-open-profile="${escapeHtml(p.tag)}" class="animal-card w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1.5">
       <div class="flex flex-wrap items-center gap-2">
-        <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(p.tag)}</h3>
+        ${p.milker || p.wachi ? markHtml(markOfTag(state, p.tag)) : ''}
+        <h3 class="animal-title">${escapeHtml(p.tag)}</h3>
         ${chip(kindLabel(p))} ${statusChip(p)}
       </div>
       ${bits ? `<p class="text-xs text-slate-500">${bits}</p>` : ''}
@@ -236,7 +238,7 @@ function profileHtml(p) {
 
   return `
     <div class="pr-16 space-y-1.5" data-profile-tag="${escapeHtml(p.tag)}">
-      <h2 id="profileTitle" class="text-lg font-bold text-slate-900">${escapeHtml(p.tag)}</h2>
+      <div class="flex items-center gap-2">${p.milker || p.wachi ? markHtml(markOfTag(state, p.tag), true) : ''}<h2 id="profileTitle" class="animal-title animal-title-lg">${escapeHtml(p.tag)}</h2></div>
       <div class="flex flex-wrap gap-1.5">${chip(kindLabel(p))} ${statusChip(p)}</div>
     </div>
     ${salePanel(p)}

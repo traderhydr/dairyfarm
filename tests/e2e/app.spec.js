@@ -2121,3 +2121,25 @@ test.describe('buffaloes and herd counts', () => {
     await expect(page.locator('#milkerSpecies option[value="Buffalo"]')).toHaveText('بھینس');
   });
 });
+
+test.describe('animal marks', () => {
+  test('a farmer picks a picture and colour for a cow and sees it on her card', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_lang', 'en'));
+    await tab(page, 'tabMilkersBtn');
+    await page.locator('.fab[data-open-sheet="milkersSheet"]').click();
+    await fill(page, 'milkerTag', 'Lali');
+    await fill(page, 'milkerBreed', 'Sahiwal');
+    await fill(page, 'milkerMorning', '6');
+    await fill(page, 'milkerEvening', '5');
+    await page.locator('#milkerMarkPicker [data-pick-symbol="🌙"]').click();
+    await page.locator('#milkerMarkPicker [data-pick-color="red"]').click();
+    await submit(page, 'milkerForm');
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('dairy_farm_v1_milkers')));
+    expect(stored.find((m) => m.tag === 'Lali').mark).toEqual({ symbol: '🌙', color: 'red' });
+    const badge = page.locator('#milkersListContainer .mark[data-color="red"]').first();
+    await expect(badge).toHaveText('🌙');
+    const size = await page.locator('#milkersListContainer .animal-title').first().evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
+    expect(size).toBeGreaterThanOrEqual(19);
+  });
+});

@@ -51,7 +51,7 @@ export function renderHorses() {
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(h.name)}</h3>
+            <h3 class="animal-title">${escapeHtml(h.name)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${STATUS_STYLE[h.status] || STATUS_STYLE.Active}">${escapeHtml(h.status || 'Active')}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(h.sex)}${h.breed ? ' &bull; ' + escapeHtml(h.breed) : ''}</p>

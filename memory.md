@@ -163,3 +163,7 @@ Open items / owner actions:
 - No iOS native app (iPhones use the web app via Add to Home Screen).
 - One shared record per user: very large farms (thousands of records) are fine; multi-user farms sharing one account
   would need a different data model.
+
+## Animal marks & big names
+- Cows/buffaloes (milkers) and Wachi have `mark: {symbol, color}` chosen from fixed lists in `src/lib/marks.js` (validated; unknown values ignored). Default is derived from the tag, so every animal always has one. Picker: `src/ui/mark-picker.js`. Shown on cards, Animals list, profile header, AI cards.
+- Animal names use `.animal-title` (1.25rem, 800) everywhere; profile title `.animal-title-lg`. No photos (avoids camera permission / Play Data-safety changes).

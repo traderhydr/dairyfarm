@@ -1,6 +1,7 @@
 import { speciesOfRecord, speciesOfTag } from '../lib/animals.js';
 import { pregnancyProgress, pregnancyTexts, todayStr } from '../lib/dates.js';
 import { gestationDays, normalizeSpecies, speciesEmoji } from '../lib/species.js';
+import { markHtml, markOfTag } from '../lib/marks.js';
 import { addDays, escapeHtml, formatDisplayDate } from '../lib/format.js';
 import { commit, state } from '../state.js';
 import { createEditor, EDIT_BTN_CLASS, setField } from '../ui/record-editor.js';
@@ -62,8 +63,9 @@ export function renderBreeding() {
     card.innerHTML = `
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <div class="flex items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm"><span aria-hidden="true">${speciesEmoji(species)}</span> ${escapeHtml(record.cowTag)}</h3>
+          <div class="flex flex-wrap items-center gap-2">
+            ${markOfTag(state, record.cowTag) ? markHtml(markOfTag(state, record.cowTag)) : ''}
+            <h3 class="animal-title"><span aria-hidden="true">${speciesEmoji(species)}</span> ${escapeHtml(record.cowTag)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeStyle}">${escapeHtml(record.pregStatus)}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">Bull / Semen: <span class="font-medium text-slate-700">${escapeHtml(record.semenBull || 'Not specified')}</span></p>

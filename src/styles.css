@@ -923,3 +923,29 @@ body.dark-mode .profile-delete { color: #fda4af; }
 .herd-more { margin-top: 0.55rem; padding-top: 0.5rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.8125rem; color: var(--text-2); }
 .herd-more b { color: var(--text); }
 html.lang-ur .herd-label { line-height: 1.9; font-size: 0.8rem; }
+
+/* Animal names: big, so they read at a glance; and the "mark" — a picture in a coloured ring a farmer can remember. */
+h3.animal-title, h2.animal-title, .list-card [id$="ListContainer"] h3.animal-title { font-size: 1.25rem; line-height: 1.3; font-weight: 800; letter-spacing: -0.01em; color: #0f172a; }
+h2.animal-title.animal-title-lg { font-size: 1.6rem; }
+.mark { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 3px solid #94a3b8; background: #fff; font-size: 1.15rem; line-height: 1; flex: none; }
+.mark-lg { width: 3rem; height: 3rem; font-size: 1.6rem; }
+.mark-empty { color: #94a3b8; font-weight: 800; border-style: dashed; }
+.mark[data-color="red"], .mark-dot[data-color="red"] { border-color: #dc2626; background-color: #fee2e2; }
+.mark[data-color="blue"], .mark-dot[data-color="blue"] { border-color: #2563eb; background-color: #dbeafe; }
+.mark[data-color="green"], .mark-dot[data-color="green"] { border-color: #16a34a; background-color: #dcfce7; }
+.mark[data-color="yellow"], .mark-dot[data-color="yellow"] { border-color: #ca8a04; background-color: #fef9c3; }
+.mark[data-color="orange"], .mark-dot[data-color="orange"] { border-color: #ea580c; background-color: #ffedd5; }
+.mark[data-color="purple"], .mark-dot[data-color="purple"] { border-color: #9333ea; background-color: #f3e8ff; }
+.mark[data-color="pink"], .mark-dot[data-color="pink"] { border-color: #db2777; background-color: #fce7f3; }
+.mark[data-color="black"], .mark-dot[data-color="black"] { border-color: #0f172a; background-color: #e2e8f0; }
+.mark-picker { border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 0.75rem; background: #f8fafc; }
+.mark-head { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
+.mark-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.mark-dot { width: 2.5rem; height: 2.5rem; border-radius: 9999px; border-width: 3px; border-style: solid; }
+.mark-dot[aria-pressed="true"] { outline: 3px solid #0f172a; outline-offset: 2px; }
+.mark-sym { width: 2.75rem; height: 2.75rem; font-size: 1.5rem; border-radius: 0.75rem; border: 2px solid #cbd5e1; background: #fff; }
+.mark-sym[aria-pressed="true"] { border-color: #0f172a; background: #e2e8f0; }
+body.dark-mode .animal-title { color: #f1f5f9; }
+body.dark-mode .mark-picker { background: #1e293b; border-color: #334155; }
+body.dark-mode .mark-head { color: #e2e8f0; }
+body.dark-mode .mark-sym { background: #0f172a; border-color: #475569; }

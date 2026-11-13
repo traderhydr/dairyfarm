@@ -53,7 +53,7 @@ export function renderGoats() {
       <div class="flex flex-wrap items-start justify-between gap-2">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <h3 class="font-bold text-slate-900 text-sm">${escapeHtml(g.tag)}</h3>
+            <h3 class="animal-title">${escapeHtml(g.tag)}</h3>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${STATUS_STYLE[g.status] || STATUS_STYLE['In flock']}">${escapeHtml(g.status || 'In flock')}</span>
           </div>
           <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(g.species)} &bull; ${escapeHtml(g.sex)}${g.breed ? ' &bull; ' + escapeHtml(g.breed) : ''}</p>
