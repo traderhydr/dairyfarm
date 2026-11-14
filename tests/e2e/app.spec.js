@@ -935,8 +935,7 @@ test.describe('profit and loss', () => {
     await add(page, 'expense', 800, daysAgo(1));
     await add(page, 'income', 300, daysAgo(0));
     await page.locator('#profitPeriods [data-period="week"]').click();
-    await page.locator('#profitCard .profit-days summary').click();
-    const rows = page.locator('#profitDaysList > div');
+    const rows = page.locator('#profitDaysList > [data-day]');
     await expect(rows).toHaveCount(2);
     await expect(rows.nth(0)).toContainText('Rs. 300');
     await expect(rows.nth(1)).toContainText('- Rs. 300');
@@ -2233,5 +2232,35 @@ test.describe('farm profile picture', () => {
     await page.evaluate(() => localStorage.setItem('dairy_farm_v1_farm', JSON.stringify([{ id: 'farm', ownerName: 'A', photo: 'javascript:alert(1)' }])));
     await page.reload();
     await expect(page.locator('#farmAvatar img')).toHaveCount(0);
+  });
+});
+
+test.describe('day details', () => {
+  const seed = (page) => page.evaluate(() => {
+    const d = new Date(); const t = (n) => { const x = new Date(d); x.setDate(x.getDate() - n); return x.toISOString().slice(0, 10); };
+    localStorage.setItem('dairy_farm_lang', 'en');
+    localStorage.setItem('dairy_farm_v1_transactions', JSON.stringify([
+      { id: 'a', type: 'income', date: t(0), category: 'Milk Sale', amount: 5000, note: 'Evening milk' },
+      { id: 'b', type: 'expense', date: t(0), category: 'Feed', amount: 7000, note: '' },
+      { id: 'c', type: 'income', date: t(1), category: 'Milk Sale', amount: 4000, note: '' }
+    ]));
+  });
+  test('tapping a day shows its profit or loss and every entry; prev/next and the date picker work', async ({ page }) => {
+    await page.goto('/');
+    await seed(page);
+    await page.reload();
+    await page.locator('#profitPeriods [data-period="week"]').evaluate((el) => el.click());
+    const rows = page.locator('#profitDaysList [data-day]');
+    await expect(rows).toHaveCount(2);
+    await rows.first().evaluate((el) => el.click());
+    await expect(page.locator('#daySheet')).toBeVisible();
+    await expect(page.locator('#dayBody .day-hero')).toHaveAttribute('data-state', 'loss');
+    await expect(page.locator('#dayBody')).toContainText('2,000');
+    await expect(page.locator('#dayBody')).toContainText('Evening milk');
+    await expect(page.locator('#dayBody')).toContainText('Feed');
+    await page.locator('#dayPrev').click();
+    await expect(page.locator('#dayBody .day-hero')).toHaveAttribute('data-state', 'profit');
+    await page.locator('#dayPrev').click();
+    await expect(page.locator('#dayBody')).toContainText('No entries');
   });
 });

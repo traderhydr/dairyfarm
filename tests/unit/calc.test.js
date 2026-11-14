@@ -110,3 +110,18 @@ describe('wandaTotals', () => {
     expect(wandaTotals([{ totalBill: 1000, installments: [{ amount: 1500 }] }])).toMatchObject({ due: 0, percent: 100 });
   });
 });
+
+import { dayDetails } from '../../src/lib/calc.js';
+describe('dayDetails', () => {
+  it('totals one date and lists income first', () => {
+    const txs = [
+      { type: 'expense', date: '2026-11-10', amount: 300, category: 'Feed' },
+      { type: 'income', date: '2026-11-10', amount: 1000, category: 'Milk Sale' },
+      { type: 'income', date: '2026-11-11', amount: 50 }
+    ];
+    const d = dayDetails(txs, '2026-11-10');
+    expect(d).toMatchObject({ income: 1000, expense: 300, net: 700 });
+    expect(d.entries.map((t) => t.category)).toEqual(['Milk Sale', 'Feed']);
+    expect(dayDetails(txs, '2026-11-12').entries).toEqual([]);
+  });
+});

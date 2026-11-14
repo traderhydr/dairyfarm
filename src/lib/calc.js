@@ -83,6 +83,18 @@ export function dailyTotals(transactions, from, to) {
   return [...days.values()].sort((a, b) => b.date.localeCompare(a.date));
 }
 
+/** Everything on one date: income, expense, net and the entries (income first, biggest first). */
+export function dayDetails(transactions, date) {
+  const entries = (transactions || []).filter((t) => String(t.date || '') === date);
+  entries.sort((a, b) => (a.type === b.type ? (Number(b.amount) || 0) - (Number(a.amount) || 0) : a.type === 'income' ? -1 : 1));
+  let income = 0;
+  let expense = 0;
+  for (const t of entries) {
+    if (t.type === 'income') income += Number(t.amount) || 0; else expense += Number(t.amount) || 0;
+  }
+  return { date, income, expense, net: income - expense, entries };
+}
+
 /** Total cost, total paid, balance due and bags over all Feed stock batches. */
 export function wandaTotals(batches) {
   let cost = 0;
