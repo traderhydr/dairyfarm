@@ -12,6 +12,7 @@ import { initSheets } from './ui/sheets.js';
 import { initTheme } from './ui/theme.js';
 import { initModal } from './ui/modal.js';
 import { initTabs } from './ui/tabs.js';
+import { initSwipe } from './ui/swipe.js';
 import { initAlerts, renderAlerts } from './views/alerts.js';
 import { initAnimals, renderAnimals } from './views/animals.js';
 import { initBreeding, renderBreeding, updateBreedingPreview } from './views/breeding.js';
@@ -85,6 +86,7 @@ function boot() {
   onChange(renderAll);
 
   initTabs();
+  initSwipe();
   initSheets();
   initFinance();
   initLedgers();

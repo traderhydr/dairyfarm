@@ -2264,3 +2264,30 @@ test.describe('day details', () => {
     await expect(page.locator('#dayBody')).toContainText('No entries');
   });
 });
+
+test.describe('swipe between tabs', () => {
+  const swipe = (page, from, to, selector = '#financeSection') => page.evaluate(([a, b, sel]) => {
+    const el = document.querySelector(sel) || document.body;
+    const mk = (x, y) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y });
+    el.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, touches: [mk(a, 300)], changedTouches: [mk(a, 300)] }));
+    el.dispatchEvent(new TouchEvent('touchend', { bubbles: true, touches: [], changedTouches: [mk(b, 305)] }));
+  }, [from, to, selector]);
+
+  test('swiping left and right moves through the bottom tabs; sheets and typing are left alone', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('dairy_farm_lang', 'en'));
+    await page.reload();
+    await swipe(page, 300, 100);
+    await expect(page.locator('#animalsSection')).toBeVisible();
+    await swipe(page, 300, 100, '#animalsSection');
+    await expect(page.locator('#breedingSection')).toBeVisible();
+    await swipe(page, 100, 300, '#breedingSection');
+    await expect(page.locator('#animalsSection')).toBeVisible();
+    await swipe(page, 100, 300, '#animalsSection');
+    await swipe(page, 100, 300, '#financeSection');                       // already first: stays
+    await expect(page.locator('#financeSection')).toBeVisible();
+    await page.locator('.fab[data-open-sheet="financeSheet"]').click();
+    await swipe(page, 300, 100, '#txAmount');                             // typing field / sheet: no switch
+    await expect(page.locator('#financeSection')).toBeVisible();
+  });
+});
